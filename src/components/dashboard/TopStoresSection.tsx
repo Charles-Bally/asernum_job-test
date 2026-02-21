@@ -1,26 +1,30 @@
+
 "use client"
 
+import { EmptyState } from "@/components/ui/render/EmptyState"
 import CustomLink from "@/components/ui/render/CustomLink"
+import { useTopStoresQuery } from "@/hooks/useDashboardController"
 import { PATHNAME } from "@/constants/pathname.constant"
+import { Store } from "lucide-react"
 import { useRef } from "react"
-import { StoreCard, type StoreData } from "./StoreCard"
+import { StoreCard } from "./StoreCard"
+import { StoreCardSkeleton } from "./StoreCardSkeleton"
 import { useScrollMask } from "./useScrollMask"
 
-const MOCK_STORES: StoreData[] = [
-  { name: "Angré Djibi 1", code: "M0001", city: "Abidjan, Cocody" },
-  { name: "Angré Djibi 1", code: "M0001", city: "Abidjan, Cocody" },
-  { name: "Angré Djibi 1", code: "M0001", city: "Abidjan, Cocody" },
-  { name: "Angré Djibi 1", code: "M0001", city: "Abidjan, Cocody" },
-  { name: "Angré Djibi 1", code: "M0001", city: "Abidjan, Cocody" },
-]
-
-type TopStoresSectionProps = {
-  stores?: StoreData[]
+function TopStoresSkeleton() {
+  return (
+    <div className="mt-[20px] flex gap-[20px] overflow-hidden pb-[20px]">
+      {Array.from({ length: 4 }).map((_, i) => (
+        <StoreCardSkeleton key={i} index={i} />
+      ))}
+    </div>
+  )
 }
 
-export function TopStoresSection({ stores = MOCK_STORES }: TopStoresSectionProps) {
+export function TopStoresSection() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const maskStyle = useScrollMask(scrollRef)
+  const { stores, isLoading } = useTopStoresQuery()
 
   return (
     <div className="flex h-[330px] flex-1 flex-col overflow-hidden rounded-[40px] bg-auchan-red-light px-[33px] pt-[25px]">
@@ -40,16 +44,26 @@ export function TopStoresSection({ stores = MOCK_STORES }: TopStoresSectionProps
         </CustomLink>
       </div>
 
-      {/* Store cards scroll */}
-      <div
-        ref={scrollRef}
-        className="mt-[20px] flex gap-[20px] overflow-x-auto pb-[20px] scrollbar-none"
-        style={maskStyle}
-      >
-        {stores.map((store, i) => (
-          <StoreCard key={i} store={store} />
-        ))}
-      </div>
+      {isLoading ? (
+        <TopStoresSkeleton />
+      ) : stores.length === 0 ? (
+        <EmptyState
+          title="Aucun magasin"
+          message="Aucun magasin actif pour le moment."
+          icon={<Store size={40} strokeWidth={1.2} />}
+          className="flex-1 py-0"
+        />
+      ) : (
+        <div
+          ref={scrollRef}
+          className="mt-[20px] flex gap-[20px] overflow-x-auto pb-[20px] scrollbar-none"
+          style={maskStyle}
+        >
+          {stores.map((store, i) => (
+            <StoreCard key={i} store={store} />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

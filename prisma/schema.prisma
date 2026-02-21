@@ -7,16 +7,45 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  MANAGER
+  RESPONSABLE_CAISSES
+  CAISSIER
+}
+
+enum TransactionType {
+  PAIEMENT_COURSE
+  RENDU_MONNAIE
+}
+
+enum AccountAction {
+  BLOCKED
+  UNBLOCKED
+}
+
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String
-  firstName String
-  lastName  String
-  role      String   @default("user")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  otps      Otp[]
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  firstName     String
+  lastName      String
+  role          Role      @default(CAISSIER)
+  isBlocked     Boolean   @default(false)
+  blockedAt     DateTime?
+  blockedReason String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  otps              Otp[]
+  managedStores     Store[]          @relation("StoreManager")
+  supervisedStores  Store[]          @relation("StoreResponsable")
+  cashierAtStores   Store[]          @relation("StoreCashiers")
+  transactions      Transaction[]
+  cashierHistory    CashierHistory[] @relation("CashierHistoryUser")
+  assignedHistories CashierHistory[] @relation("CashierHistoryAssigner")
+  accountEvents     AccountEvent[]   @relation("AccountEventTarget")
+  performedEvents   AccountEvent[]   @relation("AccountEventPerformer")
 }
 
 model Otp {
@@ -27,6 +56,77 @@ model Otp {
   expiresAt DateTime
   used      Boolean  @default(false)
   createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Store {
+  id                   String   @id @default(cuid())
+  name                 String
+  code                 String   @unique
+  commune              String
+  ville                String
+  quartier             String?
+  isActive             Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  managerId            String
+  manager              User     @relation("StoreManager", fields: [managerId], references: [id])
+  responsableCaissesId String
+  responsableCaisses   User     @relation("StoreResponsable", fields: [responsableCaissesId], references: [id])
+  cashiers             User[]   @relation("StoreCashiers")
+
+  transactions   Transaction[]
+  cashierHistory CashierHistory[]
+
+  @@index([managerId])
+  @@index([responsableCaissesId])
+}
+
+model Transaction {
+  id          String          @id @default(cuid())
+  type        TransactionType
+  amount      Int
+  clientPhone String
+  createdAt   DateTime        @default(now())
+
+  storeId   String
+  store     Store  @relation(fields: [storeId], references: [id])
+  cashierId String
+  cashier   User   @relation(fields: [cashierId], references: [id])
+
+  @@index([storeId])
+  @@index([cashierId])
+  @@index([createdAt])
+}
+
+model CashierHistory {
+  id         String    @id @default(cuid())
+  assignedAt DateTime  @default(now())
+  removedAt  DateTime?
+
+  cashierId    String
+  cashier      User  @relation("CashierHistoryUser", fields: [cashierId], references: [id])
+  storeId      String
+  store        Store @relation(fields: [storeId], references: [id])
+  assignedById String
+  assignedBy   User  @relation("CashierHistoryAssigner", fields: [assignedById], references: [id])
+
+  @@index([cashierId])
+  @@index([storeId])
+}
+
+model AccountEvent {
+  id        String        @id @default(cuid())
+  action    AccountAction
+  reason    String?
+  createdAt DateTime      @default(now())
+
+  userId        String
+  user          User   @relation("AccountEventTarget", fields: [userId], references: [id])
+  performedById String
+  performedBy   User   @relation("AccountEventPerformer", fields: [performedById], references: [id])
 
   @@index([userId])
 }

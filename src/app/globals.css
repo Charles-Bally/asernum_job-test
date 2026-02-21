@@ -105,6 +105,20 @@ input[type="number"] {
   display: none;
 }
 
+.store-card-gradient {
+  background: radial-gradient(
+    ellipse at top left,
+    #ffbdc4 0%,
+    #f78e9a 12%,
+    #f05f6f 25%,
+    #ec475a 31%,
+    #e82f45 37%,
+    #e4182f 43%,
+    #e20c25 46%,
+    #e0001a 49%
+  );
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

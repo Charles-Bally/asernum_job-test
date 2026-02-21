@@ -1,13 +1,30 @@
-"use client"
 
-import { GlobalBalanceCard } from "@/components/dashboard/GlobalBalanceCard"
-import { TopStoresSection } from "@/components/dashboard/TopStoresSection"
+import { DashboardHomeContent } from "@/components/dashboard/DashboardHomeContent"
+import { QUERY_KEYS } from "@/constants/querykeys.constant"
+import { dashboardService } from "@/services/dashboard/dashboard.service"
+import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query"
 
-export default function DashboardHomePage() {
+export default async function DashboardHomePage() {
+  const queryClient = new QueryClient()
+
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: [...QUERY_KEYS.DASHBOARD.BALANCE],
+      queryFn: () => dashboardService.getBalance(),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: [...QUERY_KEYS.DASHBOARD.TOP_STORES],
+      queryFn: () => dashboardService.getTopStores(),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: [...QUERY_KEYS.DASHBOARD.STATS, "30days"],
+      queryFn: () => dashboardService.getStats("30days"),
+    }),
+  ])
+
   return (
-    <div className="flex gap-[20px]">
-      <GlobalBalanceCard balance={9231000} />
-      <TopStoresSection />
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <DashboardHomeContent />
+    </HydrationBoundary>
   )
 }

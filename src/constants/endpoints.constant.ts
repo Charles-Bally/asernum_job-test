@@ -8,4 +8,11 @@ export const ENDPOINTS = {
     REFRESH: "/auth/refresh",
     PROFILE: "/auth/profile",
   },
+  DASHBOARD: {
+    BALANCE: "/dashboard/balance",
+    TOP_STORES: "/dashboard/top-stores",
+    STATS: "/dashboard/stats",
+  },
+  TRANSACTIONS: "/transactions",
+  STORES: "/stores",
 };

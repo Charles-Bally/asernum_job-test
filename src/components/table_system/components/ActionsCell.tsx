@@ -1,0 +1,53 @@
+"use client"
+
+import { cn } from "@/lib/utils"
+import { List } from "lucide-react"
+import { useCallback, useEffect, useRef, useState } from "react"
+
+type ActionsCellProps<T> = {
+  row: T
+  actionContent: (row: T, close: () => void) => React.ReactNode
+}
+
+export function ActionsCell<T>({ row, actionContent }: ActionsCellProps<T>) {
+  const [open, setOpen] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const close = useCallback(() => setOpen(false), [])
+
+  useEffect(() => {
+    if (!open) return
+
+    function handleClickOutside(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [open])
+
+  return (
+    <div ref={containerRef} className="relative flex items-center justify-end">
+      <button
+        onClick={(e) => {
+          e.stopPropagation()
+          setOpen((prev) => !prev)
+        }}
+        className={cn(
+          "flex size-[28px] items-center justify-center rounded-[8px] transition-colors",
+          open ? "bg-surface-muted" : "hover:bg-surface-muted"
+        )}
+      >
+        <List size={18} className="text-text-caption" />
+      </button>
+
+      {open && (
+        <div className="absolute right-0 top-[32px] z-20 min-w-[180px] rounded-[12px] bg-white p-[6px] shadow-lg ring-1 ring-border-light">
+          {actionContent(row, close)}
+        </div>
+      )}
+    </div>
+  )
+}

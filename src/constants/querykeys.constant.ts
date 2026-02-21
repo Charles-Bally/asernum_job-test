@@ -1,3 +1,4 @@
+
 export const QUERY_KEYS = {
   AUTH: {
     LOGIN: ["auth", "login"],
@@ -5,4 +6,11 @@ export const QUERY_KEYS = {
     VERIFY_OTP: ["auth", "verify-otp"],
     RESET_PASSWORD: ["auth", "reset-password"],
   },
+  DASHBOARD: {
+    BALANCE: ["dashboard", "balance"],
+    TOP_STORES: ["dashboard", "top-stores"],
+    STATS: ["dashboard", "stats"],
+  },
+  TRANSACTIONS: ["transactions"],
+  STORES: ["stores"],
 }
