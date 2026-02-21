@@ -76,6 +76,23 @@ const ICONS = {
       aspectRatio: "24/24",
     },
   },
+  stores: {
+    store: {
+      src: "/icons/stores/store.svg",
+      alt: "Magasin",
+      aspectRatio: "32/32",
+    },
+    arrowTopRight: {
+      src: "/icons/stores/arrow-top-right.svg",
+      alt: "Voir",
+      aspectRatio: "20/20",
+    },
+    locationPin: {
+      src: "/icons/stores/location-pin.svg",
+      alt: "Localisation",
+      aspectRatio: "8/10",
+    },
+  },
 } as const;
 
 export type IconKey = keyof typeof ICONS;

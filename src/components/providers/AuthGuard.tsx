@@ -3,6 +3,7 @@
 import AuchanLoader from "@/components/ui/render/AuchanLoader";
 import { NEED_CONEXION_PAGES } from "@/constants/needConnexionPage";
 import { PATHNAME } from "@/constants/pathname.constant";
+import { useProfile } from "@/hooks/useProfile";
 import { useAuthStore } from "@/store/auth.store";
 import { AnimatePresence } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
@@ -12,6 +13,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading, checkAuth } = useAuthStore();
   const pathname = usePathname();
   const router = useRouter();
+
+  useProfile();
 
   useEffect(() => {
     checkAuth();

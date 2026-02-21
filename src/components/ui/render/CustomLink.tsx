@@ -10,7 +10,7 @@ export type CustomLinkProps = {
   children: React.ReactNode;
   href: string;
   variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "none";
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "none";
   containerClassName?: string;
   icon?: {
     render: React.ReactNode;

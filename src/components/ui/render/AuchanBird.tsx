@@ -19,6 +19,14 @@ type AuchanBirdProps = {
   eyeDirection?: EyeDirection;
   opacity?: number;
   className?: string;
+  bodyConfig?: {
+    opacity?: number;
+    className?: string;
+  },
+  eyeConfig?: {
+    opacity?: number;
+    className?: string;
+  },
 };
 
 // Pupil position as [x%, y%] of available range (0-100)
@@ -47,7 +55,7 @@ const EYE = {
 // Max pupil offset as % of eye size: (41 - 16) / 41
 const MAX_OFFSET = (25 / 41) * 100;
 
-function AuchanBird({ eyeDirection = "center", opacity, className }: AuchanBirdProps) {
+function AuchanBird({ eyeDirection = "center", opacity, className, bodyConfig, eyeConfig }: AuchanBirdProps) {
   const [px, py] = PUPIL_POSITIONS[eyeDirection];
 
   return (
@@ -61,6 +69,7 @@ function AuchanBird({ eyeDirection = "center", opacity, className }: AuchanBirdP
         fill
         className="pointer-events-none select-none object-contain"
         unoptimized
+        style={{ opacity: bodyConfig?.opacity ?? 1 }}
       />
 
       {/* Eye — red circle */}
@@ -71,6 +80,7 @@ function AuchanBird({ eyeDirection = "center", opacity, className }: AuchanBirdP
           top: EYE.top,
           width: EYE.width,
           height: EYE.height,
+          opacity: eyeConfig?.opacity ?? 1,
         }}
       >
         {/* Pupil — white circle, animated */}

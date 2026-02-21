@@ -3,7 +3,7 @@ import { AxiosError, AxiosRequestHeaders, AxiosResponse, InternalAxiosRequestCon
 
 export const authMiddleware = {
   onRequest: async (config: InternalAxiosRequestConfig) => {
-    const token = storageService.getJSON<string>('auth:access_token')
+    const token = storageService.getJSON<string>('auth:token')
     if (token) {
       const headers: Record<string, string> = config.headers || {}
       headers['Authorization'] = `Bearer ${token}`

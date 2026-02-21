@@ -1,13 +1,13 @@
 export const buttonVariants = {
   primary: {
-    initial: { scale: 1, backgroundColor: "#3b82f6", color: "#ffffff" },
-    hover: { scale: 1.05, backgroundColor: "#2563eb", color: "#ffffff" },
-    tap: { scale: 0.95, backgroundColor: "#1d4ed8", color: "#ffffff" },
+    initial: { scale: 1, backgroundColor: "#e0001a", color: "#ffffff" },
+    hover: { scale: 1.05, backgroundColor: "#c40017", color: "#ffffff" },
+    tap: { scale: 0.95, backgroundColor: "#c40017", color: "#ffffff" },
   },
   secondary: {
-    initial: { scale: 1, backgroundColor: "#e5e7eb", color: "#111827" },
-    hover: { scale: 1.05, backgroundColor: "#d1d5db", color: "#111827" },
-    tap: { scale: 0.95, backgroundColor: "#9ca3af", color: "#111827" },
+    initial: { scale: 1, backgroundColor: "#f2f2f2", color: "#171717" },
+    hover: { scale: 1.05, backgroundColor: "#e6e6e6", color: "#171717" },
+    tap: { scale: 0.95, backgroundColor: "#d9d9d9", color: "#171717" },
   },
 };
 

@@ -11,7 +11,11 @@ export const PATHNAME = {
     store: {
       listing: "/dashboard/store",
       details: "/dashboard/store/:id",
-    }
+    },
+    transactions: "/dashboard/transactions",
+    clients: "/dashboard/clients",
+    gestions: "/dashboard/gestions",
+    statistiques: "/dashboard/statistiques",
   }
 };
 
