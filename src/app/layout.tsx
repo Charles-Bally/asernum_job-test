@@ -1,4 +1,5 @@
 import { DialogProvider } from "@/components/dialog_system";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -40,8 +41,10 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className={`${sanaSans.variable} antialiased`}>
-        {children}
-        <DialogProvider />
+        <QueryProvider>
+          {children}
+          <DialogProvider />
+        </QueryProvider>
       </body>
     </html>
   );

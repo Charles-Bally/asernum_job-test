@@ -7,6 +7,13 @@ export type IconConfig = {
   className?: string;
 };
 const ICONS = {
+  actions: {
+    mark: {
+      src: "/icons/actions/mark.svg",
+      alt: "Cross",
+      aspectRatio: "24/24",
+    },
+  },
   dialogs: {
     userSuccess: {
       src: "/icons/dialogs/user-success.svg",

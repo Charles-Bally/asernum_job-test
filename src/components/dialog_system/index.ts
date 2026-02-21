@@ -16,5 +16,3 @@ export { DialogContent } from "./components/DialogContent";
 export { DialogIcon } from "./components/DialogIcon";
 export { DialogProvider } from "./components/DialogProvider";
 
-// Export des exemples
-export { DialogExamples } from "./examples/DialogExamples";

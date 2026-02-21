@@ -1,9 +1,9 @@
-import { useDialogStore } from "@/dialog_system/store/useDialog.store";
+import { useDialogStore } from "@/components/dialog_system/store/useDialog.store";
 import type {
   DialogAction,
   DialogOptions,
   DialogPromise,
-} from "@/dialog_system/types/dialog.types";
+} from "@/components/dialog_system/types/dialog.types";
 
 /**
  * Service pour afficher des dialogs

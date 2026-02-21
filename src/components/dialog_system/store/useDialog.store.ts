@@ -4,7 +4,7 @@ import type {
   DialogPromise,
   DialogResult,
   DialogStore,
-} from "@/dialog_system/types/dialog.types";
+} from "@/components/dialog_system/types/dialog.types";
 import { create } from "zustand";
 
 let dialogCounter = 0;
@@ -22,7 +22,7 @@ export const useDialogStore = create<DialogStore>((set, get) => ({
       resolveRef = resolve;
       rejectRef = reject;
 
-      set((state) => {
+      set((state: DialogStore) => {
         const newDialogs = new Map(state.dialogs);
         newDialogs.set(id, {
           ...options,

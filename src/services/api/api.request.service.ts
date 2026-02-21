@@ -1,5 +1,5 @@
-import { dialog, DIALOG } from "@/dialog_system/services/dialog.service";
-import { usePageStore } from "@/store/pageStore";
+import { dialog, DIALOG } from "@/components/dialog_system/services/dialog.service";
+import { tanstackQueryService } from "@/services/tanstack-query.service";
 import { AxiosError, AxiosResponse } from "axios";
 import { requestCancellationService } from "./request-cancellation.service";
 
@@ -131,9 +131,8 @@ export async function apiRequest<T = any>({
     // Invalider les clés de cache TanStack Query si spécifiées
     if (cacheKeys && cacheKeys.length > 0) {
       cacheKeys.forEach((key) => {
-        const pageStore = usePageStore.getState();
         const queryKey = Array.isArray(key) ? key : [key];
-        pageStore.queryClient?.invalidateQueries({ queryKey });
+        tanstackQueryService.invalidateQueries(queryKey);
       });
     } // Afficher le dialog de succès
     if (showSuccessDialog) {
@@ -148,7 +147,7 @@ export async function apiRequest<T = any>({
     return response.data || response;
   } catch (error) {
     // Si c'est une annulation, ne pas traiter comme une erreur
-    if (requestCancellationService.isCancelError(error)) {
+    if (requestCancellationService.isCancelError(error as AxiosError)) {
       // Fermer silencieusement le dialog de chargement
       if (loadingDialog) {
         loadingDialog.close("cancel");

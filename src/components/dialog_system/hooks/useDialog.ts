@@ -1,4 +1,4 @@
-import { dialog, DIALOG } from "@/dialog_system/services/dialog.service";
+import { dialog, DIALOG } from "@/components/dialog_system/services/dialog.service";
 
 /**
  * Hook React pour utiliser le système de dialog
