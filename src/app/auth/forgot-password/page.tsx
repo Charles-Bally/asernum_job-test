@@ -3,6 +3,7 @@
 import { InputEmail } from "@/components/ui/forms";
 import CustomButton from "@/components/ui/render/CustomButton";
 import { REGEX } from "@/constants/regex.constant";
+import { useResetPasswordController } from "@/hooks/useResetPasswordController";
 import { useForm } from "react-hook-form";
 
 type ForgotPasswordFormData = {
@@ -16,9 +17,10 @@ export default function ForgotPasswordPage() {
     formState: { errors },
   } = useForm<ForgotPasswordFormData>();
 
+  const { sendOtp, isSendingOtp, sendOtpError } = useResetPasswordController();
+
   const onSubmit = (data: ForgotPasswordFormData) => {
-    // TODO: connect forgot password logic
-    console.log(data);
+    sendOtp(data.email);
   };
 
   return (
@@ -30,6 +32,10 @@ export default function ForgotPasswordPage() {
         Veuillez entrer votre adresse email pour réinitialiser votre mot de
         passe
       </p>
+
+      {sendOtpError && (
+        <p className="mt-3 text-sm text-auchan-red">{sendOtpError}</p>
+      )}
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -44,6 +50,7 @@ export default function ForgotPasswordPage() {
             },
           })}
           topLabel={{ text: "Email" }}
+          disabled={isSendingOtp}
           error={
             errors.email
               ? { active: true, message: errors.email.message ?? "" }
@@ -55,6 +62,7 @@ export default function ForgotPasswordPage() {
           <CustomButton
             type="submit"
             onClick={() => {}}
+            loading={isSendingOtp}
             className="h-[60px] w-[355px] rounded-[40px] bg-auchan-red text-[20px] font-black text-white hover:bg-auchan-red-hover"
           >
             Continuer

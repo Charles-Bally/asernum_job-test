@@ -4,6 +4,7 @@ import { InputPassword, InputText } from "@/components/ui/forms";
 import CustomButton from "@/components/ui/render/CustomButton";
 import CustomLink from "@/components/ui/render/CustomLink";
 import { PATHNAME } from "@/constants/pathname.constant";
+import { useLoginController } from "@/hooks/useLoginController";
 import { useBirdStore } from "@/store/bird.store";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -21,14 +22,14 @@ export default function LoginPage() {
   } = useForm<LoginFormData>();
 
   const setEyeDirection = useBirdStore((s) => s.setEyeDirection);
+  const { login, isLoggingIn, loginError, resetLoginError } = useLoginController();
 
   useEffect(() => {
     return () => setEyeDirection("top-right");
   }, [setEyeDirection]);
 
   const onSubmit = (data: LoginFormData) => {
-    // TODO: connect login logic
-    console.log(data);
+    login(data.identifier, data.password);
   };
 
   return (
@@ -39,7 +40,6 @@ export default function LoginPage() {
       <p className="mt-1 text-[20px] font-medium text-foreground">
         Saisissez vos identifiants pour vous connecter
       </p>
-
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="mt-[47px] flex flex-1 flex-col"
@@ -48,8 +48,10 @@ export default function LoginPage() {
           <InputText
             registration={register("identifier", {
               required: "Identifiant requis",
+              onChange: () => loginError && resetLoginError(),
             })}
             topLabel={{ text: "Identifiant" }}
+            disabled={isLoggingIn}
             error={
               errors.identifier
                 ? { active: true, message: errors.identifier.message ?? "" }
@@ -59,8 +61,10 @@ export default function LoginPage() {
           <InputPassword
             registration={register("password", {
               required: "Mot de passe requis",
+              onChange: () => loginError && resetLoginError(),
             })}
             topLabel={{ text: "Mot de passe" }}
+            disabled={isLoggingIn}
             error={
               errors.password
                 ? { active: true, message: errors.password.message ?? "" }
@@ -82,10 +86,14 @@ export default function LoginPage() {
           </CustomLink>
         </div>
 
-        <div className="mt-auto flex justify-center">
+        <div className="mt-auto flex flex-col items-center gap-3">
+          {loginError && (
+            <p className="text-sm text-auchan-red">{loginError}</p>
+          )}
           <CustomButton
             type="submit"
             onClick={() => {}}
+            loading={isLoggingIn}
             className="h-[60px] w-[355px] rounded-[40px] bg-auchan-red text-[20px] font-black text-white hover:bg-auchan-red-hover"
           >
             Se connecter

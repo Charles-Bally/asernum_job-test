@@ -1,7 +1,6 @@
 
 import ENVIRONNEMENTS from "@/constants/environnements.constant";
 import CryptoJS, { AES, enc } from "crypto-js";
-import { notify } from "./notification";
 // Fonctions de chiffrement/déchiffrement
 const encryptData = (data: unknown, key?: string) => {
   return CryptoJS.AES.encrypt(
@@ -30,11 +29,7 @@ export class AesEncryptionService {
       const encrypted = AES.encrypt(JSON.stringify(payload), key, { iv: iv });
       return encrypted.toString();
     } catch (error) {
-      notify({
-        title: "Erreur",
-        message: "Une erreur est survenue lors du cryptage",
-        type: "error",
-      });
+      console.error("Une erreur est survenue lors du cryptage", error);
     }
   }
   static decrypt(payload: string, otherSecretKey?: string, otherIv?: string) {
@@ -50,11 +45,7 @@ export class AesEncryptionService {
       const decryptedUtf8 = decrypted.toString(enc.Utf8);
       return decryptedUtf8;
     } catch (error) {
-      notify({
-        title: "Erreur",
-        message: "Une erreur est survenue lors du décryptage",
-        type: "error",
-      });
+      console.error("Une erreur est survenue lors du décryptage", error);
     }
   }
 }

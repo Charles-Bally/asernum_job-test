@@ -2,7 +2,12 @@
 
 import CustomButton from "@/components/ui/render/CustomButton";
 import { InputOTP } from "@/components/ui/forms";
-import { useEffect, useState } from "react";
+import { toast, TOAST } from "@/components/toast_system";
+import { PATHNAME } from "@/constants/pathname.constant";
+import { useResetPasswordController } from "@/hooks/useResetPasswordController";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
 const OTP_TIMER_SECONDS = 60;
 
@@ -10,10 +15,30 @@ export default function OtpPage() {
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(OTP_TIMER_SECONDS);
   const [canResend, setCanResend] = useState(false);
+  const router = useRouter();
+  const {
+    verifyOtp,
+    resendOtp,
+    isVerifyingOtp,
+    isSendingOtp,
+    verifyOtpError,
+    resetVerifyOtpError,
+  } = useResetPasswordController();
+
+  const isLoading = isVerifyingOtp || isSendingOtp;
+
+  useEffect(() => {
+    const email = sessionStorage.getItem("reset-password:email");
+    if (!email) {
+      toast({ type: TOAST.ERROR, message: "Veuillez d'abord saisir votre email." });
+      router.replace(PATHNAME.FORGOT_PASSWORD);
+    }
+  }, [router]);
 
   useEffect(() => {
     if (timer <= 0) {
       setCanResend(true);
+      resetVerifyOtpError();
       return;
     }
 
@@ -22,7 +47,7 @@ export default function OtpPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [timer]);
+  }, [timer, resetVerifyOtpError]);
 
   const formatTimer = (seconds: number) => {
     const mins = String(Math.floor(seconds / 60)).padStart(2, "0");
@@ -31,14 +56,22 @@ export default function OtpPage() {
   };
 
   const handleResend = () => {
-    if (!canResend) return;
+    if (!canResend || isSendingOtp) return;
     setTimer(OTP_TIMER_SECONDS);
     setCanResend(false);
-    // TODO: connect resend OTP logic
+    resendOtp();
   };
 
+  const handleOtpChange = useCallback(
+    (val: string) => {
+      setOtp(val);
+      if (verifyOtpError) resetVerifyOtpError();
+    },
+    [verifyOtpError, resetVerifyOtpError],
+  );
+
   const handleValidate = () => {
-    // TODO: connect OTP validation logic
+    verifyOtp(otp);
   };
 
   return (
@@ -51,15 +84,31 @@ export default function OtpPage() {
       </p>
 
       <div className="mt-[47px]">
-        <InputOTP value={otp} onChange={setOtp} length={4} />
+        <InputOTP
+          value={otp}
+          onChange={handleOtpChange}
+          length={4}
+          disabled={isLoading}
+        />
+
+        {verifyOtpError && (
+          <p className="mt-3 text-sm text-auchan-red">{verifyOtpError}</p>
+        )}
 
         <p className="mt-[20px] text-[16px] font-medium text-foreground">
           Pas encore reçu ?{" "}
-          <span className="text-text-muted">{formatTimer(timer)}</span>
+          {!canResend && (
+            <span className="text-text-muted">{formatTimer(timer)}</span>
+          )}
           {"     "}
           <span
             onClick={handleResend}
-            className={canResend ? "cursor-pointer italic text-auchan-red" : "italic text-text-muted"}
+            className={cn(
+              "italic",
+              canResend && !isSendingOtp
+                ? "cursor-pointer text-auchan-red"
+                : "text-text-muted",
+            )}
           >
             Renvoyez
           </span>
@@ -69,6 +118,8 @@ export default function OtpPage() {
       <div className="mt-auto flex justify-center">
         <CustomButton
           onClick={handleValidate}
+          loading={isVerifyingOtp}
+          disabled={isLoading}
           className="h-[60px] w-[355px] rounded-[40px] bg-auchan-red text-[20px] font-black text-white hover:bg-auchan-red-hover"
         >
           Valider

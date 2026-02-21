@@ -34,6 +34,10 @@
   --text-tertiary: #666666;
   --text-caption: #444444;
   --text-muted: #afafaf;
+
+  /* Toast */
+  --toast-warning: #f59e0b;
+  --toast-info: #6366f1;
 }
 
 @theme inline {
@@ -69,6 +73,10 @@
   --color-text-tertiary: var(--text-tertiary);
   --color-text-caption: var(--text-caption);
   --color-text-muted: var(--text-muted);
+
+  /* Toast */
+  --color-toast-warning: var(--toast-warning);
+  --color-toast-info: var(--toast-info);
 
   --font-sans: var(--font-sana-sans);
 }

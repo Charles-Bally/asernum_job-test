@@ -1,4 +1,5 @@
 import { DialogProvider } from "@/components/dialog_system";
+import { ToastProvider } from "@/components/toast_system";
 import { AuthGuard } from "@/components/providers/AuthGuard";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import type { Metadata, Viewport } from "next";
@@ -47,6 +48,7 @@ export default function RootLayout({
             {children}
           </AuthGuard>
           <DialogProvider />
+          <ToastProvider />
         </QueryProvider>
       </body>
     </html>

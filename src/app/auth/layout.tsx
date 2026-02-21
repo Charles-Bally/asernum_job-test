@@ -18,9 +18,8 @@ export default function AuthLayout({
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-2/9 w-[calc(100%-70px)] pointer-events-none"
       />
 
-      {/* Card container */}
       <div className="relative z-10">
-        {/* Pink shadow card */}
+        {/* Shadow card */}
         <div className="absolute left-[10px] top-[12px] h-full w-full rounded-[37px] bg-auchan-red-pastel" />
 
         {/* White card */}

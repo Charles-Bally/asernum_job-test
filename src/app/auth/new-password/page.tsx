@@ -1,8 +1,12 @@
 "use client";
 
+import { toast, TOAST } from "@/components/toast_system";
 import { InputPassword } from "@/components/ui/forms";
 import CustomButton from "@/components/ui/render/CustomButton";
+import { PATHNAME } from "@/constants/pathname.constant";
+import { useResetPasswordController } from "@/hooks/useResetPasswordController";
 import { useBirdStore } from "@/store/bird.store";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
@@ -19,15 +23,25 @@ export default function NewPasswordPage() {
     formState: { errors },
   } = useForm<NewPasswordFormData>();
 
+  const router = useRouter();
+  const { resetPassword, isResettingPassword, resetPasswordError } =
+    useResetPasswordController();
   const setEyeDirection = useBirdStore((s) => s.setEyeDirection);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("reset-password:token");
+    if (!token) {
+      toast({ type: TOAST.ERROR, message: "Veuillez d'abord saisir votre email." });
+      router.replace(PATHNAME.FORGOT_PASSWORD);
+    }
+  }, [router]);
 
   useEffect(() => {
     return () => setEyeDirection("top-right");
   }, [setEyeDirection]);
 
   const onSubmit = (data: NewPasswordFormData) => {
-    // TODO: connect new password logic
-    console.log(data);
+    resetPassword(data.password);
   };
 
   return (
@@ -54,6 +68,7 @@ export default function NewPasswordPage() {
             })}
             topLabel={{ text: "Nouveau mot de passe" }}
             config={{ currentValue: watch("password") }}
+            disabled={isResettingPassword}
             error={
               errors.password
                 ? { active: true, message: errors.password.message ?? "" }
@@ -71,6 +86,7 @@ export default function NewPasswordPage() {
                 "Les mots de passe ne correspondent pas",
             })}
             topLabel={{ text: "Confirmer le mot de passe" }}
+            disabled={isResettingPassword}
             error={
               errors.confirmPassword
                 ? {
@@ -85,10 +101,15 @@ export default function NewPasswordPage() {
           />
         </div>
 
+        {resetPasswordError && (
+          <p className="mt-3 text-sm text-auchan-red">{resetPasswordError}</p>
+        )}
+
         <div className="mt-auto flex justify-center">
           <CustomButton
             type="submit"
             onClick={() => {}}
+            loading={isResettingPassword}
             className="h-[60px] w-[355px] rounded-[40px] bg-auchan-red text-[20px] font-black text-white hover:bg-auchan-red-hover"
           >
             Valider

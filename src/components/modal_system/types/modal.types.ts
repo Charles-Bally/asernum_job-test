@@ -72,6 +72,8 @@ export interface ModalConfig {
     closeOnOverlayClick?: boolean;
     closeOnEsc?: boolean;
     showCloseButton?: boolean;
+    showHeader?: boolean;
+    showFooter?: boolean;
 
     // Options de fermeture avancées
     confirmOnClose?: boolean;
