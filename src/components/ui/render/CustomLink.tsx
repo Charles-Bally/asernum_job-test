@@ -11,6 +11,7 @@ export type CustomLinkProps = {
   href: string;
   variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "none";
   size?: "sm" | "md" | "lg";
+  containerClassName?: string;
   icon?: {
     render: React.ReactNode;
     position: "left" | "right";
@@ -24,11 +25,11 @@ export type CustomLinkProps = {
 
 const variantStyles = {
   primary:
-    "bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500",
+    "bg-auchan-red text-white hover:bg-auchan-red-hover focus:ring-auchan-red",
   secondary:
     "bg-neutral-100 text-neutral-900 hover:bg-neutral-200 focus:ring-neutral-500",
   outline:
-    "border border-neutral-300 text-neutral-700 hover:bg-neutral-50 focus:ring-primary-500",
+    "border border-neutral-300 text-neutral-700 hover:bg-neutral-50 focus:ring-auchan-red",
   ghost: "text-neutral-700 hover:bg-neutral-100 focus:ring-neutral-500",
   danger: "bg-red-500 text-white hover:bg-red-600 focus:ring-red-500",
   none: "ring-0 p-0 bg-none outline-none border-0 focus:ring-0 focus:ring-offset-0",
@@ -47,6 +48,7 @@ function CustomLink({
   variant = "none",
   size = "md",
   icon,
+  containerClassName,
   className,
   ariaLabel,
   animation = true,
@@ -58,7 +60,7 @@ function CustomLink({
       initial={animation ? buttonSimple.initial : undefined}
       whileHover={animation ? buttonSimple.hover : undefined}
       whileTap={animation ? buttonSimple.tap : undefined}
-      className="inline-block"
+      className={cn("inline-block", containerClassName)}
     >
       <Link
         href={href}

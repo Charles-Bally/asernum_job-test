@@ -27,11 +27,11 @@ export type CustomButtonProps = {
 
 const variantStyles = {
   primary:
-    "bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500",
+    "bg-auchan-red text-white hover:bg-auchan-red-hover focus:ring-auchan-red",
   secondary:
     "bg-neutral-100 text-neutral-900 hover:bg-neutral-200 focus:ring-neutral-500",
   outline:
-    "border border-neutral-300 text-neutral-700 hover:bg-neutral-50 focus:ring-primary-500",
+    "border border-neutral-300 text-neutral-700 hover:bg-neutral-50 focus:ring-auchan-red",
   ghost: "text-neutral-700 hover:bg-neutral-100 focus:ring-neutral-500",
   danger: "bg-red-500 text-white hover:bg-red-600 focus:ring-red-500",
   none: "ring-0 p-0 bg-none outline-none border-0 focus:ring-0 focus:ring-offset-0",

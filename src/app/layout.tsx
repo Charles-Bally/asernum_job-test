@@ -1,4 +1,5 @@
 import { DialogProvider } from "@/components/dialog_system";
+import { AuthGuard } from "@/components/providers/AuthGuard";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
@@ -42,7 +43,9 @@ export default function RootLayout({
     <html lang="fr">
       <body className={`${sanaSans.variable} antialiased`}>
         <QueryProvider>
-          {children}
+          <AuthGuard>
+            {children}
+          </AuthGuard>
           <DialogProvider />
         </QueryProvider>
       </body>

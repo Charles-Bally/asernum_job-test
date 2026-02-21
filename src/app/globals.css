@@ -1,13 +1,75 @@
 @import "tailwindcss";
 
 :root {
+  /* Base */
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Auchan Red - Brand */
+  --auchan-red: #e0001a;
+  --auchan-red-hover: #c40017;
+  --auchan-red-accent: #e31513;
+  --auchan-red-light: #ffe8e8;
+  --auchan-red-pastel: #ffc7c7;
+  --auchan-red-muted: #ffc4cb;
+  --auchan-red-peach: #fcd9ca;
+
+  /* Green - Positive / Success */
+  --auchan-green: #67b346;
+
+  /* Surfaces */
+  --surface-page: #f4f4f7;
+  --surface-subtle: #f6f6f6;
+  --surface-muted: #f2f2f2;
+  --surface-hover: #f3f3f3;
+
+  /* Borders */
+  --border-light: #e6e6e6;
+  --border-default: #d9d9d9;
+  --border-input: rgba(102, 102, 102, 0.35);
+  --border-otp: #ababab;
+
+  /* Text */
+  --text-secondary: #949494;
+  --text-tertiary: #666666;
+  --text-caption: #444444;
+  --text-muted: #afafaf;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  /* Auchan Red */
+  --color-auchan-red: var(--auchan-red);
+  --color-auchan-red-hover: var(--auchan-red-hover);
+  --color-auchan-red-accent: var(--auchan-red-accent);
+  --color-auchan-red-light: var(--auchan-red-light);
+  --color-auchan-red-pastel: var(--auchan-red-pastel);
+  --color-auchan-red-muted: var(--auchan-red-muted);
+  --color-auchan-red-peach: var(--auchan-red-peach);
+
+  /* Green */
+  --color-auchan-green: var(--auchan-green);
+
+  /* Surfaces */
+  --color-surface-page: var(--surface-page);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-hover: var(--surface-hover);
+
+  /* Borders */
+  --color-border-light: var(--border-light);
+  --color-border-default: var(--border-default);
+  --color-border-input: var(--border-input);
+  --color-border-otp: var(--border-otp);
+
+  /* Text */
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-caption: var(--text-caption);
+  --color-text-muted: var(--text-muted);
+
   --font-sans: var(--font-sana-sans);
 }
 
@@ -24,10 +86,9 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 input[type="number"] {
-  -moz-appearance: textfield; /* Pour Firefox */
+  -moz-appearance: textfield;
 }
 
-/* Styles pour l'autofill du navigateur */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

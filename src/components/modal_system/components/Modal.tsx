@@ -41,7 +41,7 @@ function ModalContent({ config }: { config: ModalConfig | null }) {
     return (
       <div className="flex h-full items-center justify-center text-slate-500">
         <div className="flex flex-col items-center gap-3">
-          <div className="border-t-primary-500 h-8 w-8 animate-spin rounded-full border-4 border-slate-200" />
+          <div className="border-t-auchan-red h-8 w-8 animate-spin rounded-full border-4 border-slate-200" />
           <p>Chargement...</p>
         </div>
       </div>
@@ -269,7 +269,7 @@ export function Modal() {
             onClick={(e) => e.stopPropagation()}
           >
             {totalModals > 1 && isActive && false && (
-              <div className="bg-primary-500/10 text-primary-600 absolute top-4 right-4 flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold">
+              <div className="bg-auchan-red/10 text-auchan-red-hover absolute top-4 right-4 flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold">
                 <span>
                   {totalModals} modal{totalModals > 1 ? "s" : ""}
                 </span>
@@ -280,8 +280,8 @@ export function Modal() {
                       className={cn(
                         "h-1.5 w-1.5 rounded-full",
                         i === totalModals - 1
-                          ? "bg-primary-600"
-                          : "bg-primary-300",
+                          ? "bg-auchan-red-hover"
+                          : "bg-auchan-red-muted",
                       )}
                     />
                   ))}

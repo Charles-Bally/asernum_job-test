@@ -2,6 +2,9 @@
 export const PATHNAME = {
 
   LOGIN: "/auth/login",
+  FORGOT_PASSWORD: "/auth/forgot-password",
+  OTP: "/auth/otp",
+  NEW_PASSWORD: "/auth/new-password",
 
   DASHBOARD: {
     home: "/dashboard/home",

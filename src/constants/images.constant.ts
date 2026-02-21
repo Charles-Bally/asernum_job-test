@@ -13,6 +13,18 @@ const IMAGES = {
       alt: "Logo",
       aspectRatio: "12/12",
     },
+    auchan: {
+      src: "/icons/logos/auchan.png",
+      alt: "Auchan",
+      aspectRatio: "120/40",
+    },
+  },
+  auth: {
+    bird: {
+      src: "/images/auth/bird.png",
+      alt: "Oiseau décoratif",
+      aspectRatio: "1436/1330",
+    },
   },
 } as const;
 

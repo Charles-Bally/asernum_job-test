@@ -143,7 +143,7 @@ export function ModalHeader({
             >
               <CustomIcon
                 config={icon.config}
-                className={cn("h-5 w-5", icon.className || "text-primary-600")}
+                className={cn("h-5 w-5", icon.className || "text-auchan-red-hover")}
               />
             </div>
           )}

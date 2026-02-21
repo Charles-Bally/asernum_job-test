@@ -31,7 +31,7 @@ interface StepIndicatorProps {
 function StepIndicator({ state }: StepIndicatorProps) {
   if (state === "completed") {
     return (
-      <div className="flex items-center justify-center rounded-full size-8 bg-primary-500">
+      <div className="flex items-center justify-center rounded-full size-8 bg-auchan-red">
         <Check className="size-4 text-white" strokeWidth={3} />
       </div>
     );
@@ -39,16 +39,16 @@ function StepIndicator({ state }: StepIndicatorProps) {
 
   if (state === "active") {
     return (
-      <div className="flex items-center justify-center rounded-full size-8 border border-primary-600 bg-white">
-        <div className="rounded-full size-[10px] bg-primary-600" />
+      <div className="flex items-center justify-center rounded-full size-8 border border-auchan-red-hover bg-white">
+        <div className="rounded-full size-[10px] bg-auchan-red-hover" />
       </div>
     );
   }
 
   if (state === "accessible") {
     return (
-      <div className="flex items-center justify-center rounded-full size-8 border border-primary-300 bg-primary-50">
-        <div className="rounded-full size-[10px] bg-primary-300" />
+      <div className="flex items-center justify-center rounded-full size-8 border border-auchan-red-muted bg-auchan-red-light">
+        <div className="rounded-full size-[10px] bg-auchan-red-muted" />
       </div>
     );
   }
