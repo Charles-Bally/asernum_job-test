@@ -23,6 +23,10 @@ export function useStoreDetailQuery(id: string) {
   useEffect(() => {
     if (store?.name) {
       setStoreName(store.name)
+      document.title = `${store.name} | Auchan Super Admin`
+    }
+    return () => {
+      document.title = "Magasins | Auchan Super Admin"
     }
   }, [store?.name, setStoreName])
 
