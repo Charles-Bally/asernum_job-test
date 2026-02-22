@@ -88,7 +88,7 @@ export function StatisticsSection() {
   const clearHover = useCallback(() => setHovered(null), [])
 
   return (
-    <div className="flex w-full lg:w-[414px] h-auto justify-between shrink-0 flex-col rounded-[20px] lg:rounded-[40px] bg-white px-4 lg:px-[35px] pb-6 lg:pb-[40px] pt-5 lg:pt-[30px]">
+    <div className="flex w-full lg:w-[414px] h-full justify-between shrink-0 flex-col rounded-[20px] lg:rounded-[40px] bg-white px-4 lg:px-[35px] pb-6 lg:pb-[40px] pt-5 lg:pt-[30px]">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-[18px] lg:text-[28px] font-bold tracking-[-0.54px] lg:tracking-[-0.84px] text-text-caption">

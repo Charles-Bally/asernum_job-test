@@ -12,7 +12,7 @@ export default function DashboardLayout({
 }) {
   return (
     <NuqsAdapter>
-      <div className="min-h-dvh bg-surface-page">
+      <div className="min-h-dvh bg-surface-page lg:px-4 px-0">
         {/* Sticky navbar + breadcrumb */}
         <NavbarStickyWrapper>
           <DashboardNavbar />
