@@ -26,10 +26,10 @@ function AuchanLoader() {
         <Image
           src={IMAGES.logos.auchan.src}
           alt={IMAGES.logos.auchan.alt}
-          width={160}
-          height={53}
+          width={240}
+          height={80}
           priority
-          className="max-w-[140px] w-full lg:max-w-[160px] select-none object-contain"
+          className="max-w-[200px] w-full lg:max-w-[240px] select-none object-contain"
         />
       </motion.div>
     </motion.div>
