@@ -2,6 +2,7 @@ import { DialogProvider } from "@/components/dialog_system";
 import { AuthGuard } from "@/components/providers/AuthGuard";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 import { ToastProvider } from "@/components/toast_system";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -64,6 +65,7 @@ export default function RootLayout({
           <DialogProvider />
           <ToastProvider />
         </QueryProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
