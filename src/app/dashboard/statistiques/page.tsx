@@ -5,7 +5,7 @@ import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Statistiques | Asernum",
+  title: "Statistiques | Auchan Super Admin",
 }
 
 export default async function StatistiquesPage() {

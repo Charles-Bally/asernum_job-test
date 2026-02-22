@@ -1,8 +1,8 @@
-import type { Metadata } from "next"
 import { GestionContent } from "@/components/dashboard/gestion/GestionContent"
+import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Gestions | Asernum",
+  title: "Gestions | Auchan Super Admin",
 }
 
 export default function GestionsPage() {
