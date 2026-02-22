@@ -11,7 +11,7 @@ function formatBalance(amount: number): string {
 
 function GlobalBalanceCardSkeleton() {
   return (
-    <div className="relative h-[200px] lg:h-[322px] w-full lg:w-[354px] overflow-hidden rounded-[20px] lg:rounded-[40px] bg-auchan-red">
+    <div className="relative h-[200px] lg:h-[330px] w-full lg:w-[354px] overflow-hidden rounded-[20px] lg:rounded-[40px] bg-auchan-red">
       <div className="relative z-10 flex h-full flex-col px-5 lg:px-[39px] pt-6 lg:pt-[43px]">
         <div className="h-[22px] lg:h-[26px] w-[140px] lg:w-[160px] animate-pulse rounded-[8px] bg-white/20" />
         <div className="mt-3 lg:mt-[16px] h-[12px] w-[180px] lg:w-[220px] animate-pulse rounded-[6px] bg-white/15" />
@@ -35,7 +35,7 @@ export function GlobalBalanceCard() {
   return (
     <div
       onClick={toggle}
-      className="relative h-[200px] lg:h-[322px] w-full lg:w-[354px] cursor-pointer overflow-hidden rounded-[20px] lg:rounded-[40px] bg-auchan-red transition-transform duration-200 ease-out hover:scale-[1.02] active:scale-[0.98]"
+      className="relative h-[200px] lg:h-[330px] w-full lg:w-[354px] cursor-pointer overflow-hidden rounded-[20px] lg:rounded-[40px] bg-auchan-red transition-transform duration-200 ease-out hover:scale-[1.02] active:scale-[0.98]"
     >
       <AuchanBird
         eyeDirection={isVisible ? "bottom-left" : "top-right"}
