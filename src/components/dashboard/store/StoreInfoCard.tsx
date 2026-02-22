@@ -121,7 +121,7 @@ function InteractiveDonut({ stats }: { stats: { renduMonnaie: number; paiementCo
           )}
         </AnimatePresence>
       </div>
-      <Legend segments={segments} total={total} />
+      <Legend segments={segments} />
     </div>
   )
 }

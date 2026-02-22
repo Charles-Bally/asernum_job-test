@@ -83,7 +83,7 @@ export function SlidePanel({
           <motion.div
             variants={overlayVariants}
             transition={transition}
-            className="absolute inset-0 bg-black/10"
+            className="absolute inset-0 bg-black/50"
             onClick={onClose}
           />
 

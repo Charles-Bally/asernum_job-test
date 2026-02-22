@@ -86,7 +86,7 @@ export function MobileNavDrawer({ open, onOpenChange, navItems }: MobileNavDrawe
                   animate="visible"
                   exit="hidden"
                   transition={transition}
-                  className="fixed inset-0 z-40 bg-black/30"
+                  className="fixed inset-0 z-40 bg-black/50"
                 />
               </Dialog.Overlay>
 
