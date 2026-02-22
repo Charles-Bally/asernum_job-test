@@ -29,7 +29,7 @@ export interface DialogButton {
 }
 
 export interface DialogIconConfig {
-  type?: "user" | "trash" | "warning" | "warningPrimary" | "check" | "lock" | "info" | "question";
+  type?: "user" | "userPrimary" | "trash" | "trashDanger" | "trashSuccess" | "warning" | "warningPrimary" | "check" | "lock" | "lockPrimary" | "info" | "question";
   color?: string;
   customIcon?: React.ReactNode;
 }

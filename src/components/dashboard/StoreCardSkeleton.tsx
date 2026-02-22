@@ -12,7 +12,7 @@ export function StoreCardSkeleton({ index }: StoreCardSkeletonProps) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.04 }}
-      className="flex h-[150px] lg:h-[200px] w-[170px] lg:w-[250px] shrink-0 flex-col rounded-[20px] lg:rounded-[40px] bg-white px-4 lg:px-[28px] pb-4 lg:pb-[28px] pt-4 lg:pt-[28px]"
+      className="flex h-[150px] lg:h-[200px] w-full shrink-0 flex-col rounded-[20px] lg:rounded-[40px] bg-white px-4 lg:px-[28px] pb-4 lg:pb-[28px] pt-4 lg:pt-[28px]"
     >
       <div className="flex items-start justify-between">
         <div className="size-[26px] lg:size-[32px] animate-pulse rounded-[8px] lg:rounded-[10px] bg-surface-muted" />

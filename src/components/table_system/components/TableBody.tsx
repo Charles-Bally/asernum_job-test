@@ -133,7 +133,7 @@ export function TableBody<T extends Record<string, unknown>>({
             onContextMenu={(e) => handleContextMenu(e, row)}
             className={cn(
               "grid h-[42px] lg:h-[48px] items-center px-3 lg:px-[20px]",
-              showRowBorder && "border-b border-border-light",
+              showRowBorder && idx < rows.length - 1 && "border-b border-border-light",
               onRowClick && "cursor-pointer group/row hover:[&:not(:has(button:hover,a:hover,[role=button]:hover))]:bg-surface-hover",
               isActive && "bg-auchan-red-light/50",
               rowClassName

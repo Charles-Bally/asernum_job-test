@@ -131,7 +131,7 @@ export function DialogContent({ options, onAction }: DialogContentProps) {
   return (
     <div
       className={cn(
-        "relative box-border flex w-full max-w-[450px] flex-col items-center gap-8 rounded-2xl border border-slate-200 bg-white px-5 pt-8 pb-5",
+        "relative box-border flex w-full max-w-[450px] flex-col items-center gap-8 rounded-2xl border border-border-light bg-white px-5 pt-8 pb-5",
         className,
       )}
     >
@@ -147,11 +147,11 @@ export function DialogContent({ options, onAction }: DialogContentProps) {
 
         {/* Text Content */}
         <div className="relative flex w-full shrink-0 flex-col items-start gap-2 text-center">
-          <h2 className="w-full font-['Plus_Jakarta_Sans'] text-2xl leading-8 font-bold text-slate-900">
+          <h2 className="w-full text-2xl leading-8 font-bold text-foreground">
             {finalTitle}
           </h2>
           {description && (
-            <p className="w-full font-['Plus_Jakarta_Sans'] text-base leading-6 font-normal whitespace-pre-line text-slate-500">
+            <p className="w-full text-base leading-6 font-normal whitespace-pre-line text-text-secondary">
               {description}
             </p>
           )}

@@ -35,6 +35,30 @@
   --text-caption: #444444;
   --text-muted: #afafaf;
 
+  /* Roles */
+  --role-admin: #e0001a;
+  --role-admin-light: #ffe8e8;
+  --role-manager: #6366f1;
+  --role-manager-light: #eef0ff;
+  --role-resp-caisses: #f59e0b;
+  --role-resp-caisses-light: #fef6e6;
+  --role-caissier: #949494;
+  --role-caissier-light: #f2f2f2;
+
+  /* Dialog */
+  --dialog-success: #67b346;
+  --dialog-success-light: #d4edcb;
+  --dialog-success-lighter: rgba(212,237,203,0);
+  --dialog-danger: #e0001a;
+  --dialog-danger-light: #ffc7c7;
+  --dialog-danger-lighter: rgba(255,199,199,0);
+  --dialog-warning: #f59e0b;
+  --dialog-warning-light: #fde68a;
+  --dialog-warning-lighter: rgba(253,230,138,0);
+  --dialog-info: #6366f1;
+  --dialog-info-light: #c7d2fe;
+  --dialog-info-lighter: rgba(199,210,254,0);
+
   /* Toast */
   --toast-warning: #f59e0b;
   --toast-info: #6366f1;
@@ -73,6 +97,16 @@
   --color-text-tertiary: var(--text-tertiary);
   --color-text-caption: var(--text-caption);
   --color-text-muted: var(--text-muted);
+
+  /* Roles */
+  --color-role-admin: var(--role-admin);
+  --color-role-admin-light: var(--role-admin-light);
+  --color-role-manager: var(--role-manager);
+  --color-role-manager-light: var(--role-manager-light);
+  --color-role-resp-caisses: var(--role-resp-caisses);
+  --color-role-resp-caisses-light: var(--role-resp-caisses-light);
+  --color-role-caissier: var(--role-caissier);
+  --color-role-caissier-light: var(--role-caissier-light);
 
   /* Toast */
   --color-toast-warning: var(--toast-warning);

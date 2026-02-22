@@ -102,7 +102,6 @@ export function Dialog() {
             )}
             style={{ zIndex: 3000 + index }}
           >
-            {/* Backdrop avec animation */}
             <div
               className={cn(
                 "absolute inset-0 bg-neutral-900/40 backdrop-blur-sm transition-opacity duration-200",
@@ -115,7 +114,6 @@ export function Dialog() {
               onClick={isTopDialog ? handleBackdropClick : undefined}
             />
 
-            {/* Dialog avec animation scale et fade */}
             <div
               className={cn(
                 "relative z-10 flex w-full items-center justify-center p-4 transition-all duration-200",

@@ -12,117 +12,59 @@ interface DialogIconProps {
   config?: DialogIconConfig;
 }
 
-/**
- * Composant d'icône pour les dialogs
- * Structure exacte selon Figma : gradient subtil + cercle blanc avec bordure colorée
- */
+type VariantColors = {
+  icon: (typeof ICONS.dialogs)[keyof typeof ICONS.dialogs];
+  borderColor: string;
+  innerBorder: string;
+  gradientFrom: string;
+  gradientTo: string;
+}
+
+const SUCCESS_COLORS = {
+  borderColor: "var(--dialog-success-light)",
+  innerBorder: "var(--dialog-success-light)",
+  gradientFrom: "var(--dialog-success-lighter)",
+  gradientTo: "var(--dialog-success-light)",
+}
+
+const DANGER_COLORS = {
+  borderColor: "var(--dialog-danger-light)",
+  innerBorder: "var(--dialog-danger-light)",
+  gradientFrom: "var(--dialog-danger-lighter)",
+  gradientTo: "var(--dialog-danger-light)",
+}
+
+const WARNING_COLORS = {
+  borderColor: "var(--dialog-warning-light)",
+  innerBorder: "var(--dialog-warning-light)",
+  gradientFrom: "var(--dialog-warning-lighter)",
+  gradientTo: "var(--dialog-warning-light)",
+}
+
+const INFO_COLORS = {
+  borderColor: "var(--dialog-info-light)",
+  innerBorder: "var(--dialog-info-light)",
+  gradientFrom: "var(--dialog-info-lighter)",
+  gradientTo: "var(--dialog-info-light)",
+}
+
 export function DialogIcon({ type, config }: DialogIconProps) {
-  // Configuration par défaut selon le type de dialog (selon Figma design tokens)
-  const variantConfig: Record<
-    DialogType,
-    {
-      icon: (typeof ICONS.dialogs)[keyof typeof ICONS.dialogs];
-      borderColor: string; // Couleur de bordure cercle externe
-      innerBorder: string; // Couleur de bordure cercle interne
-      gradientFrom: string; // Couleur transparent (bas)
-      gradientTo: string; // Couleur opaque (haut)
-    }
-  > = {
-    success: {
-      icon: ICONS.dialogs.checkSuccess,
-      borderColor: "#b5e9d8",
-      innerBorder: "#b5e9d8",
-      gradientFrom: "rgba(181,233,216,0)",
-      gradientTo: "#b5e9d8",
-    },
-    info: {
-      icon: ICONS.dialogs.info,
-      borderColor: "#bdb8f8",
-      innerBorder: "#d3cffa",
-      gradientFrom: "rgba(189,184,248,0)",
-      gradientTo: "#bdb8f8",
-    },
-    warning: {
-      icon: ICONS.dialogs.warningTriangle,
-      borderColor: "#fcd34d",
-      innerBorder: "#fef3c7",
-      gradientFrom: "rgba(252,211,77,0)",
-      gradientTo: "#fcd34d",
-    },
-    warningPrimary: {
-      icon: ICONS.dialogs.warningTrianglePrimary,
-      borderColor: "#bdb8f8",
-      innerBorder: "#d3cffa",
-      gradientFrom: "rgba(189,184,248,0)",
-      gradientTo: "#bdb8f8",
-    },
-    danger: {
-      icon: ICONS.dialogs.warningTriangle,
-      borderColor: "#f8a9a9",
-      innerBorder: "#fac5c5",
-      gradientFrom: "rgba(248,169,169,0)",
-      gradientTo: "#f8a9a9",
-    },
-    question: {
-      icon: ICONS.dialogs.question,
-      borderColor: "#bdb8f8",
-      innerBorder: "#d3cffa",
-      gradientFrom: "rgba(189,184,248,0)",
-      gradientTo: "#bdb8f8",
-    },
-    confirm: {
-      icon: ICONS.dialogs.question,
-      borderColor: "#bdb8f8",
-      innerBorder: "#d3cffa",
-      gradientFrom: "rgba(189,184,248,0)",
-      gradientTo: "#bdb8f8",
-    },
-    delete: {
-      icon: ICONS.dialogs.trashDanger,
-      borderColor: "#f8a9a9",
-      innerBorder: "#fac5c5",
-      gradientFrom: "rgba(248,169,169,0)",
-      gradientTo: "#f8a9a9",
-    },
+  const variantConfig: Record<DialogType, VariantColors> = {
+    success: { icon: ICONS.dialogs.checkSuccess, ...SUCCESS_COLORS },
+    info: { icon: ICONS.dialogs.info, ...INFO_COLORS },
+    warning: { icon: ICONS.dialogs.warningTriangle, ...WARNING_COLORS },
+    warningPrimary: { icon: ICONS.dialogs.warningTrianglePrimary, ...INFO_COLORS },
+    danger: { icon: ICONS.dialogs.warningTriangle, ...DANGER_COLORS },
+    question: { icon: ICONS.dialogs.question, ...INFO_COLORS },
+    confirm: { icon: ICONS.dialogs.question, ...INFO_COLORS },
+    delete: { icon: ICONS.dialogs.trashDanger, ...DANGER_COLORS },
   };
 
   const variant = variantConfig[type];
 
-  // Si une icône personnalisée est fournie
-  if (config?.customIcon) {
-    return (
-      <div
-        className="relative shrink-0 rounded-full border border-solid"
-        style={{
-          borderColor: variant.borderColor,
-          backgroundImage: `linear-gradient(to bottom, ${variant.gradientTo}, ${variant.gradientFrom} 100%)`,
-        }}
-      >
-        <div className="box-border flex items-start gap-4 overflow-clip rounded-[inherit] p-4">
-          <div
-            className="relative shrink-0 rounded-full border border-solid bg-white"
-            style={{ borderColor: variant.innerBorder }}
-          >
-            <div className="box-border flex items-center justify-center gap-[14px] overflow-clip rounded-[inherit] p-[14px]">
-              <div className="relative h-6 w-6 shrink-0 overflow-clip">
-                {config.customIcon}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Sélectionner l'icône appropriée
   let iconToUse = variant.icon;
-
-  // Si un type d'icône spécifique est demandé via config
   if (config?.type) {
-    const iconMap: Record<
-      string,
-      (typeof ICONS.dialogs)[keyof typeof ICONS.dialogs]
-    > = {
+    const iconMap: Record<string, (typeof ICONS.dialogs)[keyof typeof ICONS.dialogs]> = {
       user: ICONS.dialogs.userSuccess,
       userPrimary: ICONS.dialogs.userPrimary,
       trash: ICONS.dialogs.trashDelete,
@@ -138,6 +80,14 @@ export function DialogIcon({ type, config }: DialogIconProps) {
     iconToUse = iconMap[config.type] || variant.icon;
   }
 
+  const content = config?.customIcon ? (
+    <div className="relative h-6 w-6 shrink-0 overflow-clip">{config.customIcon}</div>
+  ) : (
+    <div className="relative h-6 w-6 shrink-0 overflow-clip">
+      <CustomIcon config={iconToUse} className="h-6 w-6" />
+    </div>
+  );
+
   return (
     <div
       className="relative shrink-0 rounded-full border border-solid"
@@ -146,18 +96,13 @@ export function DialogIcon({ type, config }: DialogIconProps) {
         backgroundImage: `linear-gradient(to bottom, ${variant.gradientTo}, ${variant.gradientFrom} 100%)`,
       }}
     >
-      {/* Cercle externe avec gradient subtil */}
       <div className="box-border flex items-start gap-4 overflow-clip rounded-[inherit] p-4">
-        {/* Cercle du milieu blanc avec bordure colorée plus claire */}
         <div
           className="relative shrink-0 rounded-full border border-solid bg-white"
           style={{ borderColor: variant.innerBorder }}
         >
-          {/* Padding et icône centrée */}
           <div className="box-border flex items-center justify-center gap-[14px] overflow-clip rounded-[inherit] p-[14px]">
-            <div className="relative h-6 w-6 shrink-0 overflow-clip">
-              <CustomIcon config={iconToUse} className="h-6 w-6" />
-            </div>
+            {content}
           </div>
         </div>
       </div>

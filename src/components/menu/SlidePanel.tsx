@@ -119,7 +119,7 @@ export function SlidePanel({
               dragElastic={{ top: 0, bottom: 0.4 }}
               onDragEnd={handleDragEnd}
               className={cn(
-                "absolute inset-x-0 bottom-0 flex h-[90dvh] flex-col rounded-t-[24px] bg-white shadow-xl",
+                "absolute inset-x-0 bottom-0 flex max-h-[90dvh] flex-col rounded-t-[24px] bg-white shadow-xl",
                 className
               )}
             >

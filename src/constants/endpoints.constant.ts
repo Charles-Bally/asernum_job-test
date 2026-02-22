@@ -16,4 +16,6 @@ export const ENDPOINTS = {
   TRANSACTIONS: "/transactions",
   STORES: "/stores",
   CASHIERS: "/cashiers",
+  USERS: "/users",
+  ACCOUNT_EVENTS: "/account-events",
 };

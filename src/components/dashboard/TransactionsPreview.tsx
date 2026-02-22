@@ -4,8 +4,8 @@
 import { useSidebar } from "@/components/sidebar_system"
 import type { ColumnConfig, TableFetcherResult, TableSchema } from "@/components/table_system"
 import { TableKit } from "@/components/table_system"
-import { EmptyState } from "@/components/ui/render/EmptyState"
 import CustomLink from "@/components/ui/render/CustomLink"
+import { EmptyState } from "@/components/ui/render/EmptyState"
 import { PATHNAME } from "@/constants/pathname.constant"
 import { cn } from "@/lib/utils"
 import { transactionsService } from "@/services/transactions/transactions.service"
@@ -144,7 +144,7 @@ export function TransactionsPreview() {
         showHeader: false,
         showPagination: false,
         customHeader: <PreviewHeader />,
-        containerClassName: "flex-1 rounded-[20px] lg:rounded-[40px] pt-4 lg:pt-[30px]",
+        containerClassName: "flex-1 overflow-hidden rounded-[20px] lg:rounded-[40px] pt-4 lg:pt-[30px]",
         noDataComponent: (
           <EmptyState
             title="Aucune transaction"

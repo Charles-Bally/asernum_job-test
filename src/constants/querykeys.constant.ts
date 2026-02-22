@@ -17,4 +17,7 @@ export const QUERY_KEYS = {
   STORE_DETAIL: ["stores", "detail"],
   CASHIERS: ["cashiers"],
   CASHIER_DETAIL: ["cashiers", "detail"],
+  USERS: ["users"],
+  USER_DETAIL: ["users", "detail"],
+  ACCOUNT_EVENTS: ["account-events"],
 }

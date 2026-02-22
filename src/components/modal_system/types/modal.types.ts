@@ -19,6 +19,7 @@ export type ModalMode =
 
 export type ModalEntity =
     | "add-store"
+    | "create-user"
 
 export interface ModalTab {
     id: string;

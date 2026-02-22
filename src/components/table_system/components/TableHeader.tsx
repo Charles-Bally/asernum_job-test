@@ -2,9 +2,11 @@
 "use client"
 
 import CustomButton from "@/components/ui/render/CustomButton"
+import { FilterDropdown } from "@/components/ui/render/FilterDropdown"
 import { cn } from "@/lib/utils"
+import { motion } from "framer-motion"
 import { RefreshCw, Search } from "lucide-react"
-import type { ReactNode } from "react"
+import { type ReactNode, useCallback, useState } from "react"
 import type { QuickFilterConfig } from "../types/table.types"
 import { DateRangePicker } from "./DateRangePicker"
 
@@ -75,20 +77,33 @@ function QuickFilters({
   return (
     <>
       {quickFilters?.map((filter) =>
-        filter.options.map((opt) => (
-          <button
-            key={`${filter.key}-${opt.value}`}
-            onClick={() => onQuickFilterChange?.(opt.value)}
-            className={cn(
-              "h-[36px] shrink-0 cursor-pointer rounded-[18px] px-[16px] text-[12px] font-medium tracking-[-0.36px] transition-colors",
-              activeQuickFilter === opt.value
-                ? "bg-auchan-red-light text-foreground"
-                : "bg-surface-muted text-text-secondary hover:bg-surface-hover"
-            )}
-          >
-            {opt.label}
-          </button>
-        ))
+        filter.options.length > 3 ? (
+          <FilterDropdown
+            key={filter.key}
+            options={filter.options.map((opt) => ({ label: opt.label, value: opt.value }))}
+            value={activeQuickFilter ?? ""}
+            onChange={(val) => onQuickFilterChange?.(val)}
+            allLabel={filter.label}
+            triggerClassName="h-[36px] shrink-0 cursor-pointer rounded-[18px] px-[16px] bg-surface-muted text-text-secondary hover:bg-surface-hover font-medium"
+            dropdownClassName="min-w-[160px] rounded-[12px] bg-white shadow-lg border border-border-light p-2"
+            optionClassName="px-3 py-2 rounded-[8px] text-left cursor-pointer hover:bg-surface-muted transition-colors"
+          />
+        ) : (
+          filter.options.map((opt) => (
+            <button
+              key={`${filter.key}-${opt.value}`}
+              onClick={() => onQuickFilterChange?.(opt.value)}
+              className={cn(
+                "h-[36px] shrink-0 cursor-pointer rounded-[18px] px-[16px] text-[12px] font-medium tracking-[-0.36px] transition-colors",
+                activeQuickFilter === opt.value
+                  ? "bg-auchan-red-light text-foreground"
+                  : "bg-surface-muted text-text-secondary hover:bg-surface-hover"
+              )}
+            >
+              {opt.label}
+            </button>
+          ))
+        )
       )}
     </>
   )
@@ -109,15 +124,26 @@ function ActionButtons({
   onExport?: () => void
   headerActions?: ReactNode
 }) {
+  const [rotation, setRotation] = useState(0)
+
+  const handleRefresh = useCallback(() => {
+    setRotation((prev) => prev + 360)
+    onRefresh?.()
+  }, [onRefresh])
+
   return (
     <>
-      {headerActions}
       {showRefresh && (
         <CustomButton
-          onClick={() => onRefresh?.()}
+          onClick={handleRefresh}
           className="flex size-[36px] shrink-0 items-center justify-center rounded-[18px] bg-surface-muted text-text-caption hover:bg-surface-hover"
         >
-          <RefreshCw size={16} />
+          <motion.div
+            animate={{ rotate: rotation }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+          >
+            <RefreshCw size={16} />
+          </motion.div>
         </CustomButton>
       )}
       {showExport && (
@@ -128,6 +154,7 @@ function ActionButtons({
           {exportLabel}
         </CustomButton>
       )}
+      {headerActions}
     </>
   )
 }

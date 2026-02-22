@@ -29,8 +29,7 @@ function AuchanLoader() {
           width={160}
           height={53}
           priority
-          style={{ width: "auto", height: "auto" }}
-          className="max-w-[140px] lg:max-w-[160px] select-none object-contain"
+          className="max-w-[140px] w-full lg:max-w-[160px] select-none object-contain"
         />
       </motion.div>
     </motion.div>
