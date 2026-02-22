@@ -92,6 +92,16 @@ const ICONS = {
       alt: "Localisation",
       aspectRatio: "8/10",
     },
+    arrowBack: {
+      src: "/icons/stores/arrow-back.svg",
+      alt: "Retour",
+      aspectRatio: "40/40",
+    },
+    donutChart: {
+      src: "/icons/stores/donut-chart.svg",
+      alt: "Statistiques transactions",
+      aspectRatio: "121/123",
+    },
   },
 } as const;
 

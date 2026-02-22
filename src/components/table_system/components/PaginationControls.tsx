@@ -7,27 +7,34 @@ type PaginationControlsProps = {
   page: number
   totalPages: number
   onPageChange: (page: number) => void
+  variant?: "default" | "compact"
 }
 
-export function PaginationControls({ page, totalPages, onPageChange }: PaginationControlsProps) {
+export function PaginationControls({
+  page,
+  totalPages,
+  onPageChange,
+  variant = "default",
+}: PaginationControlsProps) {
   if (totalPages <= 1) return null
 
+  if (variant === "compact") {
+    return <CompactPagination page={page} totalPages={totalPages} onPageChange={onPageChange} />
+  }
+
+  return <DefaultPagination page={page} totalPages={totalPages} onPageChange={onPageChange} />
+}
+
+function DefaultPagination({
+  page,
+  totalPages,
+  onPageChange,
+}: Omit<PaginationControlsProps, "variant">) {
   const pages = getVisiblePages(page, totalPages)
 
   return (
-    <div className="flex items-center justify-center gap-[20px] pt-0 py-[30px]">
-      <button
-        onClick={() => onPageChange(page - 1)}
-        disabled={page <= 1}
-        className={cn(
-          "flex size-[40px] items-center justify-center rounded-[10px] transition-all duration-200",
-          page <= 1
-            ? "cursor-not-allowed text-text-muted opacity-40"
-            : "cursor-pointer text-auchan-red hover:scale-110 hover:bg-auchan-red-light active:scale-95"
-        )}
-      >
-        <ChevronLeft size={20} strokeWidth={3} />
-      </button>
+    <div className="flex items-center justify-center gap-[20px] py-[30px] pt-0">
+      <NavButton direction="prev" disabled={page <= 1} onClick={() => onPageChange(page - 1)} />
 
       {pages.map((p, i) =>
         p === "..." ? (
@@ -50,19 +57,78 @@ export function PaginationControls({ page, totalPages, onPageChange }: Paginatio
         )
       )}
 
-      <button
-        onClick={() => onPageChange(page + 1)}
-        disabled={page >= totalPages}
-        className={cn(
-          "flex size-[40px] items-center justify-center rounded-[10px] transition-all duration-200",
-          page >= totalPages
-            ? "cursor-not-allowed text-text-muted opacity-40"
-            : "cursor-pointer text-auchan-red hover:scale-110 hover:bg-auchan-red-light active:scale-95"
-        )}
-      >
-        <ChevronRight size={20} strokeWidth={3} />
-      </button>
+      <NavButton direction="next" disabled={page >= totalPages} onClick={() => onPageChange(page + 1)} />
     </div>
+  )
+}
+
+function CompactPagination({
+  page,
+  totalPages,
+  onPageChange,
+}: Omit<PaginationControlsProps, "variant">) {
+  return (
+    <div className="flex items-center justify-end gap-[8px] px-[20px] py-[14px]">
+      <span className="text-[13px] tracking-[-0.39px] text-text-secondary">
+        {page} / {totalPages}
+      </span>
+
+      <div className="flex items-center gap-[4px]">
+        <button
+          onClick={() => onPageChange(page - 1)}
+          disabled={page <= 1}
+          className={cn(
+            "flex size-[28px] items-center justify-center rounded-[8px] transition-colors",
+            page <= 1
+              ? "cursor-not-allowed text-text-muted opacity-40"
+              : "cursor-pointer text-text-caption hover:bg-surface-muted active:bg-surface-hover"
+          )}
+        >
+          <ChevronLeft size={16} strokeWidth={2.5} />
+        </button>
+        <button
+          onClick={() => onPageChange(page + 1)}
+          disabled={page >= totalPages}
+          className={cn(
+            "flex size-[28px] items-center justify-center rounded-[8px] transition-colors",
+            page >= totalPages
+              ? "cursor-not-allowed text-text-muted opacity-40"
+              : "cursor-pointer text-text-caption hover:bg-surface-muted active:bg-surface-hover"
+          )}
+        >
+          <ChevronRight size={16} strokeWidth={2.5} />
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function NavButton({
+  direction,
+  disabled,
+  onClick,
+}: {
+  direction: "prev" | "next"
+  disabled: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={cn(
+        "flex size-[40px] items-center justify-center rounded-[10px] transition-all duration-200",
+        disabled
+          ? "cursor-not-allowed text-text-muted opacity-40"
+          : "cursor-pointer text-auchan-red hover:scale-110 hover:bg-auchan-red-light active:scale-95"
+      )}
+    >
+      {direction === "prev" ? (
+        <ChevronLeft size={20} strokeWidth={3} />
+      ) : (
+        <ChevronRight size={20} strokeWidth={3} />
+      )}
+    </button>
   )
 }
 

@@ -1,6 +1,7 @@
 
 "use client"
 
+import { useSidebar } from "@/components/sidebar_system"
 import type { ColumnConfig, TableFetcherResult, TableSchema } from "@/components/table_system"
 import { TableKit } from "@/components/table_system"
 import { EmptyState } from "@/components/ui/render/EmptyState"
@@ -10,7 +11,7 @@ import { cn } from "@/lib/utils"
 import { transactionsService } from "@/services/transactions/transactions.service"
 import type { TransactionRow } from "@/services/transactions/transactions.types"
 import { ArrowLeftRight, Eye } from "lucide-react"
-import { useMemo } from "react"
+import { useCallback, useMemo } from "react"
 
 function formatAmount(amount: number): string {
   const abs = Math.abs(amount).toLocaleString("fr-FR")
@@ -38,6 +39,15 @@ function PreviewHeader() {
 }
 
 export function TransactionsPreview() {
+  const sidebar = useSidebar()
+
+  const handleRowClick = useCallback(
+    (row: TransactionRow) => {
+      sidebar.open({ entity: "transaction-detail", entityId: row.id })
+    },
+    [sidebar]
+  )
+
   const columns: ColumnConfig<TransactionRow>[] = useMemo(
     () => [
       {
@@ -97,7 +107,7 @@ export function TransactionsPreview() {
         actionContent: (row: TransactionRow, close: () => void) => (
           <button
             onClick={() => {
-              console.log("Voir les détails", row)
+              sidebar.open({ entity: "transaction-detail", entityId: row.id })
               close()
             }}
             className="flex w-full items-center gap-[8px] rounded-[8px] px-[12px] py-[8px] text-[13px] font-medium text-text-caption hover:bg-surface-muted"
@@ -108,7 +118,7 @@ export function TransactionsPreview() {
         ),
       },
     ],
-    []
+    [sidebar]
   )
 
   const schema: TableSchema<TransactionRow> = useMemo(
@@ -121,9 +131,7 @@ export function TransactionsPreview() {
         defaultLimit: 7,
       },
       actions: {
-        rowClick: (row: TransactionRow) => {
-          console.log(row)
-        },
+        rowClick: handleRowClick,
       },
       columns,
       ui: {
@@ -140,7 +148,7 @@ export function TransactionsPreview() {
         ),
       },
     }),
-    [columns]
+    [columns, handleRowClick]
   )
 
   return <TableKit schema={schema} />

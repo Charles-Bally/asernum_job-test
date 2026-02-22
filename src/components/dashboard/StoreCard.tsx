@@ -2,7 +2,9 @@
 
 import CustomIcon from "@/components/ui/render/CustomIcon"
 import ICONS from "@/constants/icons.constant"
+import { PATHNAME } from "@/constants/pathname.constant"
 import { cn } from "@/lib/utils"
+import { useRouter } from "next/navigation"
 
 export type StoreData = {
   name: string
@@ -16,8 +18,12 @@ type StoreCardProps = {
 }
 
 export function StoreCard({ store, className }: StoreCardProps) {
+  const router = useRouter()
+
   return (
-    <div
+    <button
+      type="button"
+      onClick={() => router.push(PATHNAME.DASHBOARD.store.details(store.code))}
       className={cn(
         "group relative flex h-[200px] w-[250px] shrink-0 cursor-pointer flex-col rounded-[40px] px-[28px] pb-[28px] pt-[28px]",
         className
@@ -44,12 +50,12 @@ export function StoreCard({ store, className }: StoreCardProps) {
           </div>
         </div>
 
-        <p className="mt-auto text-[20px] font-black tracking-[-0.6px] text-foreground transition-colors duration-300 group-hover:text-white">
+        <p className="mt-auto text-left text-[20px] font-black tracking-[-0.6px] text-foreground transition-colors duration-300 group-hover:text-white">
           {store.name}
         </p>
 
         <div className="mt-[6px] flex items-center gap-[6px]">
-          <span className="text-[12px] font-medium tracking-[-0.36px] text-text-secondary opacity-100 transition-[opacity,max-width] duration-300 max-w-[60px] overflow-hidden group-hover:max-w-0 group-hover:opacity-0">
+          <span className="text-[12px] text-left font-medium tracking-[-0.36px] text-text-secondary opacity-100 transition-[opacity,max-width] duration-300 max-w-[60px] overflow-hidden group-hover:max-w-0 group-hover:opacity-0">
             {store.code}
           </span>
           <CustomIcon
@@ -61,6 +67,6 @@ export function StoreCard({ store, className }: StoreCardProps) {
           </span>
         </div>
       </div>
-    </div>
+    </button>
   )
 }

@@ -1,9 +1,9 @@
 
 import type { ApiResponse } from "@/types/api.type"
-import { httpLocal } from "@/services/http"
+import { http } from "@/services/http"
 
 export async function fetchApi<T>(path: string): Promise<T> {
-  const response = await httpLocal.get<ApiResponse<T>>(path)
+  const response = await http.get<ApiResponse<T>>(path)
   const json = response.data
 
   if (json.status === "error") throw new Error(json.error ?? "Erreur serveur")

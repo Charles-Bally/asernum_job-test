@@ -1,6 +1,8 @@
 "use client"
 
+import { useSidebarStore } from "@/components/sidebar_system/store/useSidebar.store"
 import { cn } from "@/lib/utils"
+import { motion } from "framer-motion"
 import { useCallback, useEffect, useRef, useState } from "react"
 import type { ColumnConfig } from "../types/table.types"
 import { ActionsCell } from "./ActionsCell"
@@ -21,6 +23,24 @@ type TableBodyProps<T> = {
   emptyContent: React.ReactNode
   onRowClick?: (row: T) => void
   actionColumn?: ColumnConfig<T>
+  showRowBorder?: boolean
+  rowClassName?: string
+}
+
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.04 },
+  },
+}
+
+const rowVariants = {
+  hidden: { opacity: 0, y: 8 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.25, ease: "easeOut" as const },
+  },
 }
 
 export function TableBody<T extends Record<string, unknown>>({
@@ -32,7 +52,10 @@ export function TableBody<T extends Record<string, unknown>>({
   emptyContent,
   onRowClick,
   actionColumn,
+  showRowBorder = true,
+  rowClassName,
 }: TableBodyProps<T>) {
+  const sidebarEntityId = useSidebarStore((s) => (s.isOpen ? s.config?.entityId : null))
   const [contextMenu, setContextMenu] = useState<ContextMenuState<T>>(null)
   const menuRef = useRef<HTMLDivElement>(null)
 
@@ -45,6 +68,16 @@ export function TableBody<T extends Record<string, unknown>>({
       setContextMenu({ row, x: e.clientX, y: e.clientY })
     },
     [actionColumn]
+  )
+
+  const handleRowClick = useCallback(
+    (e: React.MouseEvent, row: T) => {
+      if (!onRowClick) return
+      const target = e.target as HTMLElement
+      if (target.closest("button, a, input, select, textarea, [role='button']")) return
+      onRowClick(row)
+    },
+    [onRowClick]
   )
 
   useEffect(() => {
@@ -82,33 +115,52 @@ export function TableBody<T extends Record<string, unknown>>({
 
   return (
     <>
-      {rows.map((row, idx) => (
-        <div
-          key={idx}
-          onClick={() => onRowClick?.(row)}
-          onContextMenu={(e) => handleContextMenu(e, row)}
-          className={cn(
-            "grid h-[48px] items-center border-b border-border-light px-[20px]",
-            onRowClick && "cursor-pointer hover:bg-surface-hover"
-          )}
-          style={{ gridTemplateColumns }}
-        >
-          {visibleColumns.map((col) =>
-            col.actionContent ? (
-              <ActionsCell key={col.key} row={row} actionContent={col.actionContent} />
-            ) : (
-              <div
-                key={col.key}
-                className={cn("truncate pr-[10px] text-[14px]", col.className)}
-              >
-                {col.render ? col.render(row[col.key], row) : String(row[col.key] ?? "")}
-              </div>
-            )
-          )}
-        </div>
-      ))}
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        key={rows.map((r, i) => `${(r as Record<string, unknown>).id ?? i}`).join("-")}
+      >
+        {rows.map((row, idx) => {
+          const rowId = String(row.id ?? idx)
+          const isActive = sidebarEntityId !== null && rowId === sidebarEntityId
 
-      {/* Context menu (clic droit) */}
+          return (
+          <motion.div
+            key={idx}
+            variants={rowVariants}
+            onClick={(e) => handleRowClick(e, row)}
+            onContextMenu={(e) => handleContextMenu(e, row)}
+            className={cn(
+              "grid h-[48px] items-center px-[20px]",
+              showRowBorder && "border-b border-border-light",
+              onRowClick && "cursor-pointer group/row hover:[&:not(:has(button:hover,a:hover,[role=button]:hover))]:bg-surface-hover",
+              isActive && "bg-auchan-red-light/50",
+              rowClassName
+            )}
+            style={{ gridTemplateColumns }}
+          >
+            {visibleColumns.map((col) =>
+              col.actionContent ? (
+                <ActionsCell key={col.key} row={row} actionContent={col.actionContent} />
+              ) : (
+                <div
+                  key={col.key}
+                  className={cn(
+                    "pr-[10px] text-[14px]",
+                    col.overflow ? "overflow-visible" : "truncate",
+                    col.className
+                  )}
+                >
+                  {col.render ? col.render(row[col.key], row) : String(row[col.key] ?? "")}
+                </div>
+              )
+            )}
+          </motion.div>
+          )
+        })}
+      </motion.div>
+
       {contextMenu && actionColumn?.actionContent && (
         <div
           ref={menuRef}

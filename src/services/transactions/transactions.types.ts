@@ -1,7 +1,9 @@
 
 export type TransactionRow = {
+  id: string
   type: string
   store: string
+  storeCode: string
   amount: number
   client: string | null
   date: string

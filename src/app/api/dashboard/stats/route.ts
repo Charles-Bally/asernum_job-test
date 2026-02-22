@@ -1,4 +1,5 @@
 
+import { randomDelay } from "@/app/api/_helpers/delay.helper"
 import { withMiddleware } from "@/app/api/_helpers/middleware.helper"
 import { apiSuccess } from "@/app/api/_helpers/response.helper"
 import type { NextRequest } from "next/server"
@@ -11,6 +12,7 @@ const STATS_BY_PERIOD: Record<string, { renduMonnaie: number; paiementCourse: nu
 }
 
 export const GET = withMiddleware(async (req: NextRequest) => {
+  await randomDelay()
   const period = req.nextUrl.searchParams.get("period") || "30days"
   const stats = STATS_BY_PERIOD[period] ?? STATS_BY_PERIOD["30days"]
 

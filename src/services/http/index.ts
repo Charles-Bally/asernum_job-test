@@ -10,10 +10,5 @@ export const http = createHttpClient(environnements.API_URL, [
   defaultMiddleware,
 ]);
 
-export const httpLocal = createHttpClient(environnements.API_URL, [
-  authMiddleware,
-  logMiddleware,
-]);
-
 // Export createHttpClient pour utilisation dans d'autres services
 export { createHttpClient } from "./axios.client";

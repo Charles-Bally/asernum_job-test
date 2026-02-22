@@ -1,4 +1,5 @@
 
+import { randomDelay } from "@/app/api/_helpers/delay.helper"
 import { withMiddleware } from "@/app/api/_helpers/middleware.helper"
 import { apiSuccess } from "@/app/api/_helpers/response.helper"
 
@@ -11,5 +12,6 @@ const MOCK_STORES = [
 ]
 
 export const GET = withMiddleware(async () => {
+  await randomDelay()
   return apiSuccess({ stores: MOCK_STORES })
 })

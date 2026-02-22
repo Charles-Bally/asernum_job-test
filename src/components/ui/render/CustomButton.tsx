@@ -14,7 +14,7 @@ export type CustomButtonProps = {
   disabled?: boolean;
   loading?: boolean;
   variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "none";
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "none";
   icon?: {
     render: React.ReactNode;
     position: "left" | "right";
@@ -52,7 +52,7 @@ function CustomButton({
   style,
   loading,
   variant = "none",
-  size = "md",
+  size = "none",
   icon,
   className,
   type = "button",

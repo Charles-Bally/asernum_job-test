@@ -15,4 +15,5 @@ export const ENDPOINTS = {
   },
   TRANSACTIONS: "/transactions",
   STORES: "/stores",
+  CASHIERS: "/cashiers",
 };

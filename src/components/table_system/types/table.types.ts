@@ -11,6 +11,7 @@ export type ColumnConfig<T = Record<string, unknown>> = {
   sortable?: boolean
   defaultHidden?: boolean
   className?: string
+  overflow?: boolean
   render?: (value: unknown, row: T) => ReactNode
   actionContent?: (row: T, close: () => void) => ReactNode
 }
@@ -37,6 +38,8 @@ export type TableFetchParams = {
   sort?: { key: string; direction: SortDirection }
   filters?: Record<string, string | string[]>
   quickFilter?: string
+  dateFrom?: string
+  dateTo?: string
 }
 
 export type TableRawResult<T> = {
@@ -91,7 +94,14 @@ export type TableSchema<T = Record<string, unknown>> = {
     showHeader?: boolean
     customHeader?: ReactNode
     headerActions?: ReactNode
+    headerLayout?: "default" | "single-row"
+    showDateRange?: boolean
+    searchWidth?: string
     containerClassName?: string
+    minHeight?: string
+    paginationVariant?: "default" | "compact"
+    showRowBorder?: boolean
+    rowClassName?: string
   }
 }
 

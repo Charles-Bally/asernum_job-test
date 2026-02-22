@@ -10,7 +10,7 @@ export const PATHNAME = {
     home: "/dashboard/home",
     store: {
       listing: "/dashboard/store",
-      details: "/dashboard/store/:id",
+      details: (id: string) => `/dashboard/store/${id}`,
     },
     transactions: "/dashboard/transactions",
     clients: "/dashboard/clients",

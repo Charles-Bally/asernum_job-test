@@ -12,5 +12,9 @@ export const QUERY_KEYS = {
     STATS: ["dashboard", "stats"],
   },
   TRANSACTIONS: ["transactions"],
+  TRANSACTION_DETAIL: ["transactions", "detail"],
   STORES: ["stores"],
+  STORE_DETAIL: ["stores", "detail"],
+  CASHIERS: ["cashiers"],
+  CASHIER_DETAIL: ["cashiers", "detail"],
 }

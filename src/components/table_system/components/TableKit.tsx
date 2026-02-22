@@ -29,6 +29,8 @@ export function TableKit<T extends Record<string, unknown>>({
     key: "",
     direction: null,
   })
+  const [dateFrom, setDateFrom] = useState<string | undefined>()
+  const [dateTo, setDateTo] = useState<string | undefined>()
 
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null)
 
@@ -41,6 +43,15 @@ export function TableKit<T extends Record<string, unknown>>({
     }, 300)
   }, [])
 
+  const handleDateRangeChange = useCallback(
+    (from: string | undefined, to: string | undefined) => {
+      setDateFrom(from)
+      setDateTo(to)
+      setPage(1)
+    },
+    []
+  )
+
   const fetchParams: TableFetchParams = useMemo(
     () => ({
       page,
@@ -48,8 +59,10 @@ export function TableKit<T extends Record<string, unknown>>({
       search: debouncedSearch || undefined,
       sort: sort.direction ? sort : undefined,
       quickFilter: quickFilter || undefined,
+      dateFrom,
+      dateTo,
     }),
-    [page, limit, debouncedSearch, sort, quickFilter]
+    [page, limit, debouncedSearch, sort, quickFilter, dateFrom, dateTo]
   )
 
   const { data, isLoading, refetch } = useQuery({
@@ -113,6 +126,10 @@ export function TableKit<T extends Record<string, unknown>>({
               showRefresh={ui?.showRefresh}
               onRefresh={() => refetch()}
               headerActions={ui?.headerActions}
+              layout={ui?.headerLayout}
+              showDateRange={ui?.showDateRange}
+              onDateRangeChange={handleDateRangeChange}
+              searchWidth={ui?.searchWidth}
             />
           )}
 
@@ -140,7 +157,7 @@ export function TableKit<T extends Record<string, unknown>>({
       </div>
 
       {/* Body */}
-      <div>
+      <div style={{ minHeight: ui?.minHeight }}>
         <TableBody
           rows={rows}
           visibleColumns={visibleColumns}
@@ -150,11 +167,18 @@ export function TableKit<T extends Record<string, unknown>>({
           emptyContent={emptyContent}
           onRowClick={actions?.rowClick}
           actionColumn={actionColumn}
+          showRowBorder={ui?.showRowBorder !== false}
+          rowClassName={ui?.rowClassName}
         />
       </div>
 
       {showPagination && (
-        <PaginationControls page={page} totalPages={totalPages} onPageChange={setPage} />
+        <PaginationControls
+          page={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+          variant={ui?.paginationVariant}
+        />
       )}
     </div>
   )

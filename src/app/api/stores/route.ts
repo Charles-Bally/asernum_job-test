@@ -1,4 +1,5 @@
 
+import { randomDelay } from "@/app/api/_helpers/delay.helper"
 import { withMiddleware } from "@/app/api/_helpers/middleware.helper"
 import { paginate } from "@/app/api/_helpers/pagination.helper"
 import { apiSuccess } from "@/app/api/_helpers/response.helper"
@@ -19,6 +20,7 @@ const MOCK_STORES: StoreRow[] = Array.from({ length: 60 }, (_, i) => ({
 }))
 
 export const GET = withMiddleware(async (req: NextRequest) => {
+  await randomDelay()
   const params = req.nextUrl.searchParams
   const page = Number(params.get("page") || "1")
   const limit = Number(params.get("limit") || "15")
