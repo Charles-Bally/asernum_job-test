@@ -3,7 +3,7 @@ import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 export const logMiddleware = {
   onRequest: async (config: InternalAxiosRequestConfig) => {
     if (process.env.NODE_ENV !== "production") {
-      // eslint-disable-next-line no-console
+      
       console.debug(
         "[HTTP Request]",
         config.method?.toUpperCase(),
@@ -15,7 +15,7 @@ export const logMiddleware = {
   },
   onResponse: async (response: AxiosResponse) => {
     if (process.env.NODE_ENV !== "production") {
-      // eslint-disable-next-line no-console
+      
       console.debug(
         "[HTTP Response]",
         response.status,
@@ -34,7 +34,7 @@ export const logMiddleware = {
       error.message === "canceled";
 
     if (process.env.NODE_ENV !== "production" && !isCancelError) {
-      // eslint-disable-next-line no-console
+      
       console.error(
         "[HTTP Error]",
         error.response?.status,

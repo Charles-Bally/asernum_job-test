@@ -76,9 +76,9 @@ export function ModalFooter({
   isFirstStep,
   isLastStep,
   customContent,
-  align = "right",
+  align: _align = "right",
   className,
-  variant = "default",
+  variant: _variant = "default",
 }: ModalFooterProps) {
   // Si customContent est fourni, afficher uniquement ça
   if (customContent) {

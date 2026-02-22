@@ -80,10 +80,10 @@ export function TestNestedPaths() {
   updateField("user.settings.notifications.push", true);
 
   // ✅ getValue devrait aussi fonctionner
-  const firstName = getValue("user.profile.personal.firstName");
-  const age = getValue("user.profile.personal.age");
-  const theme = getValue("user.settings.preferences.theme");
-  const emailNotif = getValue("user.settings.notifications.email");
+  const _firstName = getValue("user.profile.personal.firstName");
+  const _age = getValue("user.profile.personal.age");
+  const _theme = getValue("user.settings.preferences.theme");
+  const _emailNotif = getValue("user.settings.notifications.email");
 
   // ❌ Ces chemins devraient donner des erreurs TypeScript
   // @ts-expect-error - Ce chemin n'existe pas

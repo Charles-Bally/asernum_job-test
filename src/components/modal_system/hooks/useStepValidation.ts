@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useModal } from "./useModal";
 
 /**
@@ -39,32 +39,38 @@ export function useStepValidation(stepId?: string) {
   }, [currentStepId, modal.config?.stepsValidation]);
 
   // Marquer la step comme validée/non validée
+  const setStepValidatedRef = useRef(modal.setStepValidated);
+
+  useEffect(() => {
+    setStepValidatedRef.current = modal.setStepValidated;
+  }, [modal.setStepValidated]);
+
   const setValidated = useCallback(
     (validated: boolean) => {
       if (currentStepId) {
-        modal.setStepValidated(currentStepId, validated);
+        setStepValidatedRef.current(currentStepId, validated);
       }
     },
-    [currentStepId, modal.setStepValidated],
+    [currentStepId],
   );
 
   // Vérifier si toutes les steps jusqu'à un index sont validées
+  const configSteps = modal.config?.steps;
+  const configStepsValidation = modal.config?.stepsValidation;
+
   const areAllPreviousStepsValidated = useCallback(
     (upToIndex: number) => {
-      const steps = modal.config?.steps;
-      const stepsValidation = modal.config?.stepsValidation;
-
-      if (!steps) return false;
+      if (!configSteps) return false;
 
       for (let i = 0; i < upToIndex; i++) {
-        const id = steps[i]?.id;
-        if (id && !stepsValidation?.[id]) {
+        const id = configSteps[i]?.id;
+        if (id && !configStepsValidation?.[id]) {
           return false;
         }
       }
       return true;
     },
-    [modal.config?.steps, modal.config?.stepsValidation],
+    [configSteps, configStepsValidation],
   );
 
   return {

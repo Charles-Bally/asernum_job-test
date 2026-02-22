@@ -180,15 +180,17 @@ export function CreateStoreModal({ config: baseConfig }: { config: ModalConfig }
     currentStep: modal.config?.currentStep ?? 0,
   }
 
+  const currentStepValue = modal.config?.currentStep ?? 0
+
   useEffect(() => {
-    const currentStep = modal.config?.currentStep ?? 0
     modal.updateConfig({
       ...baseConfig,
       steps,
-      title: currentStep === 0 ? "Nouveau magasin" : "Équipe du magasin",
+      title: currentStepValue === 0 ? "Nouveau magasin" : "Équipe du magasin",
       submitLabel: "Créer le magasin",
     })
-  }, [modal.config?.currentStep])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStepValue])
 
   return <ModalContent config={config} />
 }

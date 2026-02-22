@@ -82,6 +82,7 @@ export default function NewPasswordPage() {
             registration={register("confirmPassword", {
               required: "Confirmation requise",
               validate: (value) =>
+                // eslint-disable-next-line react-hooks/incompatible-library
                 value === watch("password") ||
                 "Les mots de passe ne correspondent pas",
             })}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useModalStore } from "@/components/modal_system/store/useModal.store";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 /**
  * Hook pour gérer les données d'un formulaire dans un modal
@@ -29,18 +29,16 @@ export function useModalForm<T extends Record<string, any>>(defaultValues: T) {
   // État local du formulaire
   const [formData, setFormData] = useState<T>(defaultValues);
 
-  // Accès au store du modal
-  const modalConfig = useModalStore((state) => state.config);
+  // Accès au store du modal — dériver les données directement
+  const modalData = useModalStore((state) => state.config?.data);
 
-  // Synchroniser formData avec les données du store quand elles changent
-  useEffect(() => {
-    if (modalConfig?.data) {
-      setFormData((prevData) => ({
-        ...prevData,
-        ...modalConfig.data,
-      }));
+  // Synchroniser formData avec les données du store via useMemo
+  const mergedFormData = useMemo(() => {
+    if (modalData) {
+      return { ...formData, ...modalData } as T;
     }
-  }, [modalConfig?.data]);
+    return formData;
+  }, [formData, modalData]);
 
   // Mettre à jour un champ spécifique
   const updateField = useCallback(
@@ -75,19 +73,19 @@ export function useModalForm<T extends Record<string, any>>(defaultValues: T) {
   const validateRequired = useCallback(
     (requiredFields: (keyof T)[]) => {
       return requiredFields.every((field) => {
-        const value = formData[field];
+        const value = mergedFormData[field];
         return value !== null && value !== undefined && value !== "";
       });
     },
-    [formData],
+    [mergedFormData],
   );
 
   // Obtenir les valeurs actuelles (utile pour la validation)
-  const getValues = useCallback(() => formData, [formData]);
+  const getValues = useCallback(() => mergedFormData, [mergedFormData]);
 
   return {
     /** Données actuelles du formulaire */
-    formData,
+    formData: mergedFormData,
 
     /** Mettre à jour un champ spécifique */
     updateField,

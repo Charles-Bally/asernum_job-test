@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import type { ModalConfig } from "../types/modal.types";
 
 /**
@@ -36,30 +36,47 @@ export function getModalComponent(entity: string) {
  * Hook pour charger les données d'une entité
  * À personnaliser selon vos besoins
  */
+type EntityState = { data: any; loading: boolean };
+type EntityAction =
+  | { type: "start" }
+  | { type: "done"; data: any }
+  | { type: "reset" };
+
+function entityReducer(_state: EntityState, action: EntityAction): EntityState {
+  switch (action.type) {
+    case "start":
+      return { data: null, loading: true };
+    case "done":
+      return { data: action.data, loading: false };
+    case "reset":
+      return { data: null, loading: false };
+  }
+}
+
 export function useModalEntityData(config: ModalConfig | null) {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
+  const entity = config?.entity;
+  const entityId = config?.entityId;
+
+  const [state, dispatch] = useReducer(entityReducer, { data: null, loading: false });
 
   useEffect(() => {
-    if (!config?.entity || !config.entityId) {
-      setData(null);
+    if (!entity || !entityId) {
       return;
     }
 
-    // Ici, vous pouvez implémenter la logique de chargement
-    // Par exemple, appeler une API pour récupérer les données de l'entité
-    setLoading(true);
+    dispatch({ type: "start" });
 
-    // Simulation de chargement
+    // Simulation de chargement — à remplacer par un vrai appel API
     const timer = setTimeout(() => {
-      setData(null); // Les données seront passées via customContent
-      setLoading(false);
+      dispatch({ type: "done", data: null });
     }, 100);
 
-    return () => clearTimeout(timer);
-  }, [config?.entity, config?.entityId]);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [entity, entityId]);
 
-  return { data, loading };
+  return { data: state.data, loading: state.loading };
 }
 
 /**

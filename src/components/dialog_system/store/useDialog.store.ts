@@ -15,12 +15,7 @@ export const useDialogStore = create<DialogStore>((set, get) => ({
   show: <T = DialogAction>(options: DialogOptions): DialogPromise<T> => {
     const id = `dialog-${++dialogCounter}`;
 
-    let resolveRef: ((result: DialogResult<T>) => void) | null = null;
-    let rejectRef: ((reason?: any) => void) | null = null;
-
     const promise = new Promise<DialogResult<T>>((resolve, reject) => {
-      resolveRef = resolve;
-      rejectRef = reject;
 
       set((state: DialogStore) => {
         const newDialogs = new Map(state.dialogs);

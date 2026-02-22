@@ -165,6 +165,12 @@ export function useModalURL() {
    * Ne réagit QUE aux changements d'URL (ex: navigation back/forward)
    * Ignore les changements pendant la synchronisation pour éviter les glitches
    */
+  const paramModal = searchParams?.get("modal");
+  const paramEntity = searchParams?.get("modalEntity");
+  const paramId = searchParams?.get("modalId");
+  const paramMode = searchParams?.get("modalMode");
+  const paramTab = searchParams?.get("modalTab");
+
   useEffect(() => {
     // Ignorer si on est en train de synchroniser (évite les race conditions)
     if (isSyncingRef.current) return;
@@ -182,11 +188,11 @@ export function useModalURL() {
     }
   }, [
     // Ne réagir QU'AUX changements d'URL, pas aux changements de isOpen/config
-    searchParams?.get("modal"),
-    searchParams?.get("modalEntity"),
-    searchParams?.get("modalId"),
-    searchParams?.get("modalMode"),
-    searchParams?.get("modalTab"),
+    paramModal,
+    paramEntity,
+    paramId,
+    paramMode,
+    paramTab,
     parseURLParams,
   ]);
 

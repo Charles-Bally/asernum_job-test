@@ -35,19 +35,24 @@ export default function OtpPage() {
     }
   }, [router]);
 
+  const timerActive = timer > 0;
+
   useEffect(() => {
-    if (timer <= 0) {
-      setCanResend(true);
-      resetVerifyOtpError();
-      return;
-    }
+    if (!timerActive) return;
 
     const interval = setInterval(() => {
-      setTimer((prev) => prev - 1);
+      setTimer((prev) => {
+        const next = prev - 1;
+        if (next <= 0) {
+          setCanResend(true);
+          resetVerifyOtpError();
+        }
+        return next;
+      });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [timer, resetVerifyOtpError]);
+  }, [timerActive, resetVerifyOtpError]);
 
   const formatTimer = (seconds: number) => {
     const mins = String(Math.floor(seconds / 60)).padStart(2, "0");

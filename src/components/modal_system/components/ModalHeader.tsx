@@ -74,7 +74,7 @@ export function ModalHeader({
   customContent,
   rightContent,
   className,
-  variant = "default",
+  variant: _variant = "default",
 }: ModalHeaderProps) {
   const modal = useModal();
 
@@ -106,12 +106,6 @@ export function ModalHeader({
       </div>
     );
   }
-
-  const variantClasses = {
-    default: "px-6 py-4",
-    compact: "px-4 py-3",
-    large: "px-8 py-6",
-  };
 
   const badgeVariants = {
     default: "bg-slate-100 text-slate-700",

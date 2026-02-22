@@ -42,10 +42,6 @@ const QUICK_FILTERS: QuickFilterConfig[] = [
   },
 ]
 
-function formatAmount(amount: number): string {
-  return `${amount.toLocaleString("fr-FR")} FCFA`
-}
-
 export function ClientsTable() {
   const sidebar = useSidebar()
 

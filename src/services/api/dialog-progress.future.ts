@@ -65,12 +65,12 @@ export async function dialogWithBasicProgress<T = any>({
   title = "Chargement",
   message = "Veuillez patienter...",
   request,
-  onProgress,
+  _onProgress,
 }: {
   title?: string;
   message?: string;
   request: () => Promise<T>;
-  onProgress?: (percent: number) => void;
+  _onProgress?: (percent: number) => void;
 }): Promise<T> {
   const loadingDialog = dialog({
     type: DIALOG.INFO,

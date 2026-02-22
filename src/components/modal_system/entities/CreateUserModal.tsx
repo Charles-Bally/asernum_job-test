@@ -172,15 +172,17 @@ export function CreateUserModal({ config: baseConfig }: { config: ModalConfig; d
     currentStep: modal.config?.currentStep ?? 0,
   }
 
+  const currentStepValue = modal.config?.currentStep ?? 0
+
   useEffect(() => {
-    const currentStep = modal.config?.currentStep ?? 0
     modal.updateConfig({
       ...baseConfig,
       steps,
-      title: currentStep === 0 ? "Nouvel utilisateur" : "Confirmation",
+      title: currentStepValue === 0 ? "Nouvel utilisateur" : "Confirmation",
       submitLabel: "Créer l'utilisateur",
     })
-  }, [modal.config?.currentStep])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStepValue])
 
   return <ModalContent config={config} />
 }

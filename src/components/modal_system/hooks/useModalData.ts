@@ -107,7 +107,7 @@ export function useModalData<T extends Record<string, any>>(
     if (!throwOnNotFound || !targetModalId) return;
 
     const store = useModalStore.getState();
-    const modal = store.getModalById(targetModalId);
+    store.getModalById(targetModalId);
 
     // if (!modal) {
     //   throw new Error(

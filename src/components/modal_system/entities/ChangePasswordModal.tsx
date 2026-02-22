@@ -84,7 +84,7 @@ function StepPassword() {
 export function ChangePasswordModal({ config: baseConfig }: { config: ModalConfig; data?: any }) {
   const modal = useModal()
   const { dialog, DIALOG } = useDialog()
-  const { getData, updateField } = useModalData<ChangePasswordData>(INITIAL_DATA)
+  const { getData } = useModalData<ChangePasswordData>(INITIAL_DATA)
 
   const validateAndSubmit = async (): Promise<boolean> => {
     const data = getData()
@@ -159,6 +159,7 @@ export function ChangePasswordModal({ config: baseConfig }: { config: ModalConfi
       title: "Changer le mot de passe",
       submitLabel: "Confirmer",
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return <ModalContent config={config} />

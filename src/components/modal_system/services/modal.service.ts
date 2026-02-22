@@ -54,7 +54,7 @@ class ModalService {
   /**
    * Ferme un modal spécifique
    */
-  close(id: string): void {
+  close(_id: string): void {
     useModalStore.getState().close();
   }
 
@@ -121,21 +121,21 @@ class ModalService {
   /**
    * Va à un step spécifique
    */
-  goToStep(id: string, stepIndex: number): void {
+  goToStep(_id: string, stepIndex: number): void {
     useModalStore.getState().goToStep(stepIndex);
   }
 
   /**
    * Passe au step suivant
    */
-  async nextStep(id: string): Promise<void> {
+  async nextStep(_id: string): Promise<void> {
     await useModalStore.getState().nextStep();
   }
 
   /**
    * Retourne au step précédent
    */
-  prevStep(id: string): void {
+  prevStep(_id: string): void {
     useModalStore.getState().prevStep();
   }
 
