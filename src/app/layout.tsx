@@ -7,11 +7,25 @@ import localFont from "next/font/local";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Asernum - Auchan Super Admin",
+  title: "Auchan Super Admin",
   description: "Plateforme de gestion des magasins Auchan",
   creator: "Asernum - Charles Désiré Bally",
-  keywords: ["Asernum", "Auchan", "Super Admin", "Admin", "Dashboard", "Admin Dashboard", "Asernum Auchan", "Asernum Auchan Super Admin", "Asernum Auchan Admin", "Asernum Auchan Dashboard", "Asernum Auchan Admin Dashboard"],
+  keywords: ["Asernum", "Auchan", "Super Admin", "Admin", "Dashboard", "Admin Dashboard"],
   robots: "noindex, nofollow",
+  openGraph: {
+    title: "Auchan Super Admin",
+    description: "Plateforme de gestion des magasins Auchan",
+    siteName: "Auchan Super Admin",
+    type: "website",
+    locale: "fr_FR",
+    images: [{ url: "/images/og-image.png", width: 1200, height: 630, alt: "Auchan Super Admin" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Auchan Super Admin",
+    description: "Plateforme de gestion des magasins Auchan",
+    images: ["/images/og-image.png"],
+  },
 };
 
 export const viewport: Viewport = {
