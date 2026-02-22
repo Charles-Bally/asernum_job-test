@@ -6,6 +6,13 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 import React, { useRef, useState } from "react";
 import type { UseFormRegisterReturn } from "react-hook-form";
 
+const CRITERIA_LABELS: Record<keyof PasswordValidType, string> = {
+  length: "8 caractères min.",
+  uppercase: "1 majuscule",
+  lowercase: "1 minuscule",
+  number_special: "1 chiffre et 1 spécial",
+};
+
 type InputPasswordProps = {
   name?: string;
   registration?: UseFormRegisterReturn;
@@ -195,7 +202,7 @@ function InputPassword(props: InputPasswordProps) {
                   value ? "text-text-muted" : "text-auchan-red",
                 )}
               >
-                {key}
+                {CRITERIA_LABELS[key as keyof PasswordValidType]}
               </p>
             </div>
           ))}

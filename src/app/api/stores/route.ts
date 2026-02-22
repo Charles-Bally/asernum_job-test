@@ -19,6 +19,14 @@ const MOCK_STORES: StoreRow[] = Array.from({ length: 60 }, (_, i) => ({
   city: `Abidjan, ${COMMUNES[i % COMMUNES.length]}`,
 }))
 
+export const POST = withMiddleware(async (req: NextRequest) => {
+  await randomDelay()
+  const body = await req.json()
+  const code = `MAG-${Date.now()}`
+  const id = crypto.randomUUID()
+  return apiSuccess({ store: { ...body, code, id }, success: true })
+})
+
 export const GET = withMiddleware(async (req: NextRequest) => {
   await randomDelay()
   const params = req.nextUrl.searchParams

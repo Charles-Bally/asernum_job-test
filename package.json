@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@floating-ui/react": "^0.27.18",
     "@getbrevo/brevo": "^4.0.1",
     "@prisma/client": "^6.19.2",
     "@radix-ui/react-dialog": "^1.1.15",

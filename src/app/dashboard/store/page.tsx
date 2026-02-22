@@ -10,6 +10,7 @@ import { useInfiniteStoresQuery } from "@/hooks/useInfiniteStoresController"
 import { useListingParams } from "@/hooks/useListingParams"
 import { useMediaQuery } from "@/hooks/useMediaQuery"
 import { useStoresQuery } from "@/hooks/useStoresController"
+import { useModal } from "@/components/modal_system"
 import { useQueryState } from "nuqs"
 import { useCallback } from "react"
 
@@ -19,9 +20,10 @@ export default function StoreListingPage() {
   const [commune, rawSetCommune] = useQueryState("commune", { defaultValue: "" })
   const setCommune = withPageReset(rawSetCommune)
 
+  const modal = useModal()
   const handleAddStore = useCallback(() => {
-    console.log("Ajouter un magasin")
-  }, [])
+    modal.open({ entity: "add-store", mode: "create", layout: "wizard" })
+  }, [modal])
 
   return (
     <div className="flex flex-col gap-5 lg:gap-[30px]">

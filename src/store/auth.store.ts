@@ -7,6 +7,9 @@ export type AuthUser = {
   firstName: string;
   lastName: string;
   role: string;
+  store?: string | null;
+  createdAt?: string;
+  isBlocked?: boolean;
 };
 
 type AuthStoreState = {

@@ -24,11 +24,11 @@ const LAST_NAMES = [
   "Sidibé", "Sow", "Ndiaye", "Kanté", "Bah",
 ]
 
-const MOCK_USERS: User[] = Array.from({ length: 25 }, (_, i) => ({
+const MOCK_USERS: User[] = Array.from({ length: 80 }, (_, i) => ({
   id: `USR-${String(i + 1).padStart(4, "0")}`,
-  firstName: FIRST_NAMES[i],
-  lastName: LAST_NAMES[i],
-  email: `${FIRST_NAMES[i].toLowerCase()}.${LAST_NAMES[i].toLowerCase()}@auchan.ci`,
+  firstName: FIRST_NAMES[i % FIRST_NAMES.length],
+  lastName: LAST_NAMES[i % LAST_NAMES.length],
+  email: `${FIRST_NAMES[i % FIRST_NAMES.length].toLowerCase()}.${LAST_NAMES[i % LAST_NAMES.length].toLowerCase()}${i >= 25 ? i : ""}@auchan.ci`,
   role: ROLES[i % ROLES.length],
   status: i % 7 === 0 ? "blocked" as const : "active" as const,
   store: STORES[i % STORES.length],

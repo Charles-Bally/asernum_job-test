@@ -20,6 +20,7 @@ export type ModalMode =
 export type ModalEntity =
     | "add-store"
     | "create-user"
+    | "change-password"
 
 export interface ModalTab {
     id: string;

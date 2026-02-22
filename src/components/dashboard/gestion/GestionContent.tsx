@@ -13,7 +13,7 @@ export function GestionContent() {
   return (
     <div className="flex flex-col gap-5 lg:gap-[30px]">
       <h1 className="text-[22px] lg:text-[32px] font-bold tracking-[-0.66px] lg:tracking-[-0.96px] text-foreground">
-        Gestions
+        Gestions de l&apos;équipe
       </h1>
 
       <div className="overflow-hidden rounded-[20px] lg:rounded-[30px] bg-white">

@@ -1,8 +1,9 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import { autoUpdate, flip, FloatingPortal, offset, shift, size, useClick, useDismiss, useFloating, useInteractions } from "@floating-ui/react"
 import { ChevronDown } from "lucide-react"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useState } from "react"
 
 export type DropdownOption = {
   value: string
@@ -39,18 +40,27 @@ function InputDropdown({
   className,
 }: InputDropdownProps) {
   const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (!open) return
-    function handleClickOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false)
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [open])
+  const { refs: { setReference, setFloating }, floatingStyles, context } = useFloating({
+    open,
+    onOpenChange: setOpen,
+    placement: "bottom",
+    middleware: [
+      offset(4),
+      flip({ padding: 8 }),
+      shift({ padding: 8 }),
+      size({
+        apply({ rects, elements }) {
+          Object.assign(elements.floating.style, { width: `${rects.reference.width}px` })
+        },
+      }),
+    ],
+    whileElementsMounted: autoUpdate,
+  })
+
+  const click = useClick(context)
+  const dismiss = useDismiss(context)
+  const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss])
 
   const handleSelect = useCallback(
     (optionValue: string) => {
@@ -63,36 +73,43 @@ function InputDropdown({
   const selected = options.find((o) => o.value === value)
 
   return (
-    <div className={cn("flex w-full flex-col gap-1", className)} ref={ref}>
+    <div className={cn("flex w-full flex-col gap-1", className)}>
       {topLabel && (
         <label className={cn("text-[16px] font-medium text-foreground", topLabel.className)}>
           {topLabel.text}
           {topLabel.required && <span className="text-auchan-red"> *</span>}
         </label>
       )}
-      <div className="relative">
-        <button
-          type="button"
-          disabled={disabled}
-          onClick={() => !disabled && setOpen((prev) => !prev)}
-          className={cn(
-            "flex h-[56px] w-full items-center justify-between rounded-[12px] border border-border-input bg-white px-4 text-left transition-all duration-200",
-            open && "border-auchan-red",
-            disabled && "cursor-not-allowed bg-neutral-100",
-            error?.active && "border-auchan-red",
-          )}
-        >
-          <span className={cn("text-[16px] font-medium", selected ? "text-foreground" : "text-text-muted")}>
-            {selected?.label ?? placeholder}
-          </span>
-          <ChevronDown
-            size={18}
-            className={cn("shrink-0 text-text-caption rotate-180 transition-transform", open && "rotate-0")}
-          />
-        </button>
 
-        {open && (
-          <div className="absolute bottom-full left-0 right-0 z-50 mb-1 max-h-[220px] overflow-y-auto rounded-[12px] border border-border-light bg-white shadow-lg">
+      <button
+        ref={setReference}
+        type="button"
+        disabled={disabled}
+        {...getReferenceProps()}
+        className={cn(
+          "flex h-[56px] w-full items-center justify-between rounded-[12px] border border-border-input bg-white px-4 text-left transition-all duration-200",
+          open && "border-auchan-red",
+          disabled && "cursor-not-allowed bg-neutral-100",
+          error?.active && "border-auchan-red",
+        )}
+      >
+        <span className={cn("text-[16px] font-medium", selected ? "text-foreground" : "text-text-muted")}>
+          {selected?.label ?? placeholder}
+        </span>
+        <ChevronDown
+          size={18}
+          className={cn("shrink-0 text-text-caption transition-transform", open ? "rrotate-180" : "rotate-0")}
+        />
+      </button>
+
+      {open && (
+        <FloatingPortal>
+          <div
+            ref={setFloating}
+            style={floatingStyles}
+            {...getFloatingProps()}
+            className="z-[9999] max-h-[220px] overflow-y-auto rounded-[12px] border border-border-light bg-white shadow-lg"
+          >
             {options.map((opt) => (
               <button
                 key={opt.value}
@@ -112,8 +129,8 @@ function InputDropdown({
               </button>
             ))}
           </div>
-        )}
-      </div>
+        </FloatingPortal>
+      )}
 
       {error?.active && (
         <p className="mt-1 text-sm text-auchan-red">{error.message}</p>

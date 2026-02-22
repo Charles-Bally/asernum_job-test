@@ -5,6 +5,7 @@ export const QUERY_KEYS = {
     FORGOT_PASSWORD: ["auth", "forgot-password"],
     VERIFY_OTP: ["auth", "verify-otp"],
     RESET_PASSWORD: ["auth", "reset-password"],
+    PROFILE: ["auth", "profile"],
   },
   DASHBOARD: {
     BALANCE: ["dashboard", "balance"],
@@ -20,4 +21,6 @@ export const QUERY_KEYS = {
   USERS: ["users"],
   USER_DETAIL: ["users", "detail"],
   ACCOUNT_EVENTS: ["account-events"],
+  CLIENTS: ["clients"],
+  CLIENT_DETAIL: ["clients", "detail"],
 }

@@ -1,6 +1,6 @@
 import type { ComponentType } from "react"
 
-export type SidebarEntity = "cashier-detail" | "transaction-detail" | "user-detail"
+export type SidebarEntity = "cashier-detail" | "client-detail" | "transaction-detail" | "user-detail"
 
 export type SidebarConfig = {
   entity: SidebarEntity

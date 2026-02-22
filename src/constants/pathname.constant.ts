@@ -16,6 +16,7 @@ export const PATHNAME = {
     clients: "/dashboard/clients",
     gestions: "/dashboard/gestions",
     statistiques: "/dashboard/statistiques",
+    profil: "/dashboard/profil",
   }
 };
 

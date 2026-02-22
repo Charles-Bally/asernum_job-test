@@ -39,4 +39,14 @@ export const profileService = {
       throw error
     }
   },
+
+  async updateProfile(data: { firstName: string; lastName: string }) {
+    const res = await http.patch(ENDPOINTS.AUTH.PROFILE, data)
+    return res.data.data
+  },
+
+  async changePassword(data: { currentPassword: string; newPassword: string }) {
+    const res = await http.post(ENDPOINTS.AUTH.CHANGE_PASSWORD, data)
+    return res.data.data
+  },
 }

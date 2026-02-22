@@ -2,6 +2,7 @@
 import { DashboardNavbar } from "@/components/dashboard/DashboardNavbar"
 import { NavbarStickyWrapper } from "@/components/dashboard/NavbarStickyWrapper"
 import { SubNavBreadcrumb } from "@/components/dashboard/SubNavBreadcrumb"
+import { ModalProvider } from "@/components/modal_system"
 import { SidebarProvider } from "@/components/sidebar_system"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 
@@ -24,6 +25,7 @@ export default function DashboardLayout({
         </div>
       </div>
       <SidebarProvider />
+      <ModalProvider />
     </NuqsAdapter>
   )
 }

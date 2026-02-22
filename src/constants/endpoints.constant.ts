@@ -7,6 +7,7 @@ export const ENDPOINTS = {
     RESET_PASSWORD: "/auth/reset-password",
     REFRESH: "/auth/refresh",
     PROFILE: "/auth/profile",
+    CHANGE_PASSWORD: "/auth/change-password",
   },
   DASHBOARD: {
     BALANCE: "/dashboard/balance",
@@ -18,4 +19,5 @@ export const ENDPOINTS = {
   CASHIERS: "/cashiers",
   USERS: "/users",
   ACCOUNT_EVENTS: "/account-events",
+  CLIENTS: "/clients",
 };
