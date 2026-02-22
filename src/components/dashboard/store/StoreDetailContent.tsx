@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useSidebar } from "@/components/sidebar_system"
@@ -60,8 +61,8 @@ export function StoreDetailContent({ id }: StoreDetailContentProps) {
   )
 
   return (
-    <div className="flex ">
-      <div className="flex min-w-0 flex-1 flex-col gap-[28px] pb-10">
+    <div className="flex">
+      <div className="flex min-w-0 flex-1 flex-col gap-4 lg:gap-[28px] ">
         <StoreDetailHeader />
 
         {isLoading ? (
@@ -70,8 +71,8 @@ export function StoreDetailContent({ id }: StoreDetailContentProps) {
           <StoreInfoCard store={store} />
         ) : null}
 
-        <div className="overflow-hidden rounded-[20px] bg-white">
-          <div className="px-[30px] pt-[24px]">
+        <div className="overflow-hidden rounded-[16px] lg:rounded-[20px] bg-white">
+          <div className="px-4 pt-4 lg:px-[30px] lg:pt-[24px]">
             <StoreDetailTabs activeTab={activeTab} onTabChange={handleTabChange} />
           </div>
 

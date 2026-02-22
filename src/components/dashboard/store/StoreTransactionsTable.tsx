@@ -44,7 +44,7 @@ export function StoreTransactionsTable({ storeId, onRowClick }: StoreTransaction
         title: "ID Transaction",
         width: 1,
         render: (_: unknown, row: TransactionRow) => (
-          <span className="text-[16px] font-medium tracking-[-0.48px] text-black">
+          <span className="text-[13px] lg:text-[16px] font-medium tracking-[-0.39px] lg:tracking-[-0.48px] text-black">
             {row.id}
           </span>
         ),
@@ -54,7 +54,7 @@ export function StoreTransactionsTable({ storeId, onRowClick }: StoreTransaction
         title: "Type de transaction",
         width: 1.2,
         render: (_: unknown, row: TransactionRow) => (
-          <span className="text-[18px] font-bold tracking-[-0.54px] text-black">
+          <span className="text-[14px] lg:text-[18px] font-bold tracking-[-0.42px] lg:tracking-[-0.54px] text-black">
             {row.type}
           </span>
         ),
@@ -64,7 +64,7 @@ export function StoreTransactionsTable({ storeId, onRowClick }: StoreTransaction
         title: "Montant",
         width: 1,
         render: (_: unknown, row: TransactionRow) => (
-          <span className="text-[16px] font-medium tracking-[-0.48px] text-black">
+          <span className="text-[13px] lg:text-[16px] font-medium tracking-[-0.39px] lg:tracking-[-0.48px] text-black">
             {formatAmount(row.amount)}
           </span>
         ),
@@ -74,7 +74,7 @@ export function StoreTransactionsTable({ storeId, onRowClick }: StoreTransaction
         title: "Client",
         width: 1.2,
         render: (_: unknown, row: TransactionRow) => (
-          <span className="text-[16px] font-medium tracking-[-0.48px] text-black">
+          <span className="text-[13px] lg:text-[16px] font-medium tracking-[-0.39px] lg:tracking-[-0.48px] text-black">
             {row.client ?? "N/A"}
           </span>
         ),
@@ -84,7 +84,7 @@ export function StoreTransactionsTable({ storeId, onRowClick }: StoreTransaction
         title: "Date",
         width: 1,
         render: (_: unknown, row: TransactionRow) => (
-          <span className="text-[16px] font-medium tracking-[-0.48px] text-black">
+          <span className="text-[13px] lg:text-[16px] font-medium tracking-[-0.39px] lg:tracking-[-0.48px] text-black">
             {row.date}
           </span>
         ),
@@ -127,12 +127,14 @@ export function StoreTransactionsTable({ storeId, onRowClick }: StoreTransaction
         exportLabel: "Exporter",
         showRefresh: true,
         showRowBorder: false,
+        scrollMinWidth: "650px",
         headerLayout: "single-row",
         showDateRange: true,
         searchWidth: "w-[308px]",
         containerClassName: "rounded-none",
         paginationVariant: "compact",
         minHeight: "400px",
+        rowClassName: "h-[46px] lg:h-[42px]",
         noDataComponent: (
           <EmptyState
             title="Aucune transaction"

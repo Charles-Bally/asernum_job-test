@@ -1,7 +1,6 @@
 import { DialogProvider } from "@/components/dialog_system";
 import { AuthGuard } from "@/components/providers/AuthGuard";
 import { QueryProvider } from "@/components/providers/QueryProvider";
-import { SidebarProvider } from "@/components/sidebar_system";
 import { ToastProvider } from "@/components/toast_system";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
@@ -50,7 +49,6 @@ export default function RootLayout({
           </AuthGuard>
           <DialogProvider />
           <ToastProvider />
-          <SidebarProvider />
         </QueryProvider>
       </body>
     </html>

@@ -16,7 +16,7 @@ export function AccessKeyCell({ row }: { row: CashierRow }) {
 
   return (
     <div className="flex items-center gap-[10px]">
-      <span className="inline-flex w-[56px] text-[16px] font-medium text-foreground">
+      <span className="inline-flex w-[44px] lg:w-[56px] text-[13px] lg:text-[16px] font-medium text-foreground">
         {visible ? (
           <span className="tracking-[4px]">{row.accessKey}</span>
         ) : (
@@ -24,7 +24,7 @@ export function AccessKeyCell({ row }: { row: CashierRow }) {
             {Array.from({ length: 4 }).map((_, i) => (
               <span
                 key={i}
-                className="inline-block size-[8px] shrink-0 rounded-full bg-foreground"
+                className="inline-block size-[6px] lg:size-[8px] shrink-0 rounded-full bg-foreground"
               />
             ))}
           </span>
@@ -48,8 +48,8 @@ export function StatusBadge({ status }: { status: string }) {
   return (
     <span
       className={cn(
-        "inline-flex h-[27px] w-[80px] items-center justify-center rounded-[8px]",
-        "text-[16px] font-medium tracking-[-0.48px] text-white",
+        "inline-flex h-[22px] lg:h-[27px] w-[62px] lg:w-[80px] items-center justify-center rounded-[6px] lg:rounded-[8px]",
+        "text-[12px] lg:text-[16px] font-medium tracking-[-0.36px] lg:tracking-[-0.48px] text-white",
         status === "Actif" ? "bg-auchan-green" : "bg-text-secondary"
       )}
     >
@@ -70,7 +70,7 @@ function ActionButton({ icon, label, onClick }: ActionButtonProps) {
       type="button"
       onClick={onClick}
       className={cn(
-        "group/action relative flex size-[45px] cursor-pointer items-center justify-center",
+        "group/action relative flex size-[36px] lg:size-[45px] cursor-pointer items-center justify-center",
         "rounded-full text-text-secondary transition-colors",
         "hover:bg-surface-hover hover:text-text-caption"
       )}

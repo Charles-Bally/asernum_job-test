@@ -11,13 +11,13 @@ function formatBalance(amount: number): string {
 
 function GlobalBalanceCardSkeleton() {
   return (
-    <div className="relative h-[322px] w-[354px] overflow-hidden rounded-[40px] bg-auchan-red">
-      <div className="relative z-10 flex h-full flex-col px-[39px] pt-[43px]">
-        <div className="h-[26px] w-[160px] animate-pulse rounded-[8px] bg-white/20" />
-        <div className="mt-[16px] h-[12px] w-[220px] animate-pulse rounded-[6px] bg-white/15" />
-        <div className="mt-auto pb-[30px]">
-          <div className="h-[40px] w-[180px] animate-pulse rounded-[8px] bg-white/20" />
-          <div className="mt-[8px] h-[40px] w-[80px] animate-pulse rounded-[8px] bg-white/20" />
+    <div className="relative h-[200px] lg:h-[322px] w-full lg:w-[354px] overflow-hidden rounded-[20px] lg:rounded-[40px] bg-auchan-red">
+      <div className="relative z-10 flex h-full flex-col px-5 lg:px-[39px] pt-6 lg:pt-[43px]">
+        <div className="h-[22px] lg:h-[26px] w-[140px] lg:w-[160px] animate-pulse rounded-[8px] bg-white/20" />
+        <div className="mt-3 lg:mt-[16px] h-[12px] w-[180px] lg:w-[220px] animate-pulse rounded-[6px] bg-white/15" />
+        <div className="mt-auto pb-6 lg:pb-[30px]">
+          <div className="h-[32px] lg:h-[40px] w-[150px] lg:w-[180px] animate-pulse rounded-[8px] bg-white/20" />
+          <div className="mt-[8px] h-[32px] lg:h-[40px] w-[70px] lg:w-[80px] animate-pulse rounded-[8px] bg-white/20" />
         </div>
       </div>
     </div>
@@ -35,7 +35,7 @@ export function GlobalBalanceCard() {
   return (
     <div
       onClick={toggle}
-      className="relative h-[322px] w-[354px] cursor-pointer overflow-hidden rounded-[40px] bg-auchan-red transition-transform duration-200 ease-out hover:scale-[1.02] active:scale-[0.98]"
+      className="relative h-[200px] lg:h-[322px] w-full lg:w-[354px] cursor-pointer overflow-hidden rounded-[20px] lg:rounded-[40px] bg-auchan-red transition-transform duration-200 ease-out hover:scale-[1.02] active:scale-[0.98]"
     >
       <AuchanBird
         eyeDirection={isVisible ? "bottom-left" : "top-right"}
@@ -44,32 +44,32 @@ export function GlobalBalanceCard() {
         eyeConfig={{ opacity: 1 }}
       />
 
-      <div className="relative z-10 flex h-full flex-col px-[39px] pt-[43px]">
-        <h2 className="text-[26px] font-bold tracking-[-0.78px] text-white">
+      <div className="relative z-10 flex h-full flex-col px-5 lg:px-[39px] pt-6 lg:pt-[43px]">
+        <h2 className="text-[20px] lg:text-[26px] font-bold tracking-[-0.6px] lg:tracking-[-0.78px] text-white">
           Solde globale
         </h2>
 
-        <p className="mt-[16px] text-[12px] font-bold tracking-[-0.36px] text-auchan-red-muted">
+        <p className="mt-2 lg:mt-[16px] text-[11px] lg:text-[12px] font-bold tracking-[-0.33px] lg:tracking-[-0.36px] text-auchan-red-muted">
           {isVisible
             ? "Touchez l'oeil pour masquer le solde"
             : "Touchez l'oeil pour afficher le solde"}
         </p>
 
-        <div className="mt-auto pb-[30px]">
+        <div className="mt-auto pb-5 lg:pb-[30px]">
           {isVisible ? (
-            <p className="text-[40px] font-black uppercase leading-none tracking-[-1.2px] text-white">
+            <p className="text-[32px] lg:text-[40px] font-black uppercase leading-none tracking-[-0.96px] lg:tracking-[-1.2px] text-white">
               {formatBalance(balance)}
               <br />
               FCFA
             </p>
           ) : (
             <>
-              <div className="flex gap-[8px]">
+              <div className="flex gap-[6px] lg:gap-[8px]">
                 {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="size-[16px] rounded-full bg-white" />
+                  <div key={i} className="size-[12px] lg:size-[16px] rounded-full bg-white" />
                 ))}
               </div>
-              <p className="mt-[10px] text-[40px] font-black uppercase leading-none text-white">
+              <p className="mt-[8px] lg:mt-[10px] text-[32px] lg:text-[40px] font-black uppercase leading-none text-white">
                 FCFA
               </p>
             </>

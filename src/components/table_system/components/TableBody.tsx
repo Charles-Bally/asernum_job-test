@@ -132,7 +132,7 @@ export function TableBody<T extends Record<string, unknown>>({
             onClick={(e) => handleRowClick(e, row)}
             onContextMenu={(e) => handleContextMenu(e, row)}
             className={cn(
-              "grid h-[48px] items-center px-[20px]",
+              "grid h-[42px] lg:h-[48px] items-center px-3 lg:px-[20px]",
               showRowBorder && "border-b border-border-light",
               onRowClick && "cursor-pointer group/row hover:[&:not(:has(button:hover,a:hover,[role=button]:hover))]:bg-surface-hover",
               isActive && "bg-auchan-red-light/50",
@@ -164,7 +164,7 @@ export function TableBody<T extends Record<string, unknown>>({
       {contextMenu && actionColumn?.actionContent && (
         <div
           ref={menuRef}
-          className="fixed z-50 min-w-[180px] rounded-[12px] bg-white p-[6px] shadow-lg ring-1 ring-border-light"
+          className="fixed z-50 min-w-[150px] lg:min-w-[180px] rounded-[10px] lg:rounded-[12px] bg-white p-1 lg:p-[6px] shadow-lg ring-1 ring-border-light"
           style={{ top: contextMenu.y, left: contextMenu.x }}
         >
           {actionColumn.actionContent(contextMenu.row, closeMenu)}

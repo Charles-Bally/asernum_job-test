@@ -36,15 +36,15 @@ export function ActionsCell<T>({ row, actionContent }: ActionsCellProps<T>) {
           setOpen((prev) => !prev)
         }}
         className={cn(
-          "flex size-[28px] items-center justify-center rounded-[8px] transition-colors",
+          "flex size-[24px] lg:size-[28px] items-center justify-center rounded-[6px] lg:rounded-[8px] transition-colors",
           open ? "bg-surface-muted" : "hover:bg-surface-muted"
         )}
       >
-        <List size={18} className="text-text-caption" />
+        <List size={16} className="text-text-caption lg:size-[18px]" />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-[32px] z-20 min-w-[180px] rounded-[12px] bg-white p-[6px] shadow-lg ring-1 ring-border-light">
+        <div className="absolute right-0 top-[28px] lg:top-[32px] z-20 min-w-[150px] lg:min-w-[180px] rounded-[10px] lg:rounded-[12px] bg-white p-1 lg:p-[6px] shadow-lg ring-1 ring-border-light">
           {actionContent(row, close)}
         </div>
       )}

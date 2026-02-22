@@ -25,10 +25,10 @@ export default function ForgotPasswordPage() {
 
   return (
     <>
-      <h1 className="text-[36px] font-black leading-[1.2] text-foreground">
+      <h1 className="text-[28px] md:text-[36px] font-black leading-[1.2] text-foreground">
         Mot de passe oublié
       </h1>
-      <p className="mt-1 text-[20px] font-medium text-foreground">
+      <p className="mt-1 text-[16px] md:text-[20px] font-medium text-foreground">
         Veuillez entrer votre adresse email pour réinitialiser votre mot de
         passe
       </p>
@@ -63,7 +63,7 @@ export default function ForgotPasswordPage() {
             type="submit"
             onClick={() => {}}
             loading={isSendingOtp}
-            className="h-[60px] w-[355px] rounded-[40px] bg-auchan-red text-[20px] font-black text-white hover:bg-auchan-red-hover"
+            className="h-[60px] w-full md:w-[355px] rounded-[40px] bg-auchan-red text-[20px] font-black text-white hover:bg-auchan-red-hover"
           >
             Continuer
           </CustomButton>

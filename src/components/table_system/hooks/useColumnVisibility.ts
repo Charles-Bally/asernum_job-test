@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import type { ColumnConfig } from "../types/table.types"
 
 type UseColumnVisibilityReturn<T> = {
@@ -20,9 +20,24 @@ export function useColumnVisibility<T>(
     return initial
   })
 
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1280
+  )
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth)
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
   const visibleColumns = useMemo(
-    () => columns.filter((col) => !hiddenKeys.has(col.key)),
-    [columns, hiddenKeys]
+    () =>
+      columns.filter((col) => {
+        if (hiddenKeys.has(col.key)) return false
+        if (col.minBreakpoint && windowWidth < col.minBreakpoint) return false
+        return true
+      }),
+    [columns, hiddenKeys, windowWidth]
   )
 
   const gridTemplateColumns = useMemo(

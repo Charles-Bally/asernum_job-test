@@ -25,15 +25,15 @@ export function StoreCard({ store, className }: StoreCardProps) {
       type="button"
       onClick={() => router.push(PATHNAME.DASHBOARD.store.details(store.code))}
       className={cn(
-        "group relative flex h-[200px] w-[250px] shrink-0 cursor-pointer flex-col rounded-[40px] px-[28px] pb-[28px] pt-[28px]",
+        "group relative flex h-[150px] lg:h-[200px] w-full shrink-0 cursor-pointer flex-col rounded-[20px] lg:rounded-[40px] px-4 lg:px-[28px] pb-4 lg:pb-[28px] pt-4 lg:pt-[28px]",
         className
       )}
     >
       {/* Fond blanc (default) */}
-      <div className="absolute inset-0 rounded-[40px] bg-white transition-opacity duration-300 group-hover:opacity-0" />
+      <div className="absolute inset-0 rounded-[20px] lg:rounded-[40px] bg-white transition-opacity duration-300 group-hover:opacity-0" />
 
       {/* Fond gradient (hover) */}
-      <div className="store-card-gradient absolute inset-0 rounded-[40px] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+      <div className="store-card-gradient absolute inset-0 rounded-[20px] lg:rounded-[40px] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
       {/* Contenu */}
       <div className="relative z-10 flex flex-1 flex-col">
@@ -50,19 +50,19 @@ export function StoreCard({ store, className }: StoreCardProps) {
           </div>
         </div>
 
-        <p className="mt-auto text-left text-[20px] font-black tracking-[-0.6px] text-foreground transition-colors duration-300 group-hover:text-white">
+        <p className="mt-auto text-left text-[14px] lg:text-[20px] font-black tracking-[-0.42px] lg:tracking-[-0.6px] text-foreground transition-colors duration-300 group-hover:text-white">
           {store.name}
         </p>
 
-        <div className="mt-[6px] flex items-center gap-[6px]">
-          <span className="text-[12px] text-left font-medium tracking-[-0.36px] text-text-secondary opacity-100 transition-[opacity,max-width] duration-300 max-w-[60px] overflow-hidden group-hover:max-w-0 group-hover:opacity-0">
+        <div className="mt-1 lg:mt-[6px] flex items-center gap-1 lg:gap-[6px]">
+          <span className="text-[10px] lg:text-[12px] text-left font-medium tracking-[-0.3px] lg:tracking-[-0.36px] text-text-secondary opacity-100 transition-[opacity,max-width] duration-300 max-w-[50px] lg:max-w-[60px] overflow-hidden group-hover:max-w-0 group-hover:opacity-0">
             {store.code}
           </span>
           <CustomIcon
             config={ICONS.stores.locationPin}
             className="transition-[filter] duration-300 group-hover:brightness-0 group-hover:invert"
           />
-          <span className="text-[12px] font-medium tracking-[-0.36px] text-text-secondary transition-colors duration-300 group-hover:text-white">
+          <span className="text-[10px] lg:text-[12px] font-medium tracking-[-0.3px] lg:tracking-[-0.36px] text-text-secondary transition-colors duration-300 group-hover:text-white">
             {store.city}
           </span>
         </div>

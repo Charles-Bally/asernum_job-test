@@ -42,7 +42,7 @@ const item: Variants = {
 export function StoresGrid({ stores, isLoading, skeletonCount = 15, onAddStore }: StoresGridProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-5 gap-[29px]">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-[29px]">
         {Array.from({ length: skeletonCount }).map((_, i) => (
           <StoreCardSkeleton key={`skeleton-${i}`} index={i} />
         ))}
@@ -69,7 +69,7 @@ export function StoresGrid({ stores, isLoading, skeletonCount = 15, onAddStore }
         variants={container}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-5 gap-[29px]"
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-[29px]"
       >
         {stores.map((store, i) => (
           <motion.div key={`${store.code}-${i}`} variants={item}>

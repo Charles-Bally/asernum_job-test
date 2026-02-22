@@ -1,5 +1,6 @@
 
 import { DashboardNavbar } from "@/components/dashboard/DashboardNavbar"
+import { NavbarStickyWrapper } from "@/components/dashboard/NavbarStickyWrapper"
 import { SubNavBreadcrumb } from "@/components/dashboard/SubNavBreadcrumb"
 import { SidebarProvider } from "@/components/sidebar_system"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
@@ -12,12 +13,14 @@ export default function DashboardLayout({
   return (
     <NuqsAdapter>
       <div className="min-h-dvh bg-surface-page">
-        <div className="mx-auto max-w-[1370px] w-full pt-[26px]">
-          <div className="relative z-10">
-            <DashboardNavbar />
-          </div>
+        {/* Sticky navbar + breadcrumb */}
+        <NavbarStickyWrapper>
+          <DashboardNavbar />
           <SubNavBreadcrumb />
-          <main className="mt-[30px]">{children}</main>
+        </NavbarStickyWrapper>
+
+        <div className="mx-auto max-w-[1370px] w-full px-4 lg:px-0">
+          <main className="mt-4 lg:mt-[30px] pb-6 lg:pb-10">{children}</main>
         </div>
       </div>
       <SidebarProvider />

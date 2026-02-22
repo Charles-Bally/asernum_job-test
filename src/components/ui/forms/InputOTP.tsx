@@ -84,7 +84,7 @@ function InputOTP({
 
   return (
     <div className={cn("flex flex-col", className)}>
-      <div className="flex gap-[18px]">
+      <div className="flex gap-3 md:gap-[18px]">
         {digits.map((digit, index) => (
           <input
             key={index}
@@ -99,7 +99,7 @@ function InputOTP({
             onPaste={handlePaste}
             onFocus={(e) => e.target.select()}
             className={cn(
-              "size-[56px] shrink-0 rounded-[15px] border bg-white text-center text-[20px] font-bold text-foreground outline-none transition-all",
+              "size-12 md:size-[56px] shrink-0 rounded-[12px] md:rounded-[15px] border bg-white text-center text-[20px] font-bold text-foreground outline-none transition-all",
               digit
                 ? "border-border-otp"
                 : "border-[0.5px] border-border-otp",

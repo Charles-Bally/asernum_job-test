@@ -67,6 +67,7 @@ function AuchanBird({ eyeDirection = "center", opacity, className, bodyConfig, e
         src="/images/auth/bird-body.svg"
         alt="Oiseau Auchan"
         fill
+        loading="eager"
         className="pointer-events-none select-none object-contain"
         unoptimized
         style={{ opacity: bodyConfig?.opacity ?? 1 }}

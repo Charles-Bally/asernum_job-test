@@ -11,7 +11,7 @@ type InlineSidebarPanelProps = {
 
 export function InlineSidebarPanel({ config, onClose }: InlineSidebarPanelProps) {
   return (
-    <div className="w-[386px] rounded-[20px] bg-white sticky top-[20px] h-full max-h-[calc(100dvh-60px)] overflow-y-auto">
+    <div className="w-[386px] rounded-[20px] bg-white sticky top-[185px] h-full max-h-[calc(100dvh-210px)] overflow-y-auto">
       <button
         type="button"
         onClick={onClose}

@@ -10,6 +10,8 @@ export type ColumnConfig<T = Record<string, unknown>> = {
   width: number
   sortable?: boolean
   defaultHidden?: boolean
+  /** Largeur minimale en px pour afficher cette colonne (ex: 1024) */
+  minBreakpoint?: number
   className?: string
   overflow?: boolean
   render?: (value: unknown, row: T) => ReactNode
@@ -102,6 +104,7 @@ export type TableSchema<T = Record<string, unknown>> = {
     paginationVariant?: "default" | "compact"
     showRowBorder?: boolean
     rowClassName?: string
+    scrollMinWidth?: string
   }
 }
 

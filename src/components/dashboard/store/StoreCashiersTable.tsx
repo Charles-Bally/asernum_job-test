@@ -39,9 +39,9 @@ export function StoreCashiersTable({ storeId, onRowClick }: StoreCashiersTablePr
       {
         key: "username",
         title: "Utilisateur",
-        width: 2.3,
+        width: 1.5,
         render: (_: unknown, row: CashierRow) => (
-          <span className="text-[18px] font-bold tracking-[-0.54px] text-foreground">
+          <span className="text-[14px] lg:text-[18px] font-bold tracking-[-0.42px] lg:tracking-[-0.54px] text-foreground">
             {row.username}
           </span>
         ),
@@ -57,7 +57,7 @@ export function StoreCashiersTable({ storeId, onRowClick }: StoreCashiersTablePr
         title: "Date d\u2019affectation",
         width: 1.1,
         render: (_: unknown, row: CashierRow) => (
-          <span className="text-[16px] font-medium tracking-[-0.48px] text-foreground">
+          <span className="text-[13px] lg:text-[16px] font-medium tracking-[-0.39px] lg:tracking-[-0.48px] text-foreground">
             {row.assignedDate}
           </span>
         ),
@@ -114,13 +114,14 @@ export function StoreCashiersTable({ storeId, onRowClick }: StoreCashiersTablePr
         paginationVariant: "compact",
         showRowBorder: false,
         minHeight: "400px",
-        rowClassName: "h-[65px]",
+        scrollMinWidth: "700px",
+        rowClassName: "h-[50px] lg:h-[65px]",
         headerActions: (
           <CustomButton
             variant="primary"
             size="md"
             onClick={() => { }}
-            className="h-[46px] shrink-0 rounded-[10px] px-[40px] text-[18px] font-bold"
+            className="h-[36px] lg:h-[46px] shrink-0 rounded-[8px] lg:rounded-[10px] px-4 lg:px-[40px] text-[13px] lg:text-[18px] font-bold"
           >
             Ajouter un caissier
           </CustomButton>

@@ -1,3 +1,4 @@
+
 "use client"
 
 import { cn } from "@/lib/utils"
@@ -20,7 +21,7 @@ export function StoreDetailTabs({ activeTab, onTabChange, className }: StoreDeta
   return (
     <div
       className={cn(
-        "relative inline-flex items-center gap-[6px] rounded-[14px] bg-border-light p-[5px]",
+        "relative inline-flex items-center gap-[4px] lg:gap-[6px] rounded-[12px] lg:rounded-[14px] bg-border-light p-[4px] lg:p-[5px]",
         className
       )}
     >
@@ -29,7 +30,7 @@ export function StoreDetailTabs({ activeTab, onTabChange, className }: StoreDeta
           key={tab.key}
           onClick={() => onTabChange(tab.key)}
           className={cn(
-            "relative z-10 h-[38px] w-[143px] cursor-pointer rounded-[10px] text-[16px] font-bold tracking-[-0.48px]",
+            "relative z-10 h-[32px] lg:h-[38px] w-[110px] lg:w-[143px] cursor-pointer rounded-[8px] lg:rounded-[10px] text-[13px] lg:text-[16px] font-bold tracking-[-0.39px] lg:tracking-[-0.48px]",
             activeTab === tab.key
               ? "text-foreground"
               : "text-foreground hover:text-foreground/70"
@@ -38,7 +39,7 @@ export function StoreDetailTabs({ activeTab, onTabChange, className }: StoreDeta
           {activeTab === tab.key && (
             <motion.div
               layoutId="store-tab-indicator"
-              className="absolute inset-0 rounded-[10px] bg-white shadow-sm"
+              className="absolute inset-0 rounded-[8px] lg:rounded-[10px] bg-white shadow-sm"
               transition={{ type: "spring", stiffness: 500, damping: 35 }}
             />
           )}

@@ -33,12 +33,12 @@ function DefaultPagination({
   const pages = getVisiblePages(page, totalPages)
 
   return (
-    <div className="flex items-center justify-center gap-[20px] py-[30px] pt-0">
+    <div className="flex items-center justify-center gap-2.5 lg:gap-[20px] py-5 lg:py-[30px] pt-0">
       <NavButton direction="prev" disabled={page <= 1} onClick={() => onPageChange(page - 1)} />
 
       {pages.map((p, i) =>
         p === "..." ? (
-          <span key={`ellipsis-${i}`} className="text-[20px] font-black tracking-[-0.6px] text-text-muted">
+          <span key={`ellipsis-${i}`} className="text-[16px] lg:text-[20px] font-black tracking-[-0.48px] lg:tracking-[-0.6px] text-text-muted">
             ...
           </span>
         ) : (
@@ -46,10 +46,10 @@ function DefaultPagination({
             key={p}
             onClick={() => onPageChange(p as number)}
             className={cn(
-              "flex size-[50px] cursor-pointer items-center justify-center rounded-[10px] text-[20px] font-black tracking-[-0.6px] transition-all duration-200",
+              "flex size-[38px] lg:size-[50px] cursor-pointer items-center justify-center rounded-[8px] lg:rounded-[10px] text-[16px] lg:text-[20px] font-black tracking-[-0.48px] lg:tracking-[-0.6px] transition-all duration-200",
               p === page
-                ? "border-3 border-auchan-red text-black"
-                : "bg-border-default text-black hover:border-3 hover:border-auchan-red-muted hover:bg-transparent active:scale-95"
+                ? "border-2 lg:border-3 border-auchan-red text-black"
+                : "bg-border-default text-black hover:border-2 lg:hover:border-3 hover:border-auchan-red-muted hover:bg-transparent active:scale-95"
             )}
           >
             {p}
@@ -117,7 +117,7 @@ function NavButton({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "flex size-[40px] items-center justify-center rounded-[10px] transition-all duration-200",
+        "flex size-[32px] lg:size-[40px] items-center justify-center rounded-[8px] lg:rounded-[10px] transition-all duration-200",
         disabled
           ? "cursor-not-allowed text-text-muted opacity-40"
           : "cursor-pointer text-auchan-red hover:scale-110 hover:bg-auchan-red-light active:scale-95"

@@ -133,43 +133,48 @@ export function TableKit<T extends Record<string, unknown>>({
             />
           )}
 
-      {/* Column headers */}
-      <div
-        className="grid h-[30px] items-center bg-surface-muted px-[20px]"
-        style={{ gridTemplateColumns }}
-      >
-        {visibleColumns.map((col) => (
-          <button
-            key={col.key}
-            onClick={() => col.sortable && handleSort(col.key)}
-            disabled={!col.sortable}
-            className={cn(
-              "flex items-center gap-[4px] text-left text-[11px] font-medium tracking-[-0.33px] text-text-secondary",
-              col.sortable && "cursor-pointer hover:text-text-caption",
-              col.className
-            )}
+      {/* Scrollable table area */}
+      <div className="overflow-x-auto scrollbar-none">
+        <div style={{ minWidth: ui?.scrollMinWidth }}>
+          {/* Column headers */}
+          <div
+            className="grid h-[28px] lg:h-[30px] items-center bg-surface-muted px-3 lg:px-[20px]"
+            style={{ gridTemplateColumns }}
           >
-            {col.title}
-            {sort.key === col.key && sort.direction === "asc" && <ArrowUp size={10} />}
-            {sort.key === col.key && sort.direction === "desc" && <ArrowDown size={10} />}
-          </button>
-        ))}
-      </div>
+            {visibleColumns.map((col) => (
+              <button
+                key={col.key}
+                onClick={() => col.sortable && handleSort(col.key)}
+                disabled={!col.sortable}
+                className={cn(
+                  "flex items-center gap-[4px] text-left text-[10px] lg:text-[11px] font-medium tracking-[-0.3px] lg:tracking-[-0.33px] text-text-secondary",
+                  col.sortable && "cursor-pointer hover:text-text-caption",
+                  col.className
+                )}
+              >
+                {col.title}
+                {sort.key === col.key && sort.direction === "asc" && <ArrowUp size={10} />}
+                {sort.key === col.key && sort.direction === "desc" && <ArrowDown size={10} />}
+              </button>
+            ))}
+          </div>
 
-      {/* Body */}
-      <div style={{ minHeight: ui?.minHeight }}>
-        <TableBody
-          rows={rows}
-          visibleColumns={visibleColumns}
-          gridTemplateColumns={gridTemplateColumns}
-          isLoading={isLoading}
-          limit={limit}
-          emptyContent={emptyContent}
-          onRowClick={actions?.rowClick}
-          actionColumn={actionColumn}
-          showRowBorder={ui?.showRowBorder !== false}
-          rowClassName={ui?.rowClassName}
-        />
+          {/* Body */}
+          <div style={{ minHeight: ui?.minHeight }}>
+            <TableBody
+              rows={rows}
+              visibleColumns={visibleColumns}
+              gridTemplateColumns={gridTemplateColumns}
+              isLoading={isLoading}
+              limit={limit}
+              emptyContent={emptyContent}
+              onRowClick={actions?.rowClick}
+              actionColumn={actionColumn}
+              showRowBorder={ui?.showRowBorder !== false}
+              rowClassName={ui?.rowClassName}
+            />
+          </div>
+        </div>
       </div>
 
       {showPagination && (

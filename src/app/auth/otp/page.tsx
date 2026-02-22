@@ -76,10 +76,10 @@ export default function OtpPage() {
 
   return (
     <>
-      <h1 className="text-[36px] font-black leading-[1.2] text-foreground">
+      <h1 className="text-[28px] md:text-[36px] font-black leading-[1.2] text-foreground">
         Code OTP
       </h1>
-      <p className="mt-1 text-[20px] font-medium text-foreground">
+      <p className="mt-1 text-[16px] md:text-[20px] font-medium text-foreground">
         Veuillez saisir le code OTP reçu par message sur votre adresse email
       </p>
 
@@ -120,7 +120,7 @@ export default function OtpPage() {
           onClick={handleValidate}
           loading={isVerifyingOtp}
           disabled={isLoading}
-          className="h-[60px] w-[355px] rounded-[40px] bg-auchan-red text-[20px] font-black text-white hover:bg-auchan-red-hover"
+          className="h-[60px] w-full md:w-[355px] rounded-[40px] bg-auchan-red text-[20px] font-black text-white hover:bg-auchan-red-hover"
         >
           Valider
         </CustomButton>

@@ -24,13 +24,13 @@ async function apiFetcher(): Promise<TableFetcherResult<TransactionRow>> {
 
 function PreviewHeader() {
   return (
-    <div className="flex px-[35px] justify-end pb-[20px]">
+    <div className="flex px-4 lg:px-[35px] justify-end pb-3 lg:pb-[20px]">
       <CustomLink
         href={PATHNAME.DASHBOARD.transactions}
         variant="none"
         size="none"
         animation={true}
-        className="shrink-0 rounded-[10px] h-[40px] border-3 border-auchan-red px-[14px] py-[9px] text-[18px] font-bold tracking-[-0.54px] text-auchan-red"
+        className="shrink-0 whitespace-nowrap rounded-[8px] lg:rounded-[10px] h-auto lg:h-[40px] border-[1.5px] lg:border-3 border-auchan-red px-2.5 lg:px-[14px] py-[5px] lg:py-[9px] text-[12px] lg:text-[18px] font-bold tracking-[-0.36px] lg:tracking-[-0.54px] text-auchan-red"
       >
         {`Toutes les transactions >`}
       </CustomLink>
@@ -55,7 +55,9 @@ export function TransactionsPreview() {
         title: "Type de transaction",
         width: 1.4,
         render: (_: unknown, row: TransactionRow) => (
-          <span className="text-[18px] font-bold tracking-[-0.54px] text-black">{row.type}</span>
+          <span className="text-[13px] lg:text-[18px] font-bold tracking-[-0.39px] lg:tracking-[-0.54px] text-black">
+            {row.type}
+          </span>
         ),
       },
       {
@@ -63,7 +65,9 @@ export function TransactionsPreview() {
         title: "Magasin",
         width: 1,
         render: (_: unknown, row: TransactionRow) => (
-          <span className="text-[16px] font-medium tracking-[-0.48px] text-black">{row.store}</span>
+          <span className="text-[12px] lg:text-[16px] font-medium tracking-[-0.36px] lg:tracking-[-0.48px] text-black">
+            {row.store}
+          </span>
         ),
       },
       {
@@ -73,7 +77,7 @@ export function TransactionsPreview() {
         render: (_: unknown, row: TransactionRow) => (
           <span
             className={cn(
-              "text-[16px] font-medium tracking-[-0.48px]",
+              "text-[12px] lg:text-[16px] font-medium tracking-[-0.36px] lg:tracking-[-0.48px]",
               row.amount >= 0 ? "text-auchan-green" : "text-auchan-red"
             )}
           >
@@ -85,6 +89,7 @@ export function TransactionsPreview() {
         key: "client",
         title: "Client",
         width: 1,
+        minBreakpoint: 1024,
         render: (_: unknown, row: TransactionRow) => (
           <span className="text-[16px] font-medium tracking-[-0.48px] text-black">
             {row.client ?? "N/A"}
@@ -95,6 +100,7 @@ export function TransactionsPreview() {
         key: "date",
         title: "Date",
         width: 1,
+        minBreakpoint: 1024,
         render: (_: unknown, row: TransactionRow) => (
           <span className="text-[16px] font-medium tracking-[-0.48px] text-black">{row.date}</span>
         ),
@@ -110,7 +116,7 @@ export function TransactionsPreview() {
               sidebar.open({ entity: "transaction-detail", entityId: row.id })
               close()
             }}
-            className="flex w-full items-center gap-[8px] rounded-[8px] px-[12px] py-[8px] text-[13px] font-medium text-text-caption hover:bg-surface-muted"
+            className="flex w-full items-center gap-[6px] lg:gap-[8px] rounded-[6px] lg:rounded-[8px] px-2.5 lg:px-[12px] py-[6px] lg:py-[8px] text-[12px] lg:text-[13px] font-medium text-text-caption hover:bg-surface-muted"
           >
             <Eye size={14} />
             Voir les détails
@@ -138,7 +144,7 @@ export function TransactionsPreview() {
         showHeader: false,
         showPagination: false,
         customHeader: <PreviewHeader />,
-        containerClassName: "flex-1 rounded-[40px]  pt-[30px]",
+        containerClassName: "flex-1 rounded-[20px] lg:rounded-[40px] pt-4 lg:pt-[30px]",
         noDataComponent: (
           <EmptyState
             title="Aucune transaction"
