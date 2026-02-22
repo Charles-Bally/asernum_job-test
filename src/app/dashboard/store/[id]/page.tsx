@@ -1,24 +1,23 @@
-"use client"
+import type { Metadata } from "next"
+import { storesService } from "@/services/stores/stores.service"
+import { StoreDetailClient } from "./StoreDetailClient"
 
-import { StoreDetailContent } from "@/components/dashboard/store/StoreDetailContent"
-import { useStoreDetailStore } from "@/store/storeDetail.store"
-import { useParams } from "next/navigation"
-import { useEffect } from "react"
+type Props = { params: Promise<{ id: string }> }
 
-export default function StoreDetailPage() {
-  const { id } = useParams<{ id: string }>()
-  const setStoreName = useStoreDetailStore((s) => s.setStoreName)
-  const setLoading = useStoreDetailStore((s) => s.setLoading)
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params
 
-  useEffect(() => {
-    setLoading(true)
-    return () => {
-      setStoreName(null)
-      setLoading(false)
+  try {
+    const store = await storesService.getStoreById(id)
+    return {
+      title: store?.name ? `${store.name} | Auchan Super Admin` : `Magasin ${id} | Auchan Super Admin`,
     }
-  }, [setStoreName, setLoading])
+  } catch {
+    return { title: `Magasin ${id} | Auchan Super Admin` }
+  }
+}
 
-  if (!id) return null
-
-  return <StoreDetailContent id={id} />
+export default async function StoreDetailPage({ params }: Props) {
+  const { id } = await params
+  return <StoreDetailClient id={id} />
 }
