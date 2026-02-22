@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server"
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 import { withMiddleware } from "@/app/api/_helpers/middleware.helper"
 import { validateBody } from "@/app/api/_helpers/validate.helper"
 import { apiSuccess, apiError } from "@/app/api/_helpers/response.helper"

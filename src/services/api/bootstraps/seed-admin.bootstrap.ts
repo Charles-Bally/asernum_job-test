@@ -1,5 +1,5 @@
 import { prisma } from "@/services/api/prisma.service"
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 
 const ADMIN_EMAILS = [
   { email: "admin@asernum-job.com", firstName: "Charles", lastName: "Bally" },
