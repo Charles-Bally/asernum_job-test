@@ -47,10 +47,13 @@ const DAY_PICKER_CLASSES = {
 
 const MOBILE_CLASSES = {
   ...DAY_PICKER_CLASSES,
+  root: "text-[13px]",
   weekday: "w-[44px] text-center text-[12px] font-medium text-text-secondary",
   day: "size-[44px] text-center",
   day_button: "size-full cursor-pointer rounded-full text-[14px] hover:bg-surface-muted",
   month_caption: "flex justify-center pb-[16px] text-[16px] font-bold text-foreground",
+  button_previous: "absolute left-[10px] top-[82px] size-[32px] cursor-pointer rounded-full p-[6px]",
+  button_next: "absolute right-[18px] top-[82px] size-[32px] cursor-pointer rounded-full p-[6px]",
 }
 
 function ActionButtons({
@@ -204,7 +207,7 @@ export function DateRangePicker({ onChange }: DateRangePickerProps) {
             <motion.div
               variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
               transition={sheetTransition}
-              className="absolute inset-0 bg-black/10"
+              className="absolute inset-0 bg-black/50"
               onClick={close}
             />
             <motion.div
@@ -222,9 +225,18 @@ export function DateRangePicker({ onChange }: DateRangePickerProps) {
                 <div className="h-[5px] w-[48px] rounded-full bg-border-light" />
               </div>
 
-              <p className="text-[16px] font-bold tracking-[-0.48px] text-foreground mb-3">
-                Sélectionner une période
-              </p>
+              <div className="flex pb-5 items-center justify-between mb-3">
+                <p className="text-[16px] font-bold tracking-[-0.48px] text-foreground">
+                  Sélectionner une période
+                </p>
+                <button
+                  type="button"
+                  onClick={close}
+                  className="flex size-[32px] cursor-pointer items-center justify-center rounded-full text-text-secondary hover:bg-surface-muted hover:text-foreground"
+                >
+                  <X size={18} />
+                </button>
+              </div>
 
               <div className="flex justify-center">
                 <DayPicker

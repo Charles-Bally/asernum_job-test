@@ -11,10 +11,12 @@ export interface ToastItem extends ToastOptions {
   id: string
   duration: number
   createdAt: number
+  exiting?: boolean
 }
 
 export interface ToastStore {
   toasts: ToastItem[]
   add: (options: ToastOptions) => void
+  dismiss: (id: string) => void
   remove: (id: string) => void
 }

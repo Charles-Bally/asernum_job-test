@@ -40,6 +40,9 @@ export function useLoginController() {
       toast({ type: TOAST.SUCCESS, message: "Connexion réussie" })
       router.push(PATHNAME.DASHBOARD.home)
     },
+    onError: (error) => {
+      toast({ type: TOAST.ERROR, message: extractErrorMessage(error) })
+    },
   })
 
   const login = (identifier: string, password: string) =>

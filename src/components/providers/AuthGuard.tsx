@@ -7,7 +7,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { useAuthStore } from "@/store/auth.store";
 import { AnimatePresence } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading, checkAuth } = useAuthStore();
@@ -20,6 +20,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     checkAuth();
   }, [checkAuth]);
 
+  const fallbackTimer = useRef<ReturnType<typeof setTimeout>>(null);
+
   useEffect(() => {
     if (isLoading) return;
 
@@ -29,21 +31,28 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       pathname.startsWith(page.path),
     );
 
+    let targetUrl: string | null = null;
+
     if (isRootPage) {
-      router.replace(
-        isAuthenticated ? PATHNAME.DASHBOARD.home : PATHNAME.LOGIN,
-      );
-      return;
+      targetUrl = isAuthenticated ? PATHNAME.DASHBOARD.home : PATHNAME.LOGIN;
+    } else if (needsAuth && !isAuthenticated) {
+      targetUrl = PATHNAME.LOGIN;
+    } else if (isAuthPage && isAuthenticated) {
+      targetUrl = PATHNAME.DASHBOARD.home;
     }
 
-    if (needsAuth && !isAuthenticated) {
-      router.replace(PATHNAME.LOGIN);
-      return;
+    if (targetUrl) {
+      if (fallbackTimer.current) clearTimeout(fallbackTimer.current);
+      router.replace(targetUrl);
+      const url = targetUrl;
+      fallbackTimer.current = setTimeout(() => {
+        window.location.replace(url);
+      }, 2000);
     }
 
-    if (isAuthPage && isAuthenticated) {
-      router.replace(PATHNAME.DASHBOARD.home);
-    }
+    return () => {
+      if (fallbackTimer.current) clearTimeout(fallbackTimer.current);
+    };
   }, [isAuthenticated, isLoading, pathname, router]);
 
   const isAuthPage = pathname.startsWith("/auth");

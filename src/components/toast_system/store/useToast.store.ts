@@ -3,6 +3,7 @@ import { create } from "zustand"
 
 const MAX_TOASTS = 3
 const DEFAULT_DURATION = 4000
+const EXIT_DURATION = 400
 
 let toastCounter = 0
 const timers = new Map<string, ReturnType<typeof setTimeout>>()
@@ -35,17 +36,26 @@ export const useToastStore = create<ToastStore>((set, get) => ({
     })
 
     const timer = setTimeout(() => {
-      get().remove(id)
+      get().dismiss(id)
     }, duration)
     timers.set(id, timer)
   },
 
-  remove: (id: string) => {
+  dismiss: (id: string) => {
     const timer = timers.get(id)
     if (timer) {
       clearTimeout(timer)
       timers.delete(id)
     }
+    set((state) => ({
+      toasts: state.toasts.map((t) => (t.id === id ? { ...t, exiting: true } : t)),
+    }))
+    setTimeout(() => {
+      get().remove(id)
+    }, EXIT_DURATION)
+  },
+
+  remove: (id: string) => {
     set((state) => ({
       toasts: state.toasts.filter((t) => t.id !== id),
     }))

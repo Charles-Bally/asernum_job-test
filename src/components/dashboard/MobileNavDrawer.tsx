@@ -64,8 +64,10 @@ export function MobileNavDrawer({ open, onOpenChange, navItems }: MobileNavDrawe
 
   const handleLogout = useCallback(() => {
     close()
-    logout()
-    router.replace(PATHNAME.LOGIN)
+    setTimeout(() => {
+      logout()
+      router.replace(PATHNAME.LOGIN)
+    }, 350)
   }, [close, logout, router])
 
   const handleProfile = useCallback(() => {

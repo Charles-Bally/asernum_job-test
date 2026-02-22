@@ -1,33 +1,25 @@
 "use client"
 
 import { useToastStore } from "@/components/toast_system/store/useToast.store"
-import type { ToastItem as ToastItemType } from "@/components/toast_system/types/toast.types"
+import type { ToastItem as ToastItemType, ToastType } from "@/components/toast_system/types/toast.types"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
-import { CheckCircle, Info, AlertTriangle, XCircle, X } from "lucide-react"
 
-const iconMap = {
-  success: CheckCircle,
-  error: XCircle,
-  warning: AlertTriangle,
-  info: Info,
-}
-
-const accentColors = {
+const dotColors: Record<ToastType, string> = {
   success: "bg-auchan-green",
   error: "bg-auchan-red",
   warning: "bg-toast-warning",
   info: "bg-toast-info",
 }
 
-const iconColors = {
-  success: "text-auchan-green",
-  error: "text-auchan-red",
-  warning: "text-toast-warning",
-  info: "text-toast-info",
+const progressColors: Record<ToastType, string> = {
+  success: "bg-auchan-green",
+  error: "bg-auchan-red",
+  warning: "bg-toast-warning",
+  info: "bg-toast-info",
 }
 
-const defaultTitles = {
+const defaultTitles: Record<ToastType, string> = {
   success: "Succès",
   error: "Erreur",
   warning: "Attention",
@@ -35,42 +27,55 @@ const defaultTitles = {
 }
 
 export function ToastItemComponent({ toast }: { toast: ToastItemType }) {
-  const remove = useToastStore((s) => s.remove)
-  const Icon = iconMap[toast.type]
+  const dismiss = useToastStore((s) => s.dismiss)
   const title = toast.title ?? defaultTitles[toast.type]
+  const isExiting = toast.exiting ?? false
 
   return (
     <motion.div
-      layout
-      initial={{ opacity: 0, y: -8, scale: 0.96, filter: "blur(4px)" }}
-      animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-      exit={{ opacity: 0, scale: 0.92, filter: "blur(4px)", transition: { duration: 0.2 } }}
-      transition={{ type: "spring", stiffness: 380, damping: 26 }}
-      className="pointer-events-auto relative w-[340px] overflow-hidden rounded-xl bg-white shadow-[0_4px_24px_rgba(0,0,0,0.08)]"
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={
+        isExiting
+          ? { opacity: 0, y: 10, scale: 0.97, transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] } }
+          : { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 380, damping: 28 } }
+      }
+      className="pointer-events-auto relative w-full lg:w-[320px] overflow-hidden rounded-2xl bg-white shadow-[0_8px_30px_rgba(0,0,0,0.12)]"
     >
-      <div className="flex items-center gap-3 px-4 py-3.5">
-        <Icon className={cn("h-[18px] w-[18px] shrink-0", iconColors[toast.type])} />
+      <div className="flex items-start gap-3 px-4 py-3.5">
+        {/* Dot */}
+        <div className={cn("mt-[7px] size-2 shrink-0 rounded-full", dotColors[toast.type])} />
 
+        {/* Text */}
         <div className="flex-1 min-w-0">
-          <p className="text-[13px] font-semibold text-foreground leading-tight">{title}</p>
-          <p className="mt-0.5 text-[12px] text-text-tertiary leading-snug">{toast.message}</p>
+          <p className="text-[13px] font-semibold text-gray-900 leading-tight">
+            {title}
+          </p>
+          <p className="mt-0.5 text-[12px] text-gray-500 leading-snug">
+            {toast.message}
+          </p>
         </div>
 
+        {/* Close */}
         <button
-          onClick={() => remove(toast.id)}
-          className="shrink-0 cursor-pointer rounded-full p-1 text-text-muted/60 transition-colors hover:text-foreground"
+          onClick={() => dismiss(toast.id)}
+          className="shrink-0 mt-0.5 flex size-6 cursor-pointer items-center justify-center rounded-full text-gray-300 transition-colors hover:bg-gray-100 hover:text-gray-500"
         >
-          <X className="h-3.5 w-3.5" />
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+          </svg>
         </button>
       </div>
 
-      <motion.div
-        className={cn("h-[2px]", accentColors[toast.type])}
-        initial={{ scaleX: 1 }}
-        animate={{ scaleX: 0 }}
-        transition={{ duration: toast.duration / 1000, ease: "linear" }}
-        style={{ transformOrigin: "left" }}
-      />
+      {/* Progress */}
+      <div className="h-[2px] bg-gray-100">
+        <motion.div
+          className={cn("h-full rounded-full", progressColors[toast.type])}
+          initial={{ scaleX: 1 }}
+          animate={{ scaleX: 0 }}
+          transition={{ duration: toast.duration / 1000, ease: "linear" }}
+          style={{ transformOrigin: "left" }}
+        />
+      </div>
     </motion.div>
   )
 }

@@ -2,7 +2,7 @@
 
 import { ToastItemComponent } from "@/components/toast_system/components/ToastItem"
 import { useToastStore } from "@/components/toast_system/store/useToast.store"
-import { AnimatePresence } from "framer-motion"
+import { cn } from "@/lib/utils"
 import { useSyncExternalStore } from "react"
 import { createPortal } from "react-dom"
 
@@ -25,15 +25,18 @@ export function Toast() {
 
   if (!portalEl || toasts.length === 0) return null
 
-  const content = (
-    <div className="pointer-events-none fixed top-6 right-6 z-[4000] flex flex-col gap-3">
-      <AnimatePresence mode="popLayout">
-        {toasts.map((toast) => (
-          <ToastItemComponent key={toast.id} toast={toast} />
-        ))}
-      </AnimatePresence>
-    </div>
+  return createPortal(
+    <div
+      className={cn(
+        "pointer-events-none fixed z-[4000] flex flex-col-reverse lg:flex-col gap-2.5",
+        "bottom-5 inset-x-4 items-center",
+        "lg:bottom-auto lg:inset-x-auto lg:top-6 lg:right-6 lg:items-end"
+      )}
+    >
+      {toasts.map((toast) => (
+        <ToastItemComponent key={toast.id} toast={toast} />
+      ))}
+    </div>,
+    portalEl
   )
-
-  return createPortal(content, portalEl)
 }
