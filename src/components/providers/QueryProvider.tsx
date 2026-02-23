@@ -17,6 +17,7 @@ const queryClient = new QueryClient({
 export function QueryProvider({ children }: { children: React.ReactNode }) {
   const initialized = useRef(false);
 
+  // eslint-disable-next-line react-hooks/refs
   if (!initialized.current) {
     tanstackQueryService.setQueryClient(queryClient);
     initialized.current = true;

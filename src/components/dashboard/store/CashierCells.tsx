@@ -12,7 +12,7 @@ import {
 } from "./CashierActionIcons"
 
 export function AccessKeyCell({ row }: { row: CashierRow }) {
-  const [visible, setVisible] = useState(row.showKey)
+  const [visible, setVisible] = useState(false)
 
   return (
     <div className="flex items-center gap-[10px]">

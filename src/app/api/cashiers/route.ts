@@ -64,8 +64,7 @@ export const GET = withMiddleware(authMiddleware, requireRole("ADMIN"), async (r
   const rows = cashiers.map((c) => ({
     id: c.id,
     username: `${c.firstName}${c.lastName}`.replace(/\s/g, ""),
-    accessKey: "****",
-    showKey: false,
+    accessKey: c.accessKey ?? "",
     assignedDate: c.cashierHistory[0]
       ? formatDateTime(c.cashierHistory[0].assignedAt)
       : formatDateTime(c.createdAt),

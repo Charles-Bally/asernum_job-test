@@ -115,6 +115,7 @@ export const POST = withMiddleware(
         email: body.email,
         password,
         role: body.role as Role,
+        accessKey: accessCode,
       },
     })
 

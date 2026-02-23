@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -41,6 +40,7 @@ model User {
   password      String
   firstName     String
   lastName      String
+  accessKey     String?
   role          Role      @default(CAISSIER)
   isBlocked     Boolean   @default(false)
   blockedAt     DateTime?

@@ -4,10 +4,12 @@
 import { cn } from "@/lib/utils"
 import type { StoreDetail } from "@/services/stores/stores.types"
 import { AnimatePresence, motion } from "framer-motion"
+import { Pencil } from "lucide-react"
 import { useCallback, useState } from "react"
 
 type StoreInfoCardProps = {
   store: StoreDetail
+  onEdit?: () => void
   className?: string
 }
 
@@ -141,15 +143,34 @@ function Legend({ segments }: { segments: DonutSegment[] }) {
   )
 }
 
-export function StoreInfoCard({ store, className }: StoreInfoCardProps) {
+export function StoreInfoCard({ store, onEdit, className }: StoreInfoCardProps) {
+  const [isHovered, setIsHovered] = useState(false)
+
   return (
     <div
       className={cn(
-        "flex flex-col lg:flex-row lg:items-center justify-between rounded-[20px] bg-white",
+        "relative group flex flex-col lg:flex-row lg:items-center justify-between rounded-[20px] bg-white",
         "px-5 py-5 lg:px-[56px] lg:py-[32px] gap-5 lg:gap-0",
         className
       )}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
+      {onEdit && (
+        <button
+          onClick={onEdit}
+          className={cn(
+            "absolute top-4 right-4 lg:top-6 lg:right-6 z-10",
+            "flex items-center justify-center size-9 rounded-full",
+            "bg-surface-muted hover:bg-auchan-red/10 transition-colors cursor-pointer",
+            "lg:opacity-0 lg:scale-90 lg:transition-all lg:duration-150",
+            isHovered && "lg:opacity-100 lg:scale-100"
+          )}
+        >
+          <Pencil className="size-4 text-text-secondary" />
+        </button>
+      )}
+
       <div className="grid grid-cols-2 lg:grid-cols-3 w-full gap-x-3 lg:gap-x-[10px] gap-y-4 lg:gap-y-[24px]">
         <InfoField label="Nom du magasin" value={store.name} />
         <InfoField label="Manager" value={store.manager} />

@@ -1,6 +1,7 @@
 
 "use client"
 
+import { useModal } from "@/components/modal_system"
 import { useSidebar } from "@/components/sidebar_system"
 import { useSidebarStore } from "@/components/sidebar_system/store/useSidebar.store"
 import { useMediaQuery } from "@/hooks/useMediaQuery"
@@ -24,6 +25,7 @@ type StoreDetailContentProps = {
 export function StoreDetailContent({ id }: StoreDetailContentProps) {
   const { store, isLoading } = useStoreDetailQuery(id)
   const [activeTab, setActiveTab] = useState<StoreTab>("transactions")
+  const modal = useModal()
 
   const sidebar = useSidebar()
   const isXl = useMediaQuery("(min-width: 1280px)")
@@ -60,6 +62,17 @@ export function StoreDetailContent({ id }: StoreDetailContentProps) {
     [sidebar]
   )
 
+  const handleEditStore = useCallback(() => {
+    if (!store) return
+    modal.open({
+      entity: "edit-store",
+      entityId: store.code,
+      mode: "edit",
+      layout: "wizard",
+      size: "md",
+    })
+  }, [modal, store])
+
   return (
     <div className="flex">
       <div className="flex min-w-0 flex-1 flex-col gap-4 lg:gap-[28px] ">
@@ -68,7 +81,7 @@ export function StoreDetailContent({ id }: StoreDetailContentProps) {
         {isLoading ? (
           <StoreInfoCardSkeleton />
         ) : store ? (
-          <StoreInfoCard store={store} />
+          <StoreInfoCard store={store} onEdit={handleEditStore} />
         ) : null}
 
         <div className="overflow-hidden rounded-[16px] lg:rounded-[20px] bg-white">

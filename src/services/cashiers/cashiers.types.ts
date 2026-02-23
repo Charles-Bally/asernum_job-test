@@ -4,7 +4,6 @@ export type CashierRow = {
   id: string
   username: string
   accessKey: string
-  showKey: boolean
   assignedDate: string
   status: CashierStatus
 }

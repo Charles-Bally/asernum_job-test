@@ -35,8 +35,7 @@ export const GET = withMiddleware(authMiddleware, requireRole("ADMIN"), async (r
   return apiSuccess({
     id: user.id,
     username: `${user.firstName}${user.lastName}`.replace(/\s/g, ""),
-    accessKey: "****",
-    showKey: false,
+    accessKey: user.accessKey ?? "",
     assignedDate: user.cashierHistory[0]
       ? formatDateTime(user.cashierHistory[0].assignedAt)
       : formatDateTime(user.createdAt),

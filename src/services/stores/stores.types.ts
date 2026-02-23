@@ -6,8 +6,14 @@ export type StoreDetail = {
   name: string
   code: string
   city: string
+  ville: string
+  commune: string
+  quartier: string
   manager: string
+  managerId: string
   responsableCaisse: string
+  responsableCaissesId: string
+  cashierIds: string[]
   nbCaissiers: number
   nbTransactions: number
   stats: { renduMonnaie: number; paiementCourse: number }

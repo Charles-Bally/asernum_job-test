@@ -19,6 +19,7 @@ export type ModalMode =
 
 export type ModalEntity =
     | "add-store"
+    | "edit-store"
     | "create-user"
     | "change-password"
 

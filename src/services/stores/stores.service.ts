@@ -22,6 +22,11 @@ export const storesService = {
     return response.data.data
   },
 
+  async updateStore(code: string, data: Partial<CreateStorePayload>) {
+    const response = await http.patch(`${ENDPOINTS.STORES}/${code}`, data)
+    return response.data.data
+  },
+
   async getTopCommunes() {
     const response = await http.get(ENDPOINTS.STORES_TOP_COMMUNES)
     return response.data.data as string[]
