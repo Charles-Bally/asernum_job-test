@@ -11,20 +11,19 @@ async function createUsers(
   count: number, role: "MANAGER" | "RESPONSABLE_CAISSES" | "CAISSIER",
   hash: string, seed: number
 ): Promise<Uid[]> {
-  const users: Uid[] = []
-  for (let i = 0; i < count; i++) {
-    const user = await prisma.user.create({
-      data: {
-        email: `${role.toLowerCase()}.${seed}.${i}@demo.asernum.job`,
-        password: hash,
-        firstName: faker.person.firstName(),
-        lastName: faker.person.lastName(),
-        role,
-        accessKey: role === "CAISSIER" ? accessKey() : undefined,
-      },
-    })
-    users.push({ id: user.id })
-  }
+  const data = Array.from({ length: count }, (_, i) => ({
+    email: `${role.toLowerCase()}.${seed}.${i}@demo.asernum.job`,
+    password: hash,
+    firstName: faker.person.firstName(),
+    lastName: faker.person.lastName(),
+    role,
+    accessKey: role === "CAISSIER" ? accessKey() : undefined,
+  }))
+
+  const users = await prisma.user.createManyAndReturn({
+    data,
+    select: { id: true },
+  })
   return users
 }
 
@@ -32,9 +31,11 @@ export async function seedAllUsers() {
   const hash = await bcrypt.hash("Password1234@", 10)
   const ts = Date.now()
 
-  const managers = await createUsers(MANAGERS_COUNT, "MANAGER", hash, ts)
-  const rcs = await createUsers(RC_COUNT, "RESPONSABLE_CAISSES", hash, ts + 1000)
-  const cashiers = await createUsers(CASHIERS_COUNT, "CAISSIER", hash, ts + 2000)
+  const [managers, rcs, cashiers] = await Promise.all([
+    createUsers(MANAGERS_COUNT, "MANAGER", hash, ts),
+    createUsers(RC_COUNT, "RESPONSABLE_CAISSES", hash, ts + 1000),
+    createUsers(CASHIERS_COUNT, "CAISSIER", hash, ts + 2000),
+  ])
 
   return { managers, rcs, cashiers }
 }

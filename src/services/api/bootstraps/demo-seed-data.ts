@@ -14,19 +14,19 @@ export async function seedStoreData(
 
   for (const store of stores) {
     const clientCount = faker.number.int({ min: 8, max: 15 })
-    const clientIds: string[] = []
 
-    for (let c = 0; c < clientCount; c++) {
-      const cl = await prisma.client.create({
-        data: {
-          phone: phone(phoneIdx++),
-          firstName: faker.person.firstName(),
-          lastName: faker.person.lastName(),
-          storeId: store.id,
-        },
-      })
-      clientIds.push(cl.id)
-    }
+    const clientData = Array.from({ length: clientCount }, () => ({
+      phone: phone(phoneIdx++),
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      storeId: store.id,
+    }))
+
+    const clients = await prisma.client.createManyAndReturn({
+      data: clientData,
+      select: { id: true },
+    })
+    const clientIds = clients.map((c) => c.id)
     totalClients += clientCount
 
     const txCount = faker.number.int({ min: 30, max: 60 })
@@ -61,6 +61,11 @@ async function seedRichCashierHistory(
 ) {
   if (stores.length < 4) return
 
+  const allRecords: {
+    cashierId: string; storeId: string
+    assignedById: string; assignedAt: Date; removedAt: Date
+  }[] = []
+
   for (let si = 0; si < stores.length; si++) {
     const store = stores[si]
     const enriched = store.cashierIds.slice(0, Math.min(3, store.cashierIds.length))
@@ -77,22 +82,19 @@ async function seedRichCashierHistory(
 
       for (const pastStore of pastStores) {
         const duration = 20 + Math.floor(Math.random() * 40)
-        const assignedAt = daysAgo(cursor)
-        const removedAt = daysAgo(cursor - duration)
-        cursor = cursor - duration - faker.number.int({ min: 3, max: 14 })
-
-        await prisma.cashierHistory.create({
-          data: {
-            cashierId,
-            storeId: pastStore.id,
-            assignedById: adminId,
-            assignedAt,
-            removedAt,
-          },
+        allRecords.push({
+          cashierId,
+          storeId: pastStore.id,
+          assignedById: adminId,
+          assignedAt: daysAgo(cursor),
+          removedAt: daysAgo(cursor - duration),
         })
+        cursor = cursor - duration - faker.number.int({ min: 3, max: 14 })
       }
     }
   }
+
+  await prisma.cashierHistory.createMany({ data: allRecords })
 }
 
 export async function seedEvents(adminId: string, ...groups: Uid[][]) {
