@@ -117,13 +117,13 @@ function StepSeedEdit() {
       <InputCheckbox
         label="Générer des clients"
         description="Crée ~15 clients fictifs rattachés au magasin"
-        checked={data.generateClients}
+        checked={data.generateClients ?? false}
         onChange={(v) => updateField("generateClients", v)}
       />
       <InputCheckbox
         label="Générer des transactions"
         description="Crée ~50 transactions réalistes avec les caissiers"
-        checked={data.generateTransactions}
+        checked={data.generateTransactions ?? false}
         onChange={(v) => updateField("generateTransactions", v)}
       />
     </div>
