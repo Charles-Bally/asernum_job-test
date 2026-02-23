@@ -13,7 +13,7 @@ export async function seedStoreData(
   let phoneIdx = 0
 
   for (const store of stores) {
-    const clientCount = faker.number.int({ min: 15, max: 30 })
+    const clientCount = faker.number.int({ min: 8, max: 15 })
     const clientIds: string[] = []
 
     for (let c = 0; c < clientCount; c++) {
@@ -29,7 +29,7 @@ export async function seedStoreData(
     }
     totalClients += clientCount
 
-    const txCount = faker.number.int({ min: 80, max: 150 })
+    const txCount = faker.number.int({ min: 30, max: 60 })
     await prisma.transaction.createMany({
       data: Array.from({ length: txCount }, () => ({
         type: txType(),
