@@ -153,11 +153,13 @@ L'API est construite en Route Handlers Next.js avec Prisma ORM et PostgreSQL. El
 ### Pré-requis
 
 - **Node.js** >= 18
-- **pnpm** -- Si non installé :
+- **pnpm** -- Déjà installé (utilisé pour toutes les commandes du projet)
+  Si pas le cas
+  **pnpm** -- Si non installé :
   ```bash
   npm install -g pnpm
   ```
-- **Docker** -- Nécessaire pour la base de données PostgreSQL locale
+- **Docker** -- Doit être lancé avant de démarrer le projet (nécessaire pour la base de données PostgreSQL locale)
 
 ### 1. Cloner le projet et installer les dépendances
 
@@ -253,9 +255,9 @@ Architecture pensée pour la maintenabilité : chaque système est un mini-frame
 
 Les identifiants suivants fonctionnent dès le lancement, **même sans avoir généré de données** :
 
-| Champ      | Valeur                    |
-| ---------- | ------------------------- |
-| Email      | `admin@asernum-job.com`   |
+| Champ        | Valeur                  |
+| ------------ | ----------------------- |
+| Email        | `admin@asernum-job.com` |
 | Mot de passe | `Password1234@`         |
 
 ### Générer des données de démo
