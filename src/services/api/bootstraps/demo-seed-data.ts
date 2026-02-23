@@ -5,32 +5,29 @@ import {
   type StoreWithCashiers, type Uid,
 } from "./demo-seed-utils"
 
-export async function seedStoreData(
-  stores: StoreWithCashiers[], adminId: string
+const BATCH_SIZE = 10
+
+async function seedOneStore(
+  store: StoreWithCashiers, adminId: string, phoneStart: number
 ) {
-  let totalClients = 0
-  let totalTx = 0
-  let phoneIdx = 0
+  const clientCount = faker.number.int({ min: 8, max: 15 })
 
-  for (const store of stores) {
-    const clientCount = faker.number.int({ min: 8, max: 15 })
+  const clientData = Array.from({ length: clientCount }, (_, i) => ({
+    phone: phone(phoneStart + i),
+    firstName: faker.person.firstName(),
+    lastName: faker.person.lastName(),
+    storeId: store.id,
+  }))
 
-    const clientData = Array.from({ length: clientCount }, () => ({
-      phone: phone(phoneIdx++),
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      storeId: store.id,
-    }))
+  const clients = await prisma.client.createManyAndReturn({
+    data: clientData,
+    select: { id: true },
+  })
+  const clientIds = clients.map((c) => c.id)
 
-    const clients = await prisma.client.createManyAndReturn({
-      data: clientData,
-      select: { id: true },
-    })
-    const clientIds = clients.map((c) => c.id)
-    totalClients += clientCount
-
-    const txCount = faker.number.int({ min: 30, max: 60 })
-    await prisma.transaction.createMany({
+  const txCount = faker.number.int({ min: 30, max: 60 })
+  await Promise.all([
+    prisma.transaction.createMany({
       data: Array.from({ length: txCount }, () => ({
         type: txType(),
         amount: amount(),
@@ -39,17 +36,42 @@ export async function seedStoreData(
         cashierId: pick(store.cashierIds),
         clientId: Math.random() < 0.7 ? pick(clientIds) : null,
       })),
-    })
-    totalTx += txCount
-
-    await prisma.cashierHistory.createMany({
+    }),
+    prisma.cashierHistory.createMany({
       data: store.cashierIds.map((cid) => ({
         cashierId: cid,
         storeId: store.id,
         assignedById: adminId,
         assignedAt: date30d(),
       })),
+    }),
+  ])
+
+  return { clients: clientCount, tx: txCount }
+}
+
+export async function seedStoreData(
+  stores: StoreWithCashiers[], adminId: string
+) {
+  let totalClients = 0
+  let totalTx = 0
+  let phoneIdx = 0
+
+  for (let b = 0; b < stores.length; b += BATCH_SIZE) {
+    const batch = stores.slice(b, b + BATCH_SIZE)
+    const phoneStarts = batch.map(() => {
+      const start = phoneIdx
+      phoneIdx += 15
+      return start
     })
+
+    const results = await Promise.all(
+      batch.map((store, i) => seedOneStore(store, adminId, phoneStarts[i])),
+    )
+    for (const r of results) {
+      totalClients += r.clients
+      totalTx += r.tx
+    }
   }
 
   await seedRichCashierHistory(stores, adminId)
@@ -66,8 +88,7 @@ async function seedRichCashierHistory(
     assignedById: string; assignedAt: Date; removedAt: Date
   }[] = []
 
-  for (let si = 0; si < stores.length; si++) {
-    const store = stores[si]
+  for (const store of stores) {
     const enriched = store.cashierIds.slice(0, Math.min(3, store.cashierIds.length))
 
     for (let ci = 0; ci < enriched.length; ci++) {
