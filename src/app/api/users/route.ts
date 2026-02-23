@@ -6,6 +6,7 @@ import { validateBody } from "@/app/api/_helpers/validate.helper"
 import { emailService } from "@/services/api/email.service"
 import { prisma } from "@/services/api/prisma.service"
 import type { AccountAction, Prisma, Role } from "@prisma/client"
+import bcrypt from "bcryptjs"
 import type { NextRequest } from "next/server"
 
 const ROLES: Role[] = ["ADMIN", "MANAGER", "RESPONSABLE_CAISSES", "CAISSIER"]
@@ -105,6 +106,7 @@ export const POST = withMiddleware(
     if (existing) return apiError("Un utilisateur avec cet email existe déjà", 409)
 
     const password = generatePassword()
+    const hashedPassword = await bcrypt.hash(password, 10)
     const isAdmin = body.role === "ADMIN"
     const accessCode = isAdmin ? null : generateAccessCode()
 
@@ -113,7 +115,7 @@ export const POST = withMiddleware(
         firstName: body.firstName,
         lastName: body.lastName,
         email: body.email,
-        password,
+        password: hashedPassword,
         role: body.role as Role,
         accessKey: accessCode,
       },
@@ -127,9 +129,6 @@ export const POST = withMiddleware(
         description: `Compte ${body.role} créé`,
       },
     })
-
-    console.log(`[DEV] New password for ${body.email}: ${password}`)
-    if (accessCode) console.log(`[DEV] Access code for ${body.email}: ${accessCode}`)
 
     const ROLE_LABELS: Record<string, string> = {
       ADMIN: "Administrateur",

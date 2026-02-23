@@ -12,10 +12,7 @@ export async function seedAdmin(): Promise<void> {
     const existing = await prisma.user.findUnique({
       where: { email: admin.email },
     })
-    if (existing) {
-      console.log("[Bootstrap] Admin user already exists")
-      continue
-    }
+    if (existing) continue
     await prisma.user.create({
       data: {
         email: admin.email,
@@ -25,6 +22,4 @@ export async function seedAdmin(): Promise<void> {
       },
     })
   }
-
-  console.log("[Bootstrap] Admin users created")
 }

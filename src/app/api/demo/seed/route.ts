@@ -5,9 +5,7 @@ export const maxDuration = 120
 
 export async function POST() {
   try {
-    console.log("[Demo Seed] Starting full seed...")
     const result = await runFullSeed()
-    console.log("[Demo Seed] Done:", result)
     return apiSuccess({ success: true, ...result })
   } catch (error) {
     console.error("[Demo Seed] Error:", error)

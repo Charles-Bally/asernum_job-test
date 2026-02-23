@@ -5,6 +5,7 @@ import { apiError, apiSuccess } from "@/app/api/_helpers/response.helper"
 import { emailService } from "@/services/api/email.service"
 import { prisma } from "@/services/api/prisma.service"
 import type { AccountAction } from "@prisma/client"
+import bcrypt from "bcryptjs"
 import type { NextRequest } from "next/server"
 
 type RouteParams = { params: Promise<{ id: string }> }
@@ -94,10 +95,9 @@ export async function PATCH(req: NextRequest, { params }: RouteParams) {
         }
         case "reset-password": {
           const newPassword = generatePassword()
-          await prisma.user.update({ where: { id }, data: { password: newPassword } })
+          const hashedPassword = await bcrypt.hash(newPassword, 10)
+          await prisma.user.update({ where: { id }, data: { password: hashedPassword } })
           await logEvent("PASSWORD_RESET", id, performedById)
-          console.log(`[DEV] New password for user ${id}: ${newPassword}`)
-
           emailService.sendEmail({
             to: user.email,
             subject: "Réinitialisation de votre mot de passe — Asernum",

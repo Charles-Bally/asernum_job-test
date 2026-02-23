@@ -5,10 +5,8 @@ export const maxDuration = 60
 
 export async function POST() {
   try {
-    console.log("[Seed:Wipe] Wiping database...")
     await wipeDatabase()
     const admin = await seedAdminUser()
-    console.log("[Seed:Wipe] Done, adminId:", admin.id)
     return apiSuccess({ adminId: admin.id })
   } catch (error) {
     console.error("[Seed:Wipe] Error:", error)

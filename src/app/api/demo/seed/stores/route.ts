@@ -13,9 +13,7 @@ interface StoresBody {
 export async function POST(req: Request) {
   try {
     const { managers, rcs, cashiers } = (await req.json()) as StoresBody
-    console.log("[Seed:Stores] Creating stores...")
     const stores = await seedStores(managers, rcs, cashiers)
-    console.log("[Seed:Stores] Done:", stores.length, "stores")
     return apiSuccess({ stores })
   } catch (error) {
     console.error("[Seed:Stores] Error:", error)

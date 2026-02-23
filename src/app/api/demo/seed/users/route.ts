@@ -5,9 +5,7 @@ export const maxDuration = 300
 
 export async function POST() {
   try {
-    console.log("[Seed:Users] Creating users...")
     const { managers, rcs, cashiers } = await seedAllUsers()
-    console.log("[Seed:Users] Done:", { managers: managers.length, rcs: rcs.length, cashiers: cashiers.length })
     return apiSuccess({ managers, rcs, cashiers })
   } catch (error) {
     console.error("[Seed:Users] Error:", error)

@@ -15,10 +15,8 @@ interface DataBody {
 export async function POST(req: Request) {
   try {
     const { adminId, stores, managers, rcs, cashiers } = (await req.json()) as DataBody
-    console.log("[Seed:Data] Seeding clients, transactions, events...")
     const { totalClients, totalTx } = await seedStoreData(stores, adminId)
     await seedEvents(adminId, managers, rcs, cashiers)
-    console.log("[Seed:Data] Done:", { totalClients, totalTx })
     return apiSuccess({ totalClients, totalTx })
   } catch (error) {
     console.error("[Seed:Data] Error:", error)
