@@ -228,7 +228,7 @@ pnpm dev
 pnpm test
 ```
 
-L'application est accessible sur [http://localhost:3000](http://localhost:3000). Utiliser le bouton **DevTools** sur la page de login pour peupler la base avec des données de démo.
+L'application est accessible sur [http://localhost:3000](http://localhost:3000). Utiliser le bouton **DevTools** sur la page de login pour peupler la base avec des données de démo (environ 30s).
 
 ## Note d'arbitrage
 
