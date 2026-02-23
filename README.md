@@ -202,12 +202,12 @@ ou
 docker-compose up -d
 ```
 
-Cela lance un conteneur PostgreSQL 17 (Alpine) accessible sur le port **5433** :
+Cela lance un conteneur PostgreSQL 17 (Alpine) accessible sur le port **5438** :
 
 | Paramètre | Valeur             |
 | --------- | ------------------ |
 | Host      | `localhost`        |
-| Port      | `5433`             |
+| Port      | `5438`             |
 | User      | `postgres`         |
 | Password  | `postgres`         |
 | Database  | `asernum_job_test` |
@@ -215,7 +215,7 @@ Cela lance un conteneur PostgreSQL 17 (Alpine) accessible sur le port **5433** :
 Mettre à jour `DATABASE_URL` dans `.env` en conséquence :
 
 ```
-DATABASE_URL=postgresql://postgres:postgres@localhost:5433/asernum_job_test
+DATABASE_URL=postgresql://postgres:postgres@localhost:5438/asernum_job_test
 ```
 
 ### 4. Initialiser le schéma de la base
