@@ -227,11 +227,11 @@ pnpm prisma db push
 ### 5. Lancer le projet
 
 ```bash
-# Développement
-pnpm dev
-
 # Tests
 pnpm test
+
+# Développement
+pnpm dev
 ```
 
 L'application est accessible sur [http://localhost:3000](http://localhost:3000). Utiliser le bouton **DevTools** sur la page de login pour peupler la base avec des données de démo (environ 30s sur le lien vercel).
