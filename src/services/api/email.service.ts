@@ -19,6 +19,10 @@ async function renderTemplate(templateName: string, data: Record<string, any>): 
 }
 
 async function sendEmail({ to, subject, templateName, data }: SendEmailParams): Promise<void> {
+  if (!BREVO_API_KEY || !SENDER_EMAIL || !SENDER_NAME) {
+    console.error("BREVO_API_KEY, BREVO_SENDER_EMAIL or BREVO_SENDER_NAME is not set")
+    return
+  }
   const htmlContent = await renderTemplate(templateName, data)
 
   const client = new BrevoClient({ apiKey: BREVO_API_KEY })
