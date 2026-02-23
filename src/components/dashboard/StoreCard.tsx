@@ -30,7 +30,7 @@ export function StoreCard({ store, className }: StoreCardProps) {
       containerClassName="w-full"
       className={cn(
         "group relative flex h-[150px] lg:h-[200px] w-full shrink-0 cursor-pointer flex-col rounded-[20px] lg:rounded-[40px] px-4 lg:px-[28px] pb-4 lg:pb-[28px] pt-4 lg:pt-[28px]",
-        navigating && "animate-pulse pointer-events-none",
+        navigating && "pointer-events-none",
         className
       )}
       onClick={() => setNavigating(true)}
@@ -38,7 +38,7 @@ export function StoreCard({ store, className }: StoreCardProps) {
       {/* Fond blanc (default) */}
       <div className={cn(
         "absolute inset-0 rounded-[20px] lg:rounded-[40px] bg-white transition-opacity duration-300",
-        navigating ? "opacity-60" : "group-hover:opacity-0"
+        navigating ? "animate-pulse opacity-70" : "group-hover:opacity-0"
       )} />
 
       {/* Fond gradient (hover) */}

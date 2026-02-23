@@ -17,7 +17,7 @@ export function SubNavBreadcrumb() {
     >
       <p className="text-[14px] lg:text-[16px] tracking-[-0.42px] lg:tracking-[-0.48px]">
         {isLoading && !storeName ? (
-          <span className="inline-block translate-y-2 h-[18px] w-[180px] animate-pulse rounded-[6px] bg-auchan-red-pastel" />
+          <span className="inline-block translate-y-1 h-[18px] w-[180px] animate-pulse rounded-[6px] bg-auchan-red-pastel" />
         ) : (
           <>
             <span className="font-bold text-foreground">{storeName}</span>
