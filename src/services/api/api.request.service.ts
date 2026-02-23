@@ -128,17 +128,7 @@ export async function apiRequest<T = any>({
     // Callback de succès
     onSuccess?.(response);
 
-    // Invalider les clés de cache TanStack Query si spécifiées
-    if (cacheKeys && cacheKeys.length > 0) {
-      await Promise.all(
-        cacheKeys.map((key) => {
-          const queryKey = Array.isArray(key) ? key : [key];
-          return tanstackQueryService.invalidateQueries(queryKey);
-        })
-      );
-    }
-
-    // Afficher le dialog de succès
+    // Afficher le dialog de succès AVANT l'invalidation du cache
     if (showSuccessDialog) {
       await dialog({
         type: DIALOG.SUCCESS,
@@ -146,6 +136,16 @@ export async function apiRequest<T = any>({
         message: successMessage,
         autoClose: autoCloseSuccessDialog ? 1000 : undefined,
       });
+    }
+
+    // Invalider les clés de cache après le dialog (non bloquant pour l'UX)
+    if (cacheKeys && cacheKeys.length > 0) {
+      Promise.all(
+        cacheKeys.map((key) => {
+          const queryKey = Array.isArray(key) ? key : [key];
+          return tanstackQueryService.invalidateQueries(queryKey);
+        })
+      );
     }
 
     return response.data || response;
