@@ -193,7 +193,13 @@ Les valeurs par défaut de `NEXT_PUBLIC_BASE_URL`, `NEXT_PUBLIC_API_URL`, `BREVO
 ### 3. Démarrer la base de données avec Docker
 
 ```bash
-docker compose up -d ou docker-compose up -d
+docker compose up -d
+```
+
+ou
+
+```bash
+docker-compose up -d
 ```
 
 Cela lance un conteneur PostgreSQL 17 (Alpine) accessible sur le port **5433** :
