@@ -10,6 +10,7 @@ import type {
 } from "@/components/table_system"
 import { TableKit } from "@/components/table_system"
 import { EmptyState } from "@/components/ui/render/EmptyState"
+import { QUERY_KEYS } from "@/constants/querykeys.constant"
 import { clientsService } from "@/services/clients/clients.service"
 import type { Client } from "@/types/client.types"
 import { Users } from "lucide-react"
@@ -138,7 +139,7 @@ export function ClientsTable() {
       searchPlaceholder: "Rechercher un client...",
       api: {
         fetcher,
-        queryKey: ["clients"],
+        queryKey: QUERY_KEYS.CLIENTS,
         defaultLimit: 10,
       },
       columns,

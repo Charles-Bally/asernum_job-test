@@ -130,11 +130,15 @@ export async function apiRequest<T = any>({
 
     // Invalider les clés de cache TanStack Query si spécifiées
     if (cacheKeys && cacheKeys.length > 0) {
-      cacheKeys.forEach((key) => {
-        const queryKey = Array.isArray(key) ? key : [key];
-        tanstackQueryService.invalidateQueries(queryKey);
-      });
-    } // Afficher le dialog de succès
+      await Promise.all(
+        cacheKeys.map((key) => {
+          const queryKey = Array.isArray(key) ? key : [key];
+          return tanstackQueryService.invalidateQueries(queryKey);
+        })
+      );
+    }
+
+    // Afficher le dialog de succès
     if (showSuccessDialog) {
       await dialog({
         type: DIALOG.SUCCESS,

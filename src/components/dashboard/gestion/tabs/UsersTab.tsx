@@ -7,6 +7,7 @@ import { TableKit } from "@/components/table_system"
 import CustomButton from "@/components/ui/render/CustomButton"
 import { EmptyState } from "@/components/ui/render/EmptyState"
 import { usersService } from "@/services/users/users.service"
+import { QUERY_KEYS } from "@/constants/querykeys.constant"
 import type { User } from "@/types/user.types"
 import { UserPlus, Users } from "lucide-react"
 import { useCallback, useMemo } from "react"
@@ -127,7 +128,7 @@ export function UsersTab() {
       searchPlaceholder: "Rechercher un utilisateur...",
       api: {
         fetcher,
-        queryKey: ["gestion-users"],
+        queryKey: QUERY_KEYS.USERS,
         defaultLimit: 10,
       },
       columns,

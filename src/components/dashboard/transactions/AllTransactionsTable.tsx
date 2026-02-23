@@ -10,6 +10,7 @@ import type {
 } from "@/components/table_system"
 import { TableKit } from "@/components/table_system"
 import { EmptyState } from "@/components/ui/render/EmptyState"
+import { QUERY_KEYS } from "@/constants/querykeys.constant"
 import { transactionsService } from "@/services/transactions/transactions.service"
 import type { TransactionRow } from "@/services/transactions/transactions.types"
 import { ArrowLeftRight } from "lucide-react"
@@ -148,7 +149,7 @@ export function AllTransactionsTable() {
       searchPlaceholder: "Type, point de vente, n° client, n° d'avoir...",
       api: {
         fetcher,
-        queryKey: ["all-transactions"],
+        queryKey: QUERY_KEYS.TRANSACTIONS,
         defaultLimit: 10,
       },
       columns,

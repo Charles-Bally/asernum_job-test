@@ -2,23 +2,29 @@
 
 import { tanstackQueryService } from "@/services/tanstack-query.service";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef } from "react";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000,
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export function QueryProvider({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(() => {
-    const client = new QueryClient({
-      defaultOptions: {
-        queries: {
-          staleTime: 60 * 1000,
-          retry: 1,
-          refetchOnWindowFocus: false,
-        },
-      },
-    });
+  const initialized = useRef(false);
 
-    tanstackQueryService.setQueryClient(client);
-    return client;
-  });
+  if (!initialized.current) {
+    tanstackQueryService.setQueryClient(queryClient);
+    initialized.current = true;
+  }
+
+  useEffect(() => {
+    tanstackQueryService.setQueryClient(queryClient);
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

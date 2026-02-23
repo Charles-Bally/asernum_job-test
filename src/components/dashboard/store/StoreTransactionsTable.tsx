@@ -11,6 +11,7 @@ import { TableKit } from "@/components/table_system"
 import { EmptyState } from "@/components/ui/render/EmptyState"
 import { transactionsService } from "@/services/transactions/transactions.service"
 import type { TransactionRow } from "@/services/transactions/transactions.types"
+import { QUERY_KEYS } from "@/constants/querykeys.constant"
 import { ArrowLeftRight } from "lucide-react"
 import { useMemo } from "react"
 
@@ -116,7 +117,7 @@ export function StoreTransactionsTable({ storeId, onRowClick }: StoreTransaction
       searchPlaceholder: "Type, point de vente, n° client, n° d'avoir...",
       api: {
         fetcher,
-        queryKey: ["store-transactions", storeId],
+        queryKey: [...QUERY_KEYS.TRANSACTIONS, storeId],
         defaultLimit: 10,
       },
       columns,

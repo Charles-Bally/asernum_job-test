@@ -1,14 +1,25 @@
 import { QueryClient } from "@tanstack/react-query";
 
+/**
+ * Pont pour accéder au QueryClient hors React.
+ * Stocké sur window pour survivre à la duplication de modules Turbopack.
+ */
 export const tanstackQueryService = {
-  queryClient: null as unknown as QueryClient,
   setQueryClient: (queryClient: QueryClient) => {
-    tanstackQueryService.queryClient = queryClient;
+    if (typeof window !== "undefined") {
+      (window as any).__QUERY_CLIENT__ = queryClient;
+    }
   },
-  invalidateQueries: (queryKey: string | string[]) => {
-    tanstackQueryService.queryClient?.invalidateQueries({ queryKey: Array.isArray(queryKey) ? queryKey : [queryKey] });
+  getQueryClient: (): QueryClient | null => {
+    if (typeof window !== "undefined") {
+      return (window as any).__QUERY_CLIENT__ ?? null;
+    }
+    return null;
   },
-  invalidateQueriesByTag: (tag: string) => {
-    tanstackQueryService.queryClient?.invalidateQueries({ tags: [tag] } as any);
+  invalidateQueries: async (queryKey: string | string[]) => {
+    const qc = tanstackQueryService.getQueryClient();
+    if (!qc) return;
+    const key = Array.isArray(queryKey) ? queryKey : [queryKey];
+    await qc.invalidateQueries({ queryKey: key });
   },
 };

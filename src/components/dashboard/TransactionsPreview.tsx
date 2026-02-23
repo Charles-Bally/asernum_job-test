@@ -7,6 +7,7 @@ import { TableKit } from "@/components/table_system"
 import CustomLink from "@/components/ui/render/CustomLink"
 import { EmptyState } from "@/components/ui/render/EmptyState"
 import { PATHNAME } from "@/constants/pathname.constant"
+import { QUERY_KEYS } from "@/constants/querykeys.constant"
 import { cn } from "@/lib/utils"
 import { transactionsService } from "@/services/transactions/transactions.service"
 import type { TransactionRow } from "@/services/transactions/transactions.types"
@@ -133,7 +134,7 @@ export function TransactionsPreview() {
       title: "Transactions",
       api: {
         fetcher: apiFetcher,
-        queryKey: ["transactions-preview"],
+        queryKey: QUERY_KEYS.TRANSACTIONS,
         defaultLimit: 7,
       },
       actions: {

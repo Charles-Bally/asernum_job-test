@@ -12,6 +12,7 @@ import CustomButton from "@/components/ui/render/CustomButton"
 import { EmptyState } from "@/components/ui/render/EmptyState"
 import { cashiersService } from "@/services/cashiers/cashiers.service"
 import type { CashierRow } from "@/services/cashiers/cashiers.types"
+import { QUERY_KEYS } from "@/constants/querykeys.constant"
 import { Users } from "lucide-react"
 import { useMemo } from "react"
 import { AccessKeyCell, CashierActions, StatusBadge } from "./CashierCells"
@@ -100,7 +101,7 @@ export function StoreCashiersTable({ storeId, onRowClick }: StoreCashiersTablePr
       searchPlaceholder: "Type, point de vente, n\u00B0 client, n\u00B0 d\u2019avoir...",
       api: {
         fetcher,
-        queryKey: ["store-cashiers", storeId],
+        queryKey: [...QUERY_KEYS.CASHIERS, storeId],
         defaultLimit: 10,
       },
       columns,

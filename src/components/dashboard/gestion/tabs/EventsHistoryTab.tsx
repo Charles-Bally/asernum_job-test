@@ -3,6 +3,7 @@
 import type { ColumnConfig, QuickFilterConfig, TableFetchParams, TableFetcherResult, TableSchema } from "@/components/table_system"
 import { TableKit } from "@/components/table_system"
 import { EmptyState } from "@/components/ui/render/EmptyState"
+import { QUERY_KEYS } from "@/constants/querykeys.constant"
 import { accountEventsService } from "@/services/account-events/account-events.service"
 import type { AccountEvent } from "@/types/account-event.types"
 import { History } from "lucide-react"
@@ -96,7 +97,7 @@ export function EventsHistoryTab() {
       searchPlaceholder: "Rechercher un événement...",
       api: {
         fetcher,
-        queryKey: ["gestion-events"],
+        queryKey: QUERY_KEYS.ACCOUNT_EVENTS,
         defaultLimit: 10,
       },
       columns,
