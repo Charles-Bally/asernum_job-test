@@ -1,15 +1,15 @@
 "use client"
 
-import CustomButton from "@/components/ui/render/CustomButton"
-import InputText from "@/components/ui/forms/InputText"
 import { useModal } from "@/components/modal_system/hooks/useModal"
 import { toast, TOAST } from "@/components/toast_system"
+import InputText from "@/components/ui/forms/InputText"
+import CustomButton from "@/components/ui/render/CustomButton"
 import { QUERY_KEYS } from "@/constants/querykeys.constant"
 import { cn } from "@/lib/utils"
 import { profileService } from "@/services/auth/profile.service"
 import type { AuthUser } from "@/store/auth.store"
-import { USER_ROLE_LABELS } from "@/types/user.types"
 import type { UserRole } from "@/types/user.types"
+import { USER_ROLE_LABELS } from "@/types/user.types"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { motion, type Variants } from "framer-motion"
 import { ChevronRight, KeyRound, Pencil } from "lucide-react"
@@ -128,10 +128,10 @@ export function ProfilContent() {
   const roleLabel = USER_ROLE_LABELS[user.role as UserRole] ?? user.role
   const formattedDate = user.createdAt
     ? new Date(user.createdAt).toLocaleDateString("fr-FR", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      })
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
     : "—"
 
   return (
@@ -244,10 +244,10 @@ export function ProfilContent() {
             <KeyRound size={20} className="text-auchan-red" />
           </div>
           <div className="flex flex-col items-start">
-            <span className="text-[14px] lg:text-[15px] font-bold text-foreground">
+            <span className="text-[14px] text-left lg:text-[15px] font-bold text-foreground">
               Changer le mot de passe
             </span>
-            <span className="text-[12px] lg:text-[13px] text-text-secondary">
+            <span className="text-[12px] text-left lg:text-[13px] text-text-secondary">
               Modifiez votre mot de passe de connexion
             </span>
           </div>
