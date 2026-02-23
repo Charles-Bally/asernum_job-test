@@ -90,7 +90,7 @@ export type TableSchema<T = Record<string, unknown>> = {
     noDataComponent?: ReactNode
     showExport?: boolean
     exportLabel?: string
-    onExport?: () => void
+    onExport?: (params: TableFetchParams) => void
     showRefresh?: boolean
     showPagination?: boolean
     showHeader?: boolean

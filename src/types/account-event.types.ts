@@ -5,6 +5,7 @@ export type EventAction =
   | "PASSWORD_RESET"
   | "ROLE_CHANGED"
   | "ASSIGNED_STORE"
+  | "PROFILE_UPDATED"
 
 export type AccountEvent = {
   id: string
@@ -30,4 +31,5 @@ export const EVENT_ACTION_LABELS: Record<EventAction, string> = {
   PASSWORD_RESET: "Reset mot de passe",
   ROLE_CHANGED: "Changement de rôle",
   ASSIGNED_STORE: "Affectation magasin",
+  PROFILE_UPDATED: "Mise à jour profil",
 }

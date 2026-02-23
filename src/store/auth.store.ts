@@ -30,7 +30,7 @@ export const useAuthStore = create<AuthStoreState>((set) => ({
   user: null,
 
   checkAuth: () => {
-    const token = storageService.getJSON<string>("auth:token");
+    const token = storageService.getJSON<string>("auth_token");
     set({
       isAuthenticated: !!token,
       token,
@@ -39,7 +39,7 @@ export const useAuthStore = create<AuthStoreState>((set) => ({
   },
 
   setToken: (token: string) => {
-    storageService.setJSON("auth:token", token);
+    storageService.setJSON("auth_token", token);
     set({ isAuthenticated: true, token, isLoading: false });
   },
 

@@ -3,7 +3,9 @@
 import type { ColumnConfig, QuickFilterConfig, TableFetchParams, TableFetcherResult, TableSchema } from "@/components/table_system"
 import { TableKit } from "@/components/table_system"
 import { EmptyState } from "@/components/ui/render/EmptyState"
+import { ENDPOINTS } from "@/constants/endpoints.constant"
 import { QUERY_KEYS } from "@/constants/querykeys.constant"
+import { downloadCsv } from "@/services/export.service"
 import { accountEventsService } from "@/services/account-events/account-events.service"
 import type { AccountEvent } from "@/types/account-event.types"
 import { History } from "lucide-react"
@@ -22,6 +24,7 @@ const ACTION_FILTERS: QuickFilterConfig[] = [
       { label: "Reset MDP", value: "PASSWORD_RESET" },
       { label: "Rôle modifié", value: "ROLE_CHANGED" },
       { label: "Affectation", value: "ASSIGNED_STORE" },
+      { label: "Mise à jour", value: "PROFILE_UPDATED" },
     ],
   },
 ]
@@ -106,6 +109,10 @@ export function EventsHistoryTab() {
         showRefresh: true,
         showExport: true,
         exportLabel: "Exporter",
+        onExport: (params) => downloadCsv(ENDPOINTS.ACCOUNT_EVENTS_EXPORT, {
+          search: params.search,
+          quickFilter: params.quickFilter,
+        }, "historique.csv"),
         showRowBorder: false,
         headerLayout: "single-row",
         searchWidth: "w-[308px]",

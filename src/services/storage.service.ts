@@ -1,7 +1,7 @@
 import { StateStorage } from 'zustand/middleware'
 import { cookieService } from './cookie.service'
 
-const REMEMBER_ME_KEY = 'auth:remember_me'
+const REMEMBER_ME_KEY = 'auth_remember_me'
 
 export const storageService = {
   getRememberMe(): boolean {
@@ -52,7 +52,7 @@ export const storageService = {
   },
 
   clearAuthData(): void {
-    const keys = ['auth:token', 'auth:refresh_token', 'auth:app_token', 'auth-storage', 'owner-select-storage', 'estate-select-storage']
+    const keys = ['auth_token', 'auth_refresh_token', 'auth_app_token', 'auth-storage', 'owner-select-storage', 'estate-select-storage']
     keys.forEach((key) => this.removeItem(key))
     cookieService.removeItem(REMEMBER_ME_KEY)
   },

@@ -122,7 +122,7 @@ export function TableKit<T extends Record<string, unknown>>({
               onQuickFilterChange={handleQuickFilter}
               showExport={ui?.showExport}
               exportLabel={ui?.exportLabel}
-              onExport={ui?.onExport}
+              onExport={ui?.onExport ? () => ui.onExport!(fetchParams) : undefined}
               showRefresh={ui?.showRefresh}
               onRefresh={() => refetch()}
               headerActions={ui?.headerActions}

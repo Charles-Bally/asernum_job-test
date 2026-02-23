@@ -55,7 +55,7 @@ export function StoreCard({ store, className }: StoreCardProps) {
         </p>
 
         <div className="mt-1 lg:mt-[6px] flex items-center gap-1 lg:gap-[6px]">
-          <span className="text-[10px] lg:text-[12px] text-left font-medium tracking-[-0.3px] lg:tracking-[-0.36px] text-text-secondary opacity-100 transition-[opacity,max-width] duration-300 max-w-[50px] lg:max-w-[60px] overflow-hidden group-hover:max-w-0 group-hover:opacity-0">
+          <span className="text-[10px] line-clamp-1 break-all lg:text-[12px] text-left font-medium tracking-[-0.3px] lg:tracking-[-0.36px] text-text-secondary opacity-100 transition-[opacity,max-width] duration-300 max-w-[50px] lg:max-w-[60px] overflow-hidden group-hover:max-w-0 group-hover:opacity-0">
             {store.code}
           </span>
           <CustomIcon

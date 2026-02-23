@@ -6,13 +6,17 @@ import type { ColumnConfig, QuickFilterConfig, TableFetchParams, TableFetcherRes
 import { TableKit } from "@/components/table_system"
 import CustomButton from "@/components/ui/render/CustomButton"
 import { EmptyState } from "@/components/ui/render/EmptyState"
-import { usersService } from "@/services/users/users.service"
+import { ENDPOINTS } from "@/constants/endpoints.constant"
 import { QUERY_KEYS } from "@/constants/querykeys.constant"
+import { downloadCsv } from "@/services/export.service"
+import { usersService } from "@/services/users/users.service"
 import type { User } from "@/types/user.types"
 import { UserPlus, Users } from "lucide-react"
 import { useCallback, useMemo } from "react"
 import { UserRoleBadge } from "../cells/UserRoleBadge"
 import { UserStatusBadge } from "../cells/UserStatusBadge"
+
+const ROLE_VALUES = new Set(["ADMIN", "MANAGER", "RESPONSABLE_CAISSES", "CAISSIER"])
 
 const ROLE_FILTERS: QuickFilterConfig[] = [
   {
@@ -111,11 +115,13 @@ export function UsersTab() {
   const fetcher = useMemo(
     () =>
       async (params: TableFetchParams): Promise<TableFetcherResult<User>> => {
+        const isRole = params.quickFilter && ROLE_VALUES.has(params.quickFilter)
         return usersService.getUsers({
           page: params.page,
           limit: params.limit,
           ...(params.search && { search: params.search }),
-          ...(params.quickFilter && { quickFilter: params.quickFilter }),
+          ...(isRole && { role: params.quickFilter }),
+          ...(!isRole && params.quickFilter && { status: params.quickFilter }),
         })
       },
     []
@@ -137,6 +143,14 @@ export function UsersTab() {
       ui: {
         showExport: true,
         exportLabel: "Exporter",
+        onExport: (params) => {
+          const isRole = params.quickFilter && ROLE_VALUES.has(params.quickFilter)
+          downloadCsv(ENDPOINTS.USERS_EXPORT, {
+            search: params.search,
+            ...(isRole && { role: params.quickFilter }),
+            ...(!isRole && params.quickFilter && { status: params.quickFilter }),
+          }, "utilisateurs.csv")
+        },
         showRefresh: true,
         showRowBorder: false,
         headerLayout: "single-row",

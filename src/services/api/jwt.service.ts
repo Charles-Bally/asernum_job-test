@@ -4,8 +4,8 @@ import type { JwtPayload, TokenPair } from "@/types/api.type"
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET!
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!
 
-const ACCESS_EXPIRY = "15m"
-const REFRESH_EXPIRY = "7d"
+const ACCESS_EXPIRY = "1h"
+const REFRESH_EXPIRY = "30d"
 const RESET_EXPIRY = "10m"
 
 function signAccessToken(payload: Omit<JwtPayload, "type">): string {

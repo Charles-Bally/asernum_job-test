@@ -42,7 +42,7 @@ export function useLoginController() {
     },
     onSuccess: (data) => {
       useAuthStore.getState().setToken(data.accessToken)
-      storageService.setJSON("auth:refresh_token", data.refreshToken)
+      storageService.setJSON("auth_refresh_token", data.refreshToken)
       toast({ type: TOAST.SUCCESS, message: "Connexion réussie" })
       router.push(PATHNAME.DASHBOARD.home)
     },

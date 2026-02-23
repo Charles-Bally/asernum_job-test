@@ -21,4 +21,8 @@ export const ENDPOINTS = {
   USERS: "/users",
   ACCOUNT_EVENTS: "/account-events",
   CLIENTS: "/clients",
+  USERS_EXPORT: "/users/export",
+  ACCOUNT_EVENTS_EXPORT: "/account-events/export",
+  CLIENTS_EXPORT: "/clients/export",
+  TRANSACTIONS_EXPORT: "/transactions/export",
 };

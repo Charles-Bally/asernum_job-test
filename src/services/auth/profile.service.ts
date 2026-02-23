@@ -5,7 +5,7 @@ import { type AuthUser, useAuthStore } from "@/store/auth.store"
 import { AxiosError } from "axios"
 
 async function refreshAccessToken(): Promise<boolean> {
-  const refreshToken = storageService.getJSON<string>("auth:refresh_token")
+  const refreshToken = storageService.getJSON<string>("auth_refresh_token")
   if (!refreshToken) return false
 
   try {
@@ -13,7 +13,7 @@ async function refreshAccessToken(): Promise<boolean> {
     const { accessToken, refreshToken: newRefreshToken } = res.data.data
 
     useAuthStore.getState().setToken(accessToken)
-    storageService.setJSON("auth:refresh_token", newRefreshToken)
+    storageService.setJSON("auth_refresh_token", newRefreshToken)
     return true
   } catch {
     return false

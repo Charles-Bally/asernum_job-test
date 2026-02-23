@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils"
 import { EVENT_ACTION_LABELS } from "@/types/account-event.types"
 import type { EventAction } from "@/types/account-event.types"
-import { Lock, Plus, RotateCcw, ShieldCheck, Store, Unlock } from "lucide-react"
+import { Lock, Pencil, Plus, RotateCcw, ShieldCheck, Store, Unlock } from "lucide-react"
 
 const ACTION_CONFIG: Record<EventAction, { icon: typeof Plus; color: string }> = {
   CREATED: { icon: Plus, color: "text-auchan-green" },
@@ -12,6 +12,7 @@ const ACTION_CONFIG: Record<EventAction, { icon: typeof Plus; color: string }> =
   PASSWORD_RESET: { icon: RotateCcw, color: "text-toast-warning" },
   ROLE_CHANGED: { icon: ShieldCheck, color: "text-toast-info" },
   ASSIGNED_STORE: { icon: Store, color: "text-role-manager" },
+  PROFILE_UPDATED: { icon: Pencil, color: "text-text-secondary" },
 }
 
 export function EventActionLabel({ action }: { action: EventAction }) {

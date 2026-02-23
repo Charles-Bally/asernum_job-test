@@ -10,7 +10,9 @@ import type {
 } from "@/components/table_system"
 import { TableKit } from "@/components/table_system"
 import { EmptyState } from "@/components/ui/render/EmptyState"
+import { ENDPOINTS } from "@/constants/endpoints.constant"
 import { QUERY_KEYS } from "@/constants/querykeys.constant"
+import { downloadCsv } from "@/services/export.service"
 import { clientsService } from "@/services/clients/clients.service"
 import type { Client } from "@/types/client.types"
 import { Users } from "lucide-react"
@@ -148,6 +150,14 @@ export function ClientsTable() {
       ui: {
         showExport: true,
         exportLabel: "Exporter",
+        onExport: (params) => {
+          const isStore = params.quickFilter && STORE_CODES.has(params.quickFilter)
+          downloadCsv(ENDPOINTS.CLIENTS_EXPORT, {
+            search: params.search,
+            ...(isStore && { quickFilter: params.quickFilter }),
+            ...(!isStore && params.quickFilter && { status: params.quickFilter }),
+          }, "clients.csv")
+        },
         showRefresh: true,
         showRowBorder: false,
         headerLayout: "single-row",

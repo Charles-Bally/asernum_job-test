@@ -6,9 +6,24 @@ function isAuthRoute(url?: string): boolean {
   return !!url && url.includes("/auth/")
 }
 
+async function getToken(): Promise<string | null> {
+  if (typeof window !== 'undefined') {
+    return storageService.getJSON<string>('auth_token')
+  }
+  try {
+    const { cookies } = await import('next/headers')
+    const cookieStore = await cookies()
+    const raw = cookieStore.get('auth_token')?.value
+    if (!raw) return null
+    return JSON.parse(raw)
+  } catch {
+    return null
+  }
+}
+
 export const authMiddleware = {
   onRequest: async (config: InternalAxiosRequestConfig) => {
-    const token = storageService.getJSON<string>('auth:token')
+    const token = await getToken()
     if (token) {
       const headers: Record<string, string> = config.headers || {}
       headers['Authorization'] = `Bearer ${token}`

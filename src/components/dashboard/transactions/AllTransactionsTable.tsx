@@ -10,7 +10,9 @@ import type {
 } from "@/components/table_system"
 import { TableKit } from "@/components/table_system"
 import { EmptyState } from "@/components/ui/render/EmptyState"
+import { ENDPOINTS } from "@/constants/endpoints.constant"
 import { QUERY_KEYS } from "@/constants/querykeys.constant"
+import { downloadCsv } from "@/services/export.service"
 import { transactionsService } from "@/services/transactions/transactions.service"
 import type { TransactionRow } from "@/services/transactions/transactions.types"
 import { ArrowLeftRight } from "lucide-react"
@@ -158,6 +160,16 @@ export function AllTransactionsTable() {
       ui: {
         showExport: true,
         exportLabel: "Exporter",
+        onExport: (params) => {
+          const isStore = params.quickFilter && STORE_CODES.has(params.quickFilter)
+          downloadCsv(ENDPOINTS.TRANSACTIONS_EXPORT, {
+            search: params.search,
+            ...(isStore && { storeId: params.quickFilter }),
+            ...(!isStore && params.quickFilter && { quickFilter: params.quickFilter }),
+            dateFrom: params.dateFrom,
+            dateTo: params.dateTo,
+          }, "transactions.csv")
+        },
         showRefresh: true,
         showRowBorder: false,
         showDateRange: true,

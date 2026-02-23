@@ -3,8 +3,9 @@ import { authMiddleware, requireRole } from "@/app/api/_helpers/auth.helper"
 import { withMiddleware } from "@/app/api/_helpers/middleware.helper"
 import { apiError, apiSuccess } from "@/app/api/_helpers/response.helper"
 import { validateBody } from "@/app/api/_helpers/validate.helper"
+import { emailService } from "@/services/api/email.service"
 import { prisma } from "@/services/api/prisma.service"
-import type { Prisma, Role } from "@prisma/client"
+import type { AccountAction, Prisma, Role } from "@prisma/client"
 import type { NextRequest } from "next/server"
 
 const ROLES: Role[] = ["ADMIN", "MANAGER", "RESPONSABLE_CAISSES", "CAISSIER"]
@@ -117,8 +118,38 @@ export const POST = withMiddleware(
       },
     })
 
+    await prisma.accountEvent.create({
+      data: {
+        action: "CREATED" as AccountAction,
+        userId: user.id,
+        performedById: context.userId!,
+        description: `Compte ${body.role} créé`,
+      },
+    })
+
     console.log(`[DEV] New password for ${body.email}: ${password}`)
     if (accessCode) console.log(`[DEV] Access code for ${body.email}: ${accessCode}`)
+
+    const ROLE_LABELS: Record<string, string> = {
+      ADMIN: "Administrateur",
+      MANAGER: "Manager",
+      RESPONSABLE_CAISSES: "Responsable Caisses",
+      CAISSIER: "Caissier",
+    }
+
+    emailService.sendEmail({
+      to: body.email,
+      subject: "Bienvenue sur Asernum — Vos identifiants de connexion",
+      templateName: "new-user-password",
+      data: {
+        firstName: body.firstName,
+        lastName: body.lastName,
+        role: ROLE_LABELS[body.role] ?? body.role,
+        email: body.email,
+        password,
+        accessCode,
+      },
+    }).catch((err) => console.error("[EMAIL] Erreur envoi email new-user:", err))
 
     return apiSuccess({
       user: {
