@@ -16,6 +16,7 @@ export const ENDPOINTS = {
   },
   TRANSACTIONS: "/transactions",
   STORES: "/stores",
+  STORES_TOP_COMMUNES: "/stores/top-communes",
   CASHIERS: "/cashiers",
   USERS: "/users",
   ACCOUNT_EVENTS: "/account-events",

@@ -1,79 +1,78 @@
-import { randomDelay } from "@/app/api/_helpers/delay.helper"
+
+import { authMiddleware, requireRole } from "@/app/api/_helpers/auth.helper"
 import { withMiddleware } from "@/app/api/_helpers/middleware.helper"
-import { paginate } from "@/app/api/_helpers/pagination.helper"
 import { apiSuccess } from "@/app/api/_helpers/response.helper"
+import { prisma } from "@/services/api/prisma.service"
+import type { Prisma } from "@prisma/client"
 import type { NextRequest } from "next/server"
 
-type CashierRow = {
-  id: string
-  username: string
-  accessKey: string
-  showKey: boolean
-  assignedDate: string
-  status: "Actif" | "Bloqué"
+function formatDateTime(date: Date): string {
+  const day = String(date.getDate()).padStart(2, "0")
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const year = date.getFullYear()
+  const hours = String(date.getHours()).padStart(2, "0")
+  const minutes = String(date.getMinutes()).padStart(2, "0")
+  return `${day}/${month}/${year}, ${hours}:${minutes}`
 }
 
-const USERNAMES = [
-  "OwenJaphet01",
-  "KouameSerge",
-  "TraoreAwa",
-  "DialloBinta",
-  "KoneIbrahim",
-  "YaoKouadio",
-  "CoulibalyFanta",
-  "N'GuesanKoffi",
-]
-
-const DATES = [
-  "20/01/2025, 10:20",
-  "18/01/2025, 14:35",
-  "15/01/2025, 09:10",
-  "12/01/2025, 16:45",
-  "10/01/2025, 11:20",
-  "08/01/2025, 08:00",
-  "05/01/2025, 15:30",
-  "03/01/2025, 12:00",
-]
-
-const MOCK_CASHIERS: CashierRow[] = Array.from({ length: 30 }, (_, i) => ({
-  id: `C${String(i + 1).padStart(4, "0")}`,
-  username: USERNAMES[i % USERNAMES.length],
-  accessKey: String(1000 + Math.floor(Math.random() * 9000)),
-  showKey: false,
-  assignedDate: DATES[i % DATES.length],
-  status: i % 6 === 5 ? "Bloqué" : "Actif",
-}))
-
-export const GET = withMiddleware(async (req: NextRequest) => {
-  await randomDelay()
-
+export const GET = withMiddleware(authMiddleware, requireRole("ADMIN"), async (req: NextRequest) => {
   const params = req.nextUrl.searchParams
-  const page = Number(params.get("page") || "1")
-  const limit = Number(params.get("limit") || "10")
+  const page = Math.max(1, Number(params.get("page") || "1"))
+  const limit = Math.max(1, Number(params.get("limit") || "10"))
   const search = params.get("search") || ""
   const storeId = params.get("storeId") || ""
   const quickFilter = params.get("quickFilter") || ""
 
-  let filtered = MOCK_CASHIERS
+  const where: Prisma.UserWhereInput = { role: "CAISSIER" }
 
   if (storeId) {
-    filtered = filtered.slice(0, 12 + (storeId.charCodeAt(4) % 10))
+    where.cashierAtStores = { some: { code: storeId } }
   }
 
   if (quickFilter) {
-    filtered = filtered.filter(
-      (c) => c.status.toLowerCase() === quickFilter.toLowerCase()
-    )
+    if (quickFilter.toLowerCase() === "bloqué") where.isBlocked = true
+    else if (quickFilter.toLowerCase() === "actif") where.isBlocked = false
   }
 
   if (search) {
-    const q = search.toLowerCase()
-    filtered = filtered.filter(
-      (c) =>
-        c.username.toLowerCase().includes(q) ||
-        c.id.toLowerCase().includes(q)
-    )
+    where.AND = [{
+      OR: [
+        { firstName: { contains: search, mode: "insensitive" } },
+        { lastName: { contains: search, mode: "insensitive" } },
+        { email: { contains: search, mode: "insensitive" } },
+      ],
+    }]
   }
 
-  return apiSuccess(paginate(filtered, page, limit))
+  const [cashiers, total] = await Promise.all([
+    prisma.user.findMany({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+      include: {
+        cashierHistory: {
+          orderBy: { assignedAt: "desc" },
+          take: 1,
+          select: { assignedAt: true },
+        },
+      },
+    }),
+    prisma.user.count({ where }),
+  ])
+
+  const rows = cashiers.map((c) => ({
+    id: c.id,
+    username: `${c.firstName}${c.lastName}`.replace(/\s/g, ""),
+    accessKey: "****",
+    showKey: false,
+    assignedDate: c.cashierHistory[0]
+      ? formatDateTime(c.cashierHistory[0].assignedAt)
+      : formatDateTime(c.createdAt),
+    status: c.isBlocked ? "Bloqué" as const : "Actif" as const,
+  }))
+
+  const totalPages = Math.ceil(total / limit)
+
+  return apiSuccess({ rows, total, page, totalPages })
 })

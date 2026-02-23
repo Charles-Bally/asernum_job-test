@@ -22,6 +22,13 @@ export type CreateUserPayload = {
   role: UserRole
 }
 
+export type UpdateUserPayload = {
+  firstName?: string
+  lastName?: string
+  email?: string
+  role?: UserRole
+}
+
 export type UsersData = {
   rows: User[]
   total: number

@@ -1,41 +1,20 @@
-import { randomDelay } from "@/app/api/_helpers/delay.helper"
+
+import { authMiddleware, requireRole } from "@/app/api/_helpers/auth.helper"
 import { withMiddleware } from "@/app/api/_helpers/middleware.helper"
-import { paginate } from "@/app/api/_helpers/pagination.helper"
-import { apiSuccess } from "@/app/api/_helpers/response.helper"
-import type { User, UserRole } from "@/types/user.types"
+import { apiError, apiSuccess } from "@/app/api/_helpers/response.helper"
+import { validateBody } from "@/app/api/_helpers/validate.helper"
+import { prisma } from "@/services/api/prisma.service"
+import type { Prisma, Role } from "@prisma/client"
 import type { NextRequest } from "next/server"
 
-const ROLES: UserRole[] = ["ADMIN", "MANAGER", "RESPONSABLE_CAISSES", "CAISSIER"]
-const STORES = ["Angré Djibi 1", "Cocody Centre", "Marcory Zone 4", "Plateau Commerce", null]
+const ROLES: Role[] = ["ADMIN", "MANAGER", "RESPONSABLE_CAISSES", "CAISSIER"]
 
-const FIRST_NAMES = [
-  "Amadou", "Fatou", "Koné", "Awa", "Ibrahim",
-  "Mariame", "Ousmane", "Aïcha", "Moussa", "Djénéba",
-  "Sékou", "Bintou", "Youssouf", "Aminata", "Bakary",
-  "Salimata", "Drissa", "Karidja", "Souleymane", "Mariam",
-  "Ismaël", "Rokia", "Abdoulaye", "Fatoumata", "Tidiane",
-]
-
-const LAST_NAMES = [
-  "Konaté", "Diallo", "Traoré", "Coulibaly", "Touré",
-  "Bamba", "Ouattara", "Camara", "Sylla", "Diarra",
-  "Koné", "Sangaré", "Cissé", "Dembélé", "Keïta",
-  "Fofana", "Doumbia", "Diabaté", "Sissoko", "Haidara",
-  "Sidibé", "Sow", "Ndiaye", "Kanté", "Bah",
-]
-
-const MOCK_USERS: User[] = Array.from({ length: 80 }, (_, i) => ({
-  id: `USR-${String(i + 1).padStart(4, "0")}`,
-  firstName: FIRST_NAMES[i % FIRST_NAMES.length],
-  lastName: LAST_NAMES[i % LAST_NAMES.length],
-  email: `${FIRST_NAMES[i % FIRST_NAMES.length].toLowerCase()}.${LAST_NAMES[i % LAST_NAMES.length].toLowerCase()}${i >= 25 ? i : ""}@auchan.ci`,
-  role: ROLES[i % ROLES.length],
-  status: i % 7 === 0 ? "blocked" as const : "active" as const,
-  store: STORES[i % STORES.length],
-  createdAt: new Date(2024, Math.floor(i / 3), (i % 28) + 1).toLocaleDateString("fr-FR"),
-  blockedAt: i % 7 === 0 ? "15/01/2025" : null,
-  blockReason: i % 7 === 0 ? "Tentatives de connexion suspectes" : null,
-}))
+function formatDate(date: Date): string {
+  const day = String(date.getDate()).padStart(2, "0")
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const year = date.getFullYear()
+  return `${day}/${month}/${year}`
+}
 
 function generatePassword(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789"
@@ -46,64 +25,116 @@ function generateAccessCode(): string {
   return Array.from({ length: 4 }, () => Math.floor(Math.random() * 10)).join("")
 }
 
-export const GET = withMiddleware(async (req: NextRequest) => {
-  await randomDelay()
+export const GET = withMiddleware(authMiddleware, requireRole("ADMIN"), async (req: NextRequest) => {
   const params = req.nextUrl.searchParams
-  const page = Number(params.get("page") || "1")
-  const limit = Number(params.get("limit") || "10")
+  const page = Math.max(1, Number(params.get("page") || "1"))
+  const limit = Math.max(1, Number(params.get("limit") || "10"))
   const search = params.get("search") || ""
   const role = params.get("role") || ""
   const status = params.get("status") || ""
 
-  let filtered = MOCK_USERS
+  const where: Prisma.UserWhereInput = {}
 
   if (search) {
-    const q = search.toLowerCase()
-    filtered = filtered.filter(
-      (u) =>
-        u.firstName.toLowerCase().includes(q) ||
-        u.lastName.toLowerCase().includes(q) ||
-        u.email.toLowerCase().includes(q)
-    )
+    where.OR = [
+      { firstName: { contains: search, mode: "insensitive" } },
+      { lastName: { contains: search, mode: "insensitive" } },
+      { email: { contains: search, mode: "insensitive" } },
+    ]
   }
 
-  if (role) filtered = filtered.filter((u) => u.role === role)
-  if (status) filtered = filtered.filter((u) => u.status === status)
+  if (role) where.role = role as Role
 
-  return apiSuccess({ ...paginate(filtered, page, limit), roles: ROLES })
+  if (status === "blocked") where.isBlocked = true
+  else if (status === "active") where.isBlocked = false
+
+  const [users, total] = await Promise.all([
+    prisma.user.findMany({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+      include: {
+        managedStores: { select: { name: true }, take: 1 },
+        supervisedStores: { select: { name: true }, take: 1 },
+        cashierAtStores: { select: { name: true }, take: 1 },
+      },
+    }),
+    prisma.user.count({ where }),
+  ])
+
+  const rows = users.map((u) => {
+    const store = u.managedStores[0]?.name
+      ?? u.supervisedStores[0]?.name
+      ?? u.cashierAtStores[0]?.name
+      ?? null
+
+    return {
+      id: u.id,
+      firstName: u.firstName,
+      lastName: u.lastName,
+      email: u.email,
+      role: u.role,
+      status: u.isBlocked ? "blocked" as const : "active" as const,
+      store,
+      createdAt: formatDate(u.createdAt),
+      blockedAt: u.blockedAt ? formatDate(u.blockedAt) : null,
+      blockReason: u.blockedReason,
+    }
+  })
+
+  const totalPages = Math.ceil(total / limit)
+
+  return apiSuccess({ rows, total, page, totalPages, roles: ROLES })
 })
 
-export const POST = withMiddleware(async (req: NextRequest) => {
-  await randomDelay()
+export const POST = withMiddleware(
+  authMiddleware,
+  requireRole("ADMIN"),
+  validateBody({
+    firstName: { type: "string" },
+    lastName: { type: "string" },
+    email: { type: "string" },
+    role: { type: "string" },
+  }),
+  async (_req, context) => {
+    const body = context.body!
 
-  const body = await req.json()
-  const { firstName, lastName, email, role } = body
+    const existing = await prisma.user.findUnique({ where: { email: body.email } })
+    if (existing) return apiError("Un utilisateur avec cet email existe déjà", 409)
 
-  if (!firstName || !lastName || !email || !role) {
-    return apiSuccess({ error: "Champs requis manquants" })
+    const password = generatePassword()
+    const isAdmin = body.role === "ADMIN"
+    const accessCode = isAdmin ? null : generateAccessCode()
+
+    const user = await prisma.user.create({
+      data: {
+        firstName: body.firstName,
+        lastName: body.lastName,
+        email: body.email,
+        password,
+        role: body.role as Role,
+      },
+    })
+
+    console.log(`[DEV] New password for ${body.email}: ${password}`)
+    if (accessCode) console.log(`[DEV] Access code for ${body.email}: ${accessCode}`)
+
+    return apiSuccess({
+      user: {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        status: "active",
+        store: null,
+        createdAt: formatDate(user.createdAt),
+        blockedAt: null,
+        blockReason: null,
+      },
+      hasAccessCode: !isAdmin,
+      success: true,
+    }, 201)
   }
-
-  const newUser: User = {
-    id: `USR-${String(MOCK_USERS.length + 1).padStart(4, "0")}`,
-    firstName,
-    lastName,
-    email,
-    role,
-    status: "active",
-    store: null,
-    createdAt: new Date().toLocaleDateString("fr-FR"),
-    blockedAt: null,
-    blockReason: null,
-  }
-
-  const generatedPassword = generatePassword()
-  const isAdmin = role === "ADMIN"
-  const accessCode = isAdmin ? null : generateAccessCode()
-
-  console.log(`[DEV] Mock email — New password for ${email}: ${generatedPassword}`)
-  if (accessCode) {
-    console.log(`[DEV] Mock email — Access code for ${email}: ${accessCode}`)
-  }
-
-  return apiSuccess({ user: newUser, hasAccessCode: !isAdmin, success: true })
-})
+)

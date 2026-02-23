@@ -3,8 +3,11 @@
 import { SlidePanelLayout } from "@/components/menu/SlidePanelLayout"
 import CustomButton from "@/components/ui/render/CustomButton"
 import { QUERY_KEYS } from "@/constants/querykeys.constant"
+import { useSidebar } from "@/components/sidebar_system"
+import { useToast } from "@/components/toast_system/hooks/useToast"
 import { cashiersService } from "@/services/cashiers/cashiers.service"
 import { useQuery } from "@tanstack/react-query"
+import { useEffect } from "react"
 import type { SidebarComponentProps } from "../types/sidebar.types"
 
 type StoreHistory = {
@@ -79,11 +82,22 @@ function TransactionList({ transactions }: { transactions: RecentTransaction[] }
 }
 
 export function CashierSidebarEntity({ config }: SidebarComponentProps) {
-  const { data: cashier, isLoading } = useQuery({
+  const { close } = useSidebar()
+  const { toast, TOAST } = useToast()
+
+  const { data: cashier, isLoading, isError } = useQuery({
     queryKey: [...QUERY_KEYS.CASHIER_DETAIL, config.entityId],
     queryFn: () => cashiersService.getCashierById(config.entityId),
     enabled: !!config.entityId,
+    retry: false,
   })
+
+  useEffect(() => {
+    if (isError || (!isLoading && !cashier)) {
+      close()
+      toast({ type: TOAST.ERROR, message: "Le caissier que vous recherchez n'est pas disponible, veuillez réessayer." })
+    }
+  }, [isError, isLoading, cashier, close, toast, TOAST])
 
   if (isLoading) {
     return (

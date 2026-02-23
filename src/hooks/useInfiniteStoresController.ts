@@ -3,7 +3,7 @@
 
 import { QUERY_KEYS } from "@/constants/querykeys.constant"
 import { storesService } from "@/services/stores/stores.service"
-import { useInfiniteQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
 
 type InfiniteStoresParams = {
@@ -21,8 +21,12 @@ export function useInfiniteStoresQuery({ search, commune, limit = 15 }: Infinite
       lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
   })
 
+  const { data: communes = [] } = useQuery({
+    queryKey: QUERY_KEYS.STORE_TOP_COMMUNES,
+    queryFn: () => storesService.getTopCommunes(),
+  })
+
   const stores = useMemo(() => data?.pages.flatMap((p) => p.rows) ?? [], [data])
-  const communes = data?.pages[0]?.communes ?? []
 
   return { stores, communes, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage }
 }

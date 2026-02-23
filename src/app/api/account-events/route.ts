@@ -1,71 +1,98 @@
-import { randomDelay } from "@/app/api/_helpers/delay.helper"
+
+import { authMiddleware, requireRole } from "@/app/api/_helpers/auth.helper"
 import { withMiddleware } from "@/app/api/_helpers/middleware.helper"
-import { paginate } from "@/app/api/_helpers/pagination.helper"
 import { apiSuccess } from "@/app/api/_helpers/response.helper"
-import type { AccountEvent, EventAction } from "@/types/account-event.types"
+import { prisma } from "@/services/api/prisma.service"
+import type { AccountAction, Prisma } from "@prisma/client"
 import type { NextRequest } from "next/server"
 
-const ACTIONS: EventAction[] = [
-  "CREATED", "BLOCKED", "UNBLOCKED", "PASSWORD_RESET", "ROLE_CHANGED", "ASSIGNED_STORE",
-]
-
-const DESCRIPTIONS: Record<EventAction, string> = {
-  CREATED: "Compte créé avec le rôle",
-  BLOCKED: "Compte bloqué pour tentatives suspectes",
-  UNBLOCKED: "Compte débloqué par l'administrateur",
-  PASSWORD_RESET: "Mot de passe réinitialisé",
-  ROLE_CHANGED: "Rôle modifié de Caissier à Manager",
-  ASSIGNED_STORE: "Affecté au magasin Angré Djibi 1",
+const ACTION_LABELS: Record<string, string> = {
+  CREATED: "Création de compte",
+  BLOCKED: "Blocage",
+  UNBLOCKED: "Déblocage",
+  PASSWORD_RESET: "Réinitialisation mot de passe",
+  ROLE_CHANGED: "Changement de rôle",
+  ASSIGNED_STORE: "Assignation magasin",
+  PROFILE_UPDATED: "Mise à jour du profil",
 }
 
-const USERS = [
-  { id: "USR-0001", name: "Amadou Konaté" },
-  { id: "USR-0002", name: "Fatou Diallo" },
-  { id: "USR-0003", name: "Koné Traoré" },
-  { id: "USR-0004", name: "Awa Coulibaly" },
-  { id: "USR-0005", name: "Ibrahim Touré" },
-  { id: "USR-0008", name: "Aïcha Camara" },
-  { id: "USR-0010", name: "Djénéba Diarra" },
-]
+function normalize(str: string): string {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+}
 
-const PERFORMERS = ["Admin Système", "Fatou Diallo", "Ibrahim Touré", "Auto"]
+function matchingActions(search: string): string[] {
+  const term = normalize(search)
+  return Object.entries(ACTION_LABELS)
+    .filter(([, label]) => normalize(label).includes(term))
+    .map(([key]) => key)
+}
 
-const MOCK_EVENTS: AccountEvent[] = Array.from({ length: 30 }, (_, i) => {
-  const user = USERS[i % USERS.length]
-  const action = ACTIONS[i % ACTIONS.length]
-  return {
-    id: `EVT-${String(i + 1).padStart(4, "0")}`,
-    userId: user.id,
-    userName: user.name,
-    action,
-    description: DESCRIPTIONS[action],
-    performedBy: PERFORMERS[i % PERFORMERS.length],
-    createdAt: new Date(2025, 0, 30 - i).toLocaleDateString("fr-FR"),
-  }
-})
+function formatDate(date: Date): string {
+  const day = String(date.getDate()).padStart(2, "0")
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const year = date.getFullYear()
+  return `${day}/${month}/${year}`
+}
 
-export const GET = withMiddleware(async (req: NextRequest) => {
-  await randomDelay()
+export const GET = withMiddleware(authMiddleware, requireRole("ADMIN"), async (req: NextRequest) => {
   const params = req.nextUrl.searchParams
-  const page = Number(params.get("page") || "1")
-  const limit = Number(params.get("limit") || "10")
+  const page = Math.max(1, Number(params.get("page") || "1"))
+  const limit = Math.max(1, Number(params.get("limit") || "10"))
   const search = params.get("search") || ""
   const action = params.get("action") || ""
   const userId = params.get("userId") || ""
+  const quickFilter = params.get("quickFilter") || ""
 
-  let filtered = MOCK_EVENTS
+  const where: Prisma.AccountEventWhereInput = {}
 
-  if (search) {
-    const q = search.toLowerCase()
-    filtered = filtered.filter(
-      (e) =>
-        e.userName.toLowerCase().includes(q) ||
-        e.description.toLowerCase().includes(q)
-    )
+  const actionFilter = action || quickFilter
+  if (actionFilter) {
+    where.action = actionFilter as Prisma.EnumAccountActionFilter
   }
 
-  if (action) filtered = filtered.filter((e) => e.action === action)
-  if (userId) filtered = filtered.filter((e) => e.userId === userId)
+  if (userId) where.userId = userId
 
-  return apiSuccess(paginate(filtered, page, limit))
+  if (search) {
+    const actions = matchingActions(search)
+    const orConditions: Prisma.AccountEventWhereInput[] = [
+      { user: { firstName: { contains: search, mode: "insensitive" } } },
+      { user: { lastName: { contains: search, mode: "insensitive" } } },
+      { performedBy: { firstName: { contains: search, mode: "insensitive" } } },
+      { performedBy: { lastName: { contains: search, mode: "insensitive" } } },
+      { description: { contains: search, mode: "insensitive" } },
+      { reason: { contains: search, mode: "insensitive" } },
+    ]
+    for (const a of actions) {
+      orConditions.push({ action: { equals: a as AccountAction } })
+    }
+    where.OR = orConditions
+  }
+
+  const [events, total] = await Promise.all([
+    prisma.accountEvent.findMany({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+      include: {
+        user: { select: { firstName: true, lastName: true } },
+        performedBy: { select: { firstName: true, lastName: true } },
+      },
+    }),
+    prisma.accountEvent.count({ where }),
+  ])
+
+  const rows = events.map((e) => ({
+    id: e.id,
+    userId: e.userId,
+    userName: `${e.user.firstName} ${e.user.lastName}`,
+    action: e.action,
+    description: e.description ?? e.reason ?? "",
+    performedBy: `${e.performedBy.firstName} ${e.performedBy.lastName}`,
+    createdAt: formatDate(e.createdAt),
+  }))
+
+  const totalPages = Math.ceil(total / limit)
+
+  return apiSuccess({ rows, total, page, totalPages })
 })

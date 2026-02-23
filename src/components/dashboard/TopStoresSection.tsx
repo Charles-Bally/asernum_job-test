@@ -1,10 +1,10 @@
 
 "use client"
 
-import { EmptyState } from "@/components/ui/render/EmptyState"
 import CustomLink from "@/components/ui/render/CustomLink"
-import { useTopStoresQuery } from "@/hooks/useDashboardController"
+import { EmptyState } from "@/components/ui/render/EmptyState"
 import { PATHNAME } from "@/constants/pathname.constant"
+import { useTopStoresQuery } from "@/hooks/useDashboardController"
 import { Store } from "lucide-react"
 import { useRef } from "react"
 import { StoreCard } from "./StoreCard"
@@ -52,7 +52,7 @@ export function TopStoresSection() {
           title="Aucun magasin"
           message="Aucun magasin actif pour le moment."
           icon={<Store size={40} strokeWidth={1.2} />}
-          className="flex-1 py-0"
+          className="flex-1 py-4"
         />
       ) : (
         <div

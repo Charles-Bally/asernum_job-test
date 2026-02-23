@@ -28,8 +28,14 @@ export function useLoginController() {
         const response = await loginService.login(identifier, password)
         return response.data
       } catch (error) {
-        if (error instanceof AxiosError && error.response?.status === 401) {
-          throw new Error("Identifiants incorrects")
+        if (error instanceof AxiosError) {
+          const serverMessage = (error.response?.data as any)?.error
+          if (error.response?.status === 403) {
+            throw new Error(serverMessage || "Accès refusé")
+          }
+          if (error.response?.status === 401) {
+            throw new Error("Identifiants incorrects")
+          }
         }
         throw error
       }

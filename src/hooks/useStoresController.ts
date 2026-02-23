@@ -18,9 +18,14 @@ export function useStoresQuery({ search, commune, page, limit = 15 }: StoresPara
     queryFn: () => storesService.getStores({ search, commune, page, limit }),
   })
 
+  const { data: communes = [] } = useQuery({
+    queryKey: QUERY_KEYS.STORE_TOP_COMMUNES,
+    queryFn: () => storesService.getTopCommunes(),
+  })
+
   return {
     stores: data?.rows ?? [],
-    communes: data?.communes ?? [],
+    communes,
     page: data?.page ?? page,
     totalPages: data?.totalPages ?? 1,
     isLoading,

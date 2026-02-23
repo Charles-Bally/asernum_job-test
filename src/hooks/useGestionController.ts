@@ -5,7 +5,7 @@ import { QUERY_KEYS } from "@/constants/querykeys.constant"
 import { accountEventsService } from "@/services/account-events/account-events.service"
 import { apiRequest } from "@/services/api/api.request.service"
 import { usersService } from "@/services/users/users.service"
-import type { CreateUserPayload } from "@/types/user.types"
+import type { CreateUserPayload, UpdateUserPayload } from "@/types/user.types"
 import { useQuery } from "@tanstack/react-query"
 import { useCallback } from "react"
 
@@ -88,7 +88,7 @@ export function useUserActions() {
       config: {
         waitingMessage: "Blocage en cours...",
         successMessage: "Utilisateur bloqué avec succès",
-        cacheKeys: [QUERY_KEYS.USERS, QUERY_KEYS.USER_DETAIL],
+        cacheKeys: [QUERY_KEYS.USERS, QUERY_KEYS.USER_DETAIL, QUERY_KEYS.ACCOUNT_EVENTS],
       },
     })
   }, [])
@@ -119,7 +119,7 @@ export function useUserActions() {
       config: {
         waitingMessage: "Déblocage en cours...",
         successMessage: "Utilisateur débloqué avec succès",
-        cacheKeys: [QUERY_KEYS.USERS, QUERY_KEYS.USER_DETAIL],
+        cacheKeys: [QUERY_KEYS.USERS, QUERY_KEYS.USER_DETAIL, QUERY_KEYS.ACCOUNT_EVENTS],
       },
     })
   }, [])
@@ -151,7 +151,7 @@ export function useUserActions() {
         waitingMessage: "Réinitialisation en cours...",
         successTitle: "Email envoyé",
         successMessage: "Le nouveau mot de passe a été envoyé par email à l'utilisateur.",
-        cacheKeys: [QUERY_KEYS.USERS, QUERY_KEYS.USER_DETAIL],
+        cacheKeys: [QUERY_KEYS.USERS, QUERY_KEYS.USER_DETAIL, QUERY_KEYS.ACCOUNT_EVENTS],
       },
     })
   }, [])
@@ -163,10 +163,21 @@ export function useUserActions() {
         waitingMessage: "Création de l'utilisateur...",
         successTitle: "Compte créé",
         successMessage: "Le compte a été créé et le mot de passe envoyé par email.",
-        cacheKeys: [QUERY_KEYS.USERS],
+        cacheKeys: [QUERY_KEYS.USERS, QUERY_KEYS.ACCOUNT_EVENTS],
       },
     })
   }, [])
 
-  return { blockUser, unblockUser, resetPassword, createUser }
+  const updateUser = useCallback(async (id: string, payload: UpdateUserPayload) => {
+    return apiRequest({
+      request: () => usersService.updateUser(id, payload),
+      config: {
+        waitingMessage: "Mise à jour en cours...",
+        successMessage: "Profil mis à jour avec succès",
+        cacheKeys: [QUERY_KEYS.USERS, QUERY_KEYS.USER_DETAIL, QUERY_KEYS.ACCOUNT_EVENTS],
+      },
+    })
+  }, [])
+
+  return { blockUser, unblockUser, resetPassword, createUser, updateUser }
 }

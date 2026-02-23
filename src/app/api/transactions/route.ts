@@ -1,67 +1,28 @@
-import { randomDelay } from "@/app/api/_helpers/delay.helper"
+
+import { authMiddleware, requireRole } from "@/app/api/_helpers/auth.helper"
 import { withMiddleware } from "@/app/api/_helpers/middleware.helper"
-import { paginate } from "@/app/api/_helpers/pagination.helper"
 import { apiSuccess } from "@/app/api/_helpers/response.helper"
+import { prisma } from "@/services/api/prisma.service"
+import type { Prisma } from "@prisma/client"
 import type { NextRequest } from "next/server"
 
-type TransactionRow = {
-  id: string
-  type: string
-  store: string
-  storeCode: string
-  amount: number
-  client: string | null
-  date: string
+const TYPE_LABELS: Record<string, string> = {
+  PAIEMENT_COURSE: "Paiement course",
+  RENDU_MONNAIE: "Rendu monnaie",
 }
 
-const TYPES = ["Paiement course", "Rendu monnaie"] as const
-const STORES = [
-  { name: "Angré Djibi 1", code: "M0001" },
-  { name: "Marcory Zone 4", code: "M0002" },
-  { name: "Plateau Centre", code: "M0003" },
-  { name: "Yopougon Selmer", code: "M0004" },
-  { name: "Treichville Gare", code: "M0005" },
-]
-const CLIENTS = [
-  "+225 07 63 32 22 32",
-  "+225 01 02 03 04 05",
-  "+225 05 06 07 08 09",
-  "+225 07 08 06 05 04",
-  "+225 09 12 34 56 78",
-  null,
-]
-const DATES = [
-  "20/01/2025, 10:20",
-  "20/01/2025, 14:35",
-  "19/01/2025, 09:10",
-  "19/01/2025, 16:45",
-  "18/01/2025, 11:20",
-  "18/01/2025, 08:00",
-  "17/01/2025, 15:30",
-  "16/01/2025, 12:00",
-]
+const LABEL_TO_ENUM: Record<string, string> = {
+  "paiement course": "PAIEMENT_COURSE",
+  "rendu monnaie": "RENDU_MONNAIE",
+}
 
-const MOCK_TRANSACTIONS: TransactionRow[] = Array.from({ length: 45 }, (_, i) => {
-  const store = STORES[i % STORES.length]
-  const type = TYPES[i % TYPES.length]
-  const amounts = [2500, 1800, 3200, 950, 4100, 600, 1250, 7500]
-  const amount = type === "Rendu monnaie" ? -amounts[i % amounts.length] : amounts[i % amounts.length]
-
-  return {
-    id: String(10836745693 + i),
-    type,
-    store: store.name,
-    storeCode: store.code,
-    amount,
-    client: CLIENTS[i % CLIENTS.length],
-    date: DATES[i % DATES.length],
-  }
-})
-
-function parseDate(dateStr: string): Date {
-  const [datePart] = dateStr.split(",")
-  const [day, month, year] = datePart.trim().split("/")
-  return new Date(Number(year), Number(month) - 1, Number(day))
+function formatDate(date: Date): string {
+  const day = String(date.getDate()).padStart(2, "0")
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const year = date.getFullYear()
+  const hours = String(date.getHours()).padStart(2, "0")
+  const minutes = String(date.getMinutes()).padStart(2, "0")
+  return `${day}/${month}/${year}, ${hours}:${minutes}`
 }
 
 function parseDateParam(param: string): Date {
@@ -69,49 +30,73 @@ function parseDateParam(param: string): Date {
   return new Date(Number(year), Number(month) - 1, Number(day))
 }
 
-export const GET = withMiddleware(async (req: NextRequest) => {
-  await randomDelay()
-
+export const GET = withMiddleware(authMiddleware, requireRole("ADMIN"), async (req: NextRequest) => {
   const params = req.nextUrl.searchParams
-  const page = Number(params.get("page") || "1")
-  const limit = Number(params.get("limit") || "10")
+  const page = Math.max(1, Number(params.get("page") || "1"))
+  const limit = Math.max(1, Number(params.get("limit") || "10"))
   const search = params.get("search") || ""
   const storeId = params.get("storeId") || ""
   const quickFilter = params.get("quickFilter") || ""
   const dateFrom = params.get("dateFrom") || ""
   const dateTo = params.get("dateTo") || ""
 
-  let filtered = MOCK_TRANSACTIONS
+  const where: Prisma.TransactionWhereInput = {}
 
   if (storeId) {
-    filtered = filtered.filter((t) => t.storeCode === storeId)
+    where.store = { code: storeId }
   }
 
   if (quickFilter) {
-    filtered = filtered.filter(
-      (t) => t.type.toLowerCase() === quickFilter.toLowerCase()
-    )
+    const enumVal = LABEL_TO_ENUM[quickFilter.toLowerCase()]
+    if (enumVal) {
+      where.type = enumVal as Prisma.EnumTransactionTypeFilter
+    }
   }
 
   if (dateFrom && dateTo) {
     const from = parseDateParam(dateFrom)
     const to = parseDateParam(dateTo)
-    filtered = filtered.filter((t) => {
-      const d = parseDate(t.date)
-      return d >= from && d <= to
-    })
+    to.setHours(23, 59, 59, 999)
+    where.createdAt = { gte: from, lte: to }
   }
 
   if (search) {
-    const q = search.toLowerCase()
-    filtered = filtered.filter(
-      (t) =>
-        t.id.includes(q) ||
-        t.type.toLowerCase().includes(q) ||
-        t.store.toLowerCase().includes(q) ||
-        (t.client && t.client.includes(q))
-    )
+    const searchConditions: Prisma.TransactionWhereInput[] = [
+      { id: { contains: search, mode: "insensitive" } },
+      { store: { name: { contains: search, mode: "insensitive" } } },
+    ]
+    const enumVal = LABEL_TO_ENUM[search.toLowerCase()]
+    if (enumVal) {
+      searchConditions.push({ type: enumVal as Prisma.EnumTransactionTypeFilter })
+    }
+    where.AND = [{ OR: searchConditions }]
   }
 
-  return apiSuccess(paginate(filtered, page, limit))
+  const [transactions, total] = await Promise.all([
+    prisma.transaction.findMany({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+      include: {
+        store: { select: { name: true, code: true } },
+        client: { select: { phone: true } },
+      },
+    }),
+    prisma.transaction.count({ where }),
+  ])
+
+  const rows = transactions.map((t) => ({
+    id: t.id,
+    type: TYPE_LABELS[t.type] ?? t.type,
+    store: t.store.name,
+    storeCode: t.store.code,
+    amount: t.type === "RENDU_MONNAIE" ? -t.amount : t.amount,
+    client: t.client?.phone ?? null,
+    date: formatDate(t.createdAt),
+  }))
+
+  const totalPages = Math.ceil(total / limit)
+
+  return apiSuccess({ rows, total, page, totalPages })
 })

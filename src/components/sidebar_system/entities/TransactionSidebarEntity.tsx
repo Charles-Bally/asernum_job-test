@@ -5,9 +5,11 @@ import CustomButton from "@/components/ui/render/CustomButton"
 import { QUERY_KEYS } from "@/constants/querykeys.constant"
 import { cn } from "@/lib/utils"
 import { transactionsService } from "@/services/transactions/transactions.service"
+import { useSidebar } from "@/components/sidebar_system"
+import { useToast } from "@/components/toast_system/hooks/useToast"
 import { useQuery } from "@tanstack/react-query"
 import { ArrowDownLeft, ArrowUpRight, Check, Copy } from "lucide-react"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import type { SidebarComponentProps } from "../types/sidebar.types"
 
 function formatAmount(amount: number): string {
@@ -64,12 +66,22 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 
 export function TransactionSidebarEntity({ config }: SidebarComponentProps) {
   const [copied, setCopied] = useState(false)
+  const { close } = useSidebar()
+  const { toast, TOAST } = useToast()
 
-  const { data: transaction, isLoading } = useQuery({
+  const { data: transaction, isLoading, isError } = useQuery({
     queryKey: [...QUERY_KEYS.TRANSACTION_DETAIL, config.entityId],
     queryFn: () => transactionsService.getTransactionById(config.entityId),
     enabled: !!config.entityId,
+    retry: false,
   })
+
+  useEffect(() => {
+    if (isError || (!isLoading && !transaction)) {
+      close()
+      toast({ type: TOAST.ERROR, message: "La transaction que vous recherchez n'est pas disponible, veuillez réessayer." })
+    }
+  }, [isError, isLoading, transaction, close, toast, TOAST])
 
   const handleCopyId = useCallback(() => {
     if (!transaction) return

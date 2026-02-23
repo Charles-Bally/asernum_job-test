@@ -1,7 +1,7 @@
 import { ENDPOINTS } from "@/constants/endpoints.constant"
 import { buildQuery, fetchApi } from "@/services/api/api.decoder"
 import { http } from "@/services/http"
-import type { User, UsersData, CreateUserPayload } from "@/types/user.types"
+import type { User, UsersData, CreateUserPayload, UpdateUserPayload } from "@/types/user.types"
 
 export const usersService = {
   async getUsers(params?: Record<string, string | number>) {
@@ -27,5 +27,9 @@ export const usersService = {
 
   async resetPassword(id: string) {
     return http.patch(`${ENDPOINTS.USERS}/${id}`, { action: "reset-password" })
+  },
+
+  async updateUser(id: string, payload: UpdateUserPayload) {
+    return http.patch(`${ENDPOINTS.USERS}/${id}`, { action: "update-profile", ...payload })
   },
 }

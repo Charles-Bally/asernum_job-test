@@ -23,6 +23,14 @@ async function handler(_req: NextRequest, context: ApiContext) {
     return apiError("Identifiants incorrects", 401)
   }
 
+  if (user.isBlocked) {
+    return apiError("Votre compte a été bloqué. Veuillez contacter un administrateur.", 403)
+  }
+
+  if (user.role !== "ADMIN") {
+    return apiError("Accès réservé aux administrateurs. Votre rôle actuel ne permet pas d'accéder à cette plateforme.", 403)
+  }
+
   const tokens = jwtService.generateTokenPair(user.id)
 
   return apiSuccess({

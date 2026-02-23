@@ -1,55 +1,46 @@
-import { randomDelay } from "@/app/api/_helpers/delay.helper"
+
+import { authMiddleware, requireRole } from "@/app/api/_helpers/auth.helper"
 import { withMiddleware } from "@/app/api/_helpers/middleware.helper"
 import { apiError, apiSuccess } from "@/app/api/_helpers/response.helper"
+import { prisma } from "@/services/api/prisma.service"
 import type { NextRequest } from "next/server"
 
-const TYPES = ["Paiement course", "Rendu monnaie"] as const
-const STORES = [
-  { name: "Angré Djibi 1", code: "M0001" },
-  { name: "Marcory Zone 4", code: "M0002" },
-  { name: "Plateau Centre", code: "M0003" },
-  { name: "Yopougon Selmer", code: "M0004" },
-  { name: "Treichville Gare", code: "M0005" },
-]
-const CLIENTS = [
-  "+225 07 63 32 22 32",
-  "+225 01 02 03 04 05",
-  "+225 05 06 07 08 09",
-  "+225 07 08 06 05 04",
-  "+225 09 12 34 56 78",
-  null,
-]
-const DATES = [
-  "20/01/2025, 10:20",
-  "20/01/2025, 14:35",
-  "19/01/2025, 09:10",
-  "19/01/2025, 16:45",
-  "18/01/2025, 11:20",
-]
+const TYPE_LABELS: Record<string, string> = {
+  PAIEMENT_COURSE: "Paiement course",
+  RENDU_MONNAIE: "Rendu monnaie",
+}
 
-export const GET = withMiddleware(async (req: NextRequest) => {
-  await randomDelay()
+function formatDate(date: Date): string {
+  const day = String(date.getDate()).padStart(2, "0")
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const year = date.getFullYear()
+  const hours = String(date.getHours()).padStart(2, "0")
+  const minutes = String(date.getMinutes()).padStart(2, "0")
+  return `${day}/${month}/${year}, ${hours}:${minutes}`
+}
 
+export const GET = withMiddleware(authMiddleware, requireRole("ADMIN"), async (req: NextRequest) => {
   const id = req.nextUrl.pathname.split("/").pop() || ""
-  const baseId = 10836745693
-  const i = Number(id) - baseId
 
-  if (Number.isNaN(i) || i < 0 || i >= 45) {
+  const transaction = await prisma.transaction.findUnique({
+    where: { id },
+    include: {
+      store: { select: { name: true, code: true } },
+      client: { select: { phone: true } },
+    },
+  })
+
+  if (!transaction) {
     return apiError("Transaction introuvable", 404)
   }
 
-  const store = STORES[i % STORES.length]
-  const type = TYPES[i % TYPES.length]
-  const amounts = [2500, 1800, 3200, 950, 4100, 600, 1250, 7500]
-  const amount = type === "Rendu monnaie" ? -amounts[i % amounts.length] : amounts[i % amounts.length]
-
   return apiSuccess({
-    id: String(baseId + i),
-    type,
-    store: store.name,
-    storeCode: store.code,
-    amount,
-    client: CLIENTS[i % CLIENTS.length],
-    date: DATES[i % DATES.length],
+    id: transaction.id,
+    type: TYPE_LABELS[transaction.type] ?? transaction.type,
+    store: transaction.store.name,
+    storeCode: transaction.store.code,
+    amount: transaction.type === "RENDU_MONNAIE" ? -transaction.amount : transaction.amount,
+    client: transaction.client?.phone ?? null,
+    date: formatDate(transaction.createdAt),
   })
 })

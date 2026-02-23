@@ -1,47 +1,45 @@
-import { randomDelay } from "@/app/api/_helpers/delay.helper"
+
+import { authMiddleware, requireRole } from "@/app/api/_helpers/auth.helper"
 import { withMiddleware } from "@/app/api/_helpers/middleware.helper"
 import { apiError, apiSuccess } from "@/app/api/_helpers/response.helper"
+import { prisma } from "@/services/api/prisma.service"
 import type { NextRequest } from "next/server"
 
-const USERNAMES = [
-  "OwenJaphet01",
-  "KouameSerge",
-  "TraoreAwa",
-  "DialloBinta",
-  "KoneIbrahim",
-  "YaoKouadio",
-  "CoulibalyFanta",
-  "N'GuesanKoffi",
-]
+function formatDateTime(date: Date): string {
+  const day = String(date.getDate()).padStart(2, "0")
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const year = date.getFullYear()
+  const hours = String(date.getHours()).padStart(2, "0")
+  const minutes = String(date.getMinutes()).padStart(2, "0")
+  return `${day}/${month}/${year}, ${hours}:${minutes}`
+}
 
-const DATES = [
-  "20/01/2025, 10:20",
-  "18/01/2025, 14:35",
-  "15/01/2025, 09:10",
-  "12/01/2025, 16:45",
-  "10/01/2025, 11:20",
-  "08/01/2025, 08:00",
-  "05/01/2025, 15:30",
-  "03/01/2025, 12:00",
-]
-
-export const GET = withMiddleware(async (req: NextRequest) => {
-  await randomDelay()
-
+export const GET = withMiddleware(authMiddleware, requireRole("ADMIN"), async (req: NextRequest) => {
   const id = req.nextUrl.pathname.split("/").pop() || ""
-  const match = id.match(/^C(\d+)$/)
 
-  if (!match) return apiError("Caissier introuvable", 404)
+  const user = await prisma.user.findUnique({
+    where: { id },
+    include: {
+      cashierHistory: {
+        orderBy: { assignedAt: "desc" },
+        take: 1,
+        select: { assignedAt: true },
+      },
+    },
+  })
 
-  const i = Number(match[1]) - 1
-  if (i < 0 || i >= 30) return apiError("Caissier introuvable", 404)
+  if (!user || user.role !== "CAISSIER") {
+    return apiError("Caissier introuvable", 404)
+  }
 
   return apiSuccess({
-    id: `C${String(i + 1).padStart(4, "0")}`,
-    username: USERNAMES[i % USERNAMES.length],
-    accessKey: String(1000 + Math.floor(Math.random() * 9000)),
-    showKey: i === 0,
-    assignedDate: DATES[i % DATES.length],
-    status: i % 6 === 5 ? "Bloqué" : "Actif",
+    id: user.id,
+    username: `${user.firstName}${user.lastName}`.replace(/\s/g, ""),
+    accessKey: "****",
+    showKey: false,
+    assignedDate: user.cashierHistory[0]
+      ? formatDateTime(user.cashierHistory[0].assignedAt)
+      : formatDateTime(user.createdAt),
+    status: user.isBlocked ? "Bloqué" : "Actif",
   })
 })

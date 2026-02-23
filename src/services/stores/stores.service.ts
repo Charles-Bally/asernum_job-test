@@ -1,3 +1,4 @@
+
 import { ENDPOINTS } from "@/constants/endpoints.constant"
 import { buildQuery } from "@/services/api/api.decoder"
 import { http } from "@/services/http"
@@ -19,5 +20,10 @@ export const storesService = {
   async createStore(data: CreateStorePayload) {
     const response = await http.post(ENDPOINTS.STORES, data)
     return response.data.data
+  },
+
+  async getTopCommunes() {
+    const response = await http.get(ENDPOINTS.STORES_TOP_COMMUNES)
+    return response.data.data as string[]
   },
 }

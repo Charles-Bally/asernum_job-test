@@ -3,6 +3,7 @@ import { PATHNAME } from "@/constants/pathname.constant"
 import { profileService } from "@/services/auth/profile.service"
 import { type AuthUser, useAuthStore } from "@/store/auth.store"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { AxiosError } from "axios"
 import { useRouter } from "next/navigation"
 import { useCallback, useEffect, useRef } from "react"
 
@@ -21,6 +22,21 @@ export function useProfile() {
     logout()
     queryClient.removeQueries({ queryKey: ["auth", "profile"] })
     toast({ type: TOAST.ERROR, title: "Session expirée", message: "Veuillez vous reconnecter" })
+    router.replace(PATHNAME.LOGIN)
+  }, [logout, router, queryClient])
+
+  const handleAccessDenied = useCallback((error: unknown) => {
+    if (hasLoggedOut.current) return
+    hasLoggedOut.current = true
+
+    const serverMessage = error instanceof AxiosError
+      ? (error.response?.data as any)?.error
+      : null
+    const message = serverMessage || "Accès refusé. Veuillez contacter un administrateur."
+
+    logout()
+    queryClient.removeQueries({ queryKey: ["auth", "profile"] })
+    toast({ type: TOAST.ERROR, message })
     router.replace(PATHNAME.LOGIN)
   }, [logout, router, queryClient])
 
@@ -48,9 +64,14 @@ export function useProfile() {
 
   useEffect(() => {
     if (query.error && isAuthenticated && !hasLoggedOut.current) {
-      handleSessionExpired()
+      const is403 = query.error instanceof AxiosError && query.error.response?.status === 403
+      if (is403) {
+        handleAccessDenied(query.error)
+      } else {
+        handleSessionExpired()
+      }
     }
-  }, [query.error, isAuthenticated, handleSessionExpired])
+  }, [query.error, isAuthenticated, handleSessionExpired, handleAccessDenied])
 
   return query
 }

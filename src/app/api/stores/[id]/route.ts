@@ -1,49 +1,52 @@
-import { randomDelay } from "@/app/api/_helpers/delay.helper"
+
+import { authMiddleware, requireRole } from "@/app/api/_helpers/auth.helper"
 import { withMiddleware } from "@/app/api/_helpers/middleware.helper"
-import { apiSuccess } from "@/app/api/_helpers/response.helper"
+import { apiError, apiSuccess } from "@/app/api/_helpers/response.helper"
+import { prisma } from "@/services/api/prisma.service"
 import type { NextRequest } from "next/server"
 
-type StoreDetailRow = {
-  id: string
-  name: string
-  code: string
-  city: string
-  manager: string
-  responsableCaisse: string
-  nbCaissiers: number
-  nbTransactions: number
-  stats: { renduMonnaie: number; paiementCourse: number }
-}
-
-const MOCK_STORE_DETAILS: Record<string, StoreDetailRow> = Object.fromEntries(
-  Array.from({ length: 60 }, (_, i) => {
-    const code = `M${String(i + 1).padStart(4, "0")}`
-    const communes = ["Cocody", "Marcory", "Plateau", "Yopougon", "Treichville"]
-    return [
-      code,
-      {
-        id: code,
-        name: "Angré Djibi 1",
-        code,
-        city: `Abidjan, ${communes[i % communes.length]}`,
-        manager: "Kouassi Jean-Marc",
-        responsableCaisse: "Touré Aminata",
-        nbCaissiers: 12 + (i % 8),
-        nbTransactions: 1200 + i * 30,
-        stats: { renduMonnaie: 35, paiementCourse: 65 },
-      },
-    ]
-  })
-)
-
-export const GET = withMiddleware(async (req: NextRequest) => {
-  await randomDelay()
+export const GET = withMiddleware(authMiddleware, requireRole("ADMIN"), async (req: NextRequest) => {
   const id = req.nextUrl.pathname.split("/").pop() || ""
-  const store = MOCK_STORE_DETAILS[id]
+
+  const store = await prisma.store.findUnique({
+    where: { code: id },
+    include: {
+      manager: { select: { firstName: true, lastName: true } },
+      responsableCaisses: { select: { firstName: true, lastName: true } },
+      _count: { select: { cashiers: true, transactions: true } },
+    },
+  })
 
   if (!store) {
-    return apiSuccess(null)
+    return apiError("Magasin introuvable", 404)
   }
 
-  return apiSuccess(store)
+  const [renduMonnaie, paiementCourse] = await Promise.all([
+    prisma.transaction.count({
+      where: { storeId: store.id, type: "RENDU_MONNAIE" },
+    }),
+    prisma.transaction.count({
+      where: { storeId: store.id, type: "PAIEMENT_COURSE" },
+    }),
+  ])
+
+  const totalTx = renduMonnaie + paiementCourse
+  const stats = totalTx > 0
+    ? {
+        renduMonnaie: Math.round((renduMonnaie / totalTx) * 100),
+        paiementCourse: Math.round((paiementCourse / totalTx) * 100),
+      }
+    : { renduMonnaie: 0, paiementCourse: 0 }
+
+  return apiSuccess({
+    id: store.id,
+    name: store.name,
+    code: store.code,
+    city: `${store.ville}, ${store.commune}`,
+    manager: `${store.manager.lastName} ${store.manager.firstName}`,
+    responsableCaisse: `${store.responsableCaisses.lastName} ${store.responsableCaisses.firstName}`,
+    nbCaissiers: store._count.cashiers,
+    nbTransactions: store._count.transactions,
+    stats,
+  })
 })

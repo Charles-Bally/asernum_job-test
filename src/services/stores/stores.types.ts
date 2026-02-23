@@ -18,5 +18,4 @@ export type StoresData = {
   total: number
   page: number
   totalPages: number
-  communes: string[]
 }

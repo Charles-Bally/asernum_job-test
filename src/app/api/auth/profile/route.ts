@@ -1,9 +1,9 @@
-import { NextRequest } from "next/server"
-import { withMiddleware } from "@/app/api/_helpers/middleware.helper"
 import { authMiddleware } from "@/app/api/_helpers/auth.helper"
-import { apiSuccess, apiError } from "@/app/api/_helpers/response.helper"
-import { prisma } from "@/services/api/prisma.service"
 import type { ApiContext } from "@/app/api/_helpers/middleware.helper"
+import { withMiddleware } from "@/app/api/_helpers/middleware.helper"
+import { apiError, apiSuccess } from "@/app/api/_helpers/response.helper"
+import { prisma } from "@/services/api/prisma.service"
+import { NextRequest } from "next/server"
 
 async function getHandler(_req: NextRequest, context: ApiContext) {
   try {
@@ -25,6 +25,10 @@ async function getHandler(_req: NextRequest, context: ApiContext) {
 
     if (!user) {
       return apiError("Utilisateur introuvable", 404)
+    }
+
+    if (user.isBlocked) {
+      return apiError("Votre compte a été bloqué. Veuillez contacter un administrateur.", 403)
     }
 
     return apiSuccess({

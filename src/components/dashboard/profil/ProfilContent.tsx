@@ -3,6 +3,7 @@
 import CustomButton from "@/components/ui/render/CustomButton"
 import InputText from "@/components/ui/forms/InputText"
 import { useModal } from "@/components/modal_system/hooks/useModal"
+import { toast, TOAST } from "@/components/toast_system"
 import { QUERY_KEYS } from "@/constants/querykeys.constant"
 import { cn } from "@/lib/utils"
 import { profileService } from "@/services/auth/profile.service"
@@ -106,6 +107,7 @@ export function ProfilContent() {
       await profileService.updateProfile({ firstName: firstName.trim(), lastName: lastName.trim() })
       await queryClient.invalidateQueries({ queryKey: [...QUERY_KEYS.AUTH.PROFILE] })
       setIsEditing(false)
+      toast({ type: TOAST.SUCCESS, message: "Nom modifié avec succès" })
     } finally {
       setSaving(false)
     }

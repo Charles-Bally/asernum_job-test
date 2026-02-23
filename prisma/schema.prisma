@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -19,9 +20,19 @@ enum TransactionType {
   RENDU_MONNAIE
 }
 
+enum ClientStatus {
+  ACTIVE
+  INACTIVE
+}
+
 enum AccountAction {
+  CREATED
   BLOCKED
   UNBLOCKED
+  PASSWORD_RESET
+  ROLE_CHANGED
+  ASSIGNED_STORE
+  PROFILE_UPDATED
 }
 
 model User {
@@ -79,25 +90,28 @@ model Store {
 
   transactions   Transaction[]
   cashierHistory CashierHistory[]
+  clients        Client[]
 
   @@index([managerId])
   @@index([responsableCaissesId])
 }
 
 model Transaction {
-  id          String          @id @default(cuid())
-  type        TransactionType
-  amount      Int
-  clientPhone String
-  createdAt   DateTime        @default(now())
+  id        String          @id @default(cuid())
+  type      TransactionType
+  amount    Int
+  createdAt DateTime        @default(now())
 
   storeId   String
-  store     Store  @relation(fields: [storeId], references: [id])
+  store     Store   @relation(fields: [storeId], references: [id])
   cashierId String
-  cashier   User   @relation(fields: [cashierId], references: [id])
+  cashier   User    @relation(fields: [cashierId], references: [id])
+  clientId  String?
+  client    Client? @relation(fields: [clientId], references: [id])
 
   @@index([storeId])
   @@index([cashierId])
+  @@index([clientId])
   @@index([createdAt])
 }
 
@@ -118,10 +132,11 @@ model CashierHistory {
 }
 
 model AccountEvent {
-  id        String        @id @default(cuid())
-  action    AccountAction
-  reason    String?
-  createdAt DateTime      @default(now())
+  id          String        @id @default(cuid())
+  action      AccountAction
+  reason      String?
+  description String?
+  createdAt   DateTime      @default(now())
 
   userId        String
   user          User   @relation("AccountEventTarget", fields: [userId], references: [id])
@@ -129,4 +144,22 @@ model AccountEvent {
   performedBy   User   @relation("AccountEventPerformer", fields: [performedById], references: [id])
 
   @@index([userId])
+}
+
+model Client {
+  id        String       @id @default(cuid())
+  phone     String       @unique
+  firstName String
+  lastName  String
+  status    ClientStatus @default(ACTIVE)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  storeId String
+  store   Store  @relation(fields: [storeId], references: [id])
+
+  transactions Transaction[]
+
+  @@index([storeId])
+  @@index([phone])
 }

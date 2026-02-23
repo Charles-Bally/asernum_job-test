@@ -5,22 +5,12 @@ import { apiSuccess } from "@/app/api/_helpers/response.helper"
 import { prisma } from "@/services/api/prisma.service"
 
 export const GET = withMiddleware(authMiddleware, requireRole("ADMIN"), async () => {
-  const stores = await prisma.store.findMany({
-    orderBy: { transactions: { _count: "desc" } },
-    take: 5,
-    select: {
-      name: true,
-      code: true,
-      ville: true,
-      commune: true,
-    },
+  const communes = await prisma.store.groupBy({
+    by: ["commune"],
+    _count: { id: true },
+    orderBy: { _count: { id: "desc" } },
+    take: 10,
   })
 
-  return apiSuccess({
-    stores: stores.map((s) => ({
-      name: s.name,
-      code: s.code,
-      city: `${s.ville}, ${s.commune}`,
-    })),
-  })
+  return apiSuccess(communes.map((c) => c.commune))
 })

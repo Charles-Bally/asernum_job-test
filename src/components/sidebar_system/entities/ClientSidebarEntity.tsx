@@ -3,8 +3,11 @@
 import { SlidePanelLayout } from "@/components/menu/SlidePanelLayout"
 import { QUERY_KEYS } from "@/constants/querykeys.constant"
 import { cn } from "@/lib/utils"
+import { useSidebar } from "@/components/sidebar_system"
+import { useToast } from "@/components/toast_system/hooks/useToast"
 import { clientsService } from "@/services/clients/clients.service"
 import { useQuery } from "@tanstack/react-query"
+import { useEffect } from "react"
 import type { SidebarComponentProps } from "../types/sidebar.types"
 
 function formatAmount(amount: number): string {
@@ -34,11 +37,22 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 }
 
 export function ClientSidebarEntity({ config }: SidebarComponentProps) {
-  const { data: client, isLoading } = useQuery({
+  const { close } = useSidebar()
+  const { toast, TOAST } = useToast()
+
+  const { data: client, isLoading, isError } = useQuery({
     queryKey: [...QUERY_KEYS.CLIENT_DETAIL, config.entityId],
     queryFn: () => clientsService.getClientById(config.entityId),
     enabled: !!config.entityId,
+    retry: false,
   })
+
+  useEffect(() => {
+    if (isError || (!isLoading && !client)) {
+      close()
+      toast({ type: TOAST.ERROR, message: "Le client que vous recherchez n'est pas disponible, veuillez réessayer." })
+    }
+  }, [isError, isLoading, client, close, toast, TOAST])
 
   if (isLoading) {
     return (
