@@ -5,13 +5,14 @@ import { toast, TOAST } from "@/components/toast_system/services/toast.service"
 import { AnimatePresence, motion } from "framer-motion"
 import { Database, Loader2, Trash2, Wrench, X } from "lucide-react"
 import { useCallback, useEffect, useRef, useState } from "react"
-
-type ActionKey = "seed" | "clear"
+import SeedProgressOverlay from "./SeedProgressOverlay"
+import { useSeedRunner } from "./useSeedRunner"
 
 export default function DemoTools() {
   const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState<ActionKey | null>(null)
+  const [clearing, setClearing] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
+  const { progress, run, reset } = useSeedRunner()
 
   const handleClickOutside = useCallback((e: MouseEvent) => {
     if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
@@ -24,17 +25,25 @@ export default function DemoTools() {
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [open, handleClickOutside])
 
-  const runAction = async (action: ActionKey) => {
-    setLoading(action)
-    try {
-      const res = await fetch(`/api/demo/${action}`, { method: "POST" })
-      const json = await res.json()
+  const runSeed = async () => {
+    setOpen(false)
+    await run()
+  }
 
+  const handleSeedClose = () => {
+    if (progress.status === "success") {
+      toast({ type: TOAST.SUCCESS as "success", message: "Base remplie avec succès" })
+    }
+    reset()
+  }
+
+  const runClear = async () => {
+    setClearing(true)
+    try {
+      const res = await fetch("/api/demo/clear", { method: "POST" })
+      const json = await res.json()
       if (json.status === "success") {
-        toast({
-          type: TOAST.SUCCESS as "success",
-          message: action === "seed" ? "Base remplie avec succès" : "Base vidée avec succès",
-        })
+        toast({ type: TOAST.SUCCESS as "success", message: "Base vidée avec succès" })
         setOpen(false)
       } else {
         toast({ type: TOAST.ERROR as "error", message: json.error ?? "Erreur inconnue" })
@@ -42,72 +51,71 @@ export default function DemoTools() {
     } catch {
       toast({ type: TOAST.ERROR as "error", message: "Erreur réseau" })
     } finally {
-      setLoading(null)
+      setClearing(false)
     }
   }
 
+  const isBusy = clearing || progress.status === "running"
+
   return (
-    <div ref={panelRef} className="fixed bottom-6 right-6 z-50">
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={{ duration: 0.18, ease: "easeOut" }}
-            className="absolute bottom-14 right-0 w-[260px] rounded-2xl bg-white p-4 shadow-xl"
-          >
-            <p className="mb-3 text-xs font-semibold text-text-secondary uppercase tracking-wide">
-              Demo Tools
-            </p>
+    <>
+      <SeedProgressOverlay progress={progress} onClose={handleSeedClose} />
 
-            <div className="flex flex-col gap-2">
-              <DemoAction
-                icon={<Database size={16} />}
-                label="Reset & Seed"
-                description="Réinitialise et remplit la base"
-                loading={loading === "seed"}
-                disabled={loading !== null}
-                onClick={() => runAction("seed")}
-              />
-              <DemoAction
-                icon={<Trash2 size={16} />}
-                label="Clear Database"
-                description="Vide la base (garde l'admin)"
-                loading={loading === "clear"}
-                disabled={loading !== null}
-                onClick={() => runAction("clear")}
-              />
-            </div>
+      <div ref={panelRef} className="fixed bottom-6 right-6 z-50">
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.95 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+              className="absolute bottom-14 right-0 w-[260px] rounded-2xl bg-white p-4 shadow-xl"
+            >
+              <p className="mb-3 text-xs font-semibold text-text-secondary uppercase tracking-wide">
+                Demo Tools
+              </p>
 
-            {/* Arrow */}
-            <div className="absolute -bottom-[6px] right-5 size-3 rotate-45 bg-white shadow-sm" />
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <div className="flex flex-col gap-2">
+                <DemoAction
+                  icon={<Database size={16} />}
+                  label="Reset & Seed"
+                  description="Réinitialise et remplit la base"
+                  loading={progress.status === "running"}
+                  disabled={isBusy}
+                  onClick={runSeed}
+                />
+                <DemoAction
+                  icon={<Trash2 size={16} />}
+                  label="Clear Database"
+                  description="Vide la base (garde l'admin)"
+                  loading={clearing}
+                  disabled={isBusy}
+                  onClick={runClear}
+                />
+              </div>
 
-      {/* Trigger */}
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className={cn(
-          "flex size-11 cursor-pointer items-center justify-center rounded-full shadow-lg transition-all duration-200",
-          "bg-foreground text-white",
-          open ? "opacity-100 scale-105" : "opacity-40 hover:opacity-100 hover:scale-105"
-        )}
-      >
-        {open ? <X size={18} /> : <Wrench size={18} />}
-      </button>
-    </div>
+              <div className="absolute -bottom-[6px] right-5 size-3 rotate-45 bg-white shadow-sm" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className={cn(
+            "flex size-11 cursor-pointer items-center justify-center rounded-full shadow-lg transition-all duration-200",
+            "bg-foreground text-white",
+            open ? "opacity-100 scale-105" : "opacity-40 hover:opacity-100 hover:scale-105"
+          )}
+        >
+          {open ? <X size={18} /> : <Wrench size={18} />}
+        </button>
+      </div>
+    </>
   )
 }
 
 function DemoAction({
-  icon,
-  label,
-  description,
-  loading,
-  disabled,
-  onClick,
+  icon, label, description, loading, disabled, onClick,
 }: {
   icon: React.ReactNode
   label: string

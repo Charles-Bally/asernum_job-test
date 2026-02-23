@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
-// Mock framer-motion pour éviter les soucis d'animation en test
 vi.mock("framer-motion", async () => {
   const actual = await vi.importActual<typeof import("framer-motion")>("framer-motion")
   return {
@@ -11,6 +10,7 @@ vi.mock("framer-motion", async () => {
     AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
     motion: {
       div: ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => <div {...props}>{children}</div>,
+      button: ({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) => <button {...props}>{children}</button>,
     },
   }
 })
@@ -52,7 +52,6 @@ describe("DemoTools", () => {
     await user.click(screen.getByRole("button"))
     expect(screen.getByText("Demo Tools")).toBeInTheDocument()
 
-    // Le trigger est le dernier bouton (les 2 actions + le trigger X)
     const buttons = screen.getAllByRole("button")
     const trigger = buttons[buttons.length - 1]
     await user.click(trigger)
@@ -60,9 +59,9 @@ describe("DemoTools", () => {
     expect(screen.queryByText("Demo Tools")).not.toBeInTheDocument()
   })
 
-  it("appelle fetch avec la bonne URL au clic sur Reset & Seed", async () => {
+  it("appelle fetch pour la première étape seed au clic sur Reset & Seed", async () => {
     const mockFetch = vi.fn().mockResolvedValue({
-      json: () => Promise.resolve({ status: "success" }),
+      json: () => Promise.resolve({ status: "success", data: { adminId: "test-id" } }),
     })
     global.fetch = mockFetch
 
@@ -72,7 +71,10 @@ describe("DemoTools", () => {
     await user.click(screen.getByRole("button"))
     await user.click(screen.getByText("Reset & Seed"))
 
-    expect(mockFetch).toHaveBeenCalledWith("/api/demo/seed", { method: "POST" })
+    expect(mockFetch).toHaveBeenCalledWith(
+      "/api/demo/seed/wipe",
+      expect.objectContaining({ method: "POST" }),
+    )
   })
 
   it("appelle fetch avec la bonne URL au clic sur Clear Database", async () => {
