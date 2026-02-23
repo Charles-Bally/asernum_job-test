@@ -31,9 +31,9 @@ function UserAvatar({ firstName, lastName }: { firstName: string; lastName: stri
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between py-2 lg:py-[10px]">
-      <span className="text-[13px] lg:text-[14px] tracking-[-0.39px] lg:tracking-[-0.42px] text-text-secondary">{label}</span>
-      <span className="text-[14px] lg:text-[16px] font-bold tracking-[-0.42px] lg:tracking-[-0.48px] text-foreground">{value}</span>
+    <div className="flex items-center justify-between gap-4 py-2 lg:py-[10px]">
+      <span className="shrink-0 whitespace-nowrap text-[13px] lg:text-[14px] tracking-[-0.39px] lg:tracking-[-0.42px] text-text-secondary">{label}</span>
+      <span className="text-[14px] lg:text-[16px] font-bold tracking-[-0.42px] lg:tracking-[-0.48px] text-foreground text-right break-all line-clamp-1">{value}</span>
     </div>
   )
 }

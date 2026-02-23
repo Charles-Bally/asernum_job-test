@@ -14,16 +14,40 @@ function formatDateTime(date: Date): string {
   return `${day}/${month}/${year}, ${hours}:${minutes}`
 }
 
+function formatDate(date: Date): string {
+  const day = String(date.getDate()).padStart(2, "0")
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const year = date.getFullYear()
+  return `${day}/${month}/${year}`
+}
+
+function formatAmount(amount: number): string {
+  const abs = Math.abs(amount).toLocaleString("fr-FR")
+  return amount >= 0 ? `+${abs} FCFA` : `-${abs} FCFA`
+}
+
 export const GET = withMiddleware(authMiddleware, requireRole("ADMIN"), async (req: NextRequest) => {
   const id = req.nextUrl.pathname.split("/").pop() || ""
+  const storeCode = req.nextUrl.searchParams.get("storeCode") || ""
+
+  const storeFilter = storeCode
+    ? { store: { code: storeCode } }
+    : {}
 
   const user = await prisma.user.findUnique({
     where: { id },
     include: {
       cashierHistory: {
         orderBy: { assignedAt: "desc" },
-        take: 1,
-        select: { assignedAt: true },
+        include: {
+          store: { select: { name: true, ville: true, commune: true } },
+        },
+      },
+      transactions: {
+        where: storeFilter,
+        orderBy: { createdAt: "desc" },
+        take: 5,
+        select: { type: true, amount: true },
       },
     },
   })
@@ -31,6 +55,21 @@ export const GET = withMiddleware(authMiddleware, requireRole("ADMIN"), async (r
   if (!user || user.role !== "CAISSIER") {
     return apiError("Caissier introuvable", 404)
   }
+
+  const storeHistory = user.cashierHistory.map((h, i) => {
+    const location = `${h.store.name}, ${h.store.ville}`
+    const start = formatDate(h.assignedAt)
+    const end = h.removedAt ? formatDate(h.removedAt) : null
+    const isLatest = i === 0 && !h.removedAt
+    const period = isLatest ? `Depuis le ${start}` : `Du ${start} au ${end ?? "..."}`
+    return { location, period }
+  })
+
+  const recentTransactions = user.transactions.map((tx) => {
+    const label = tx.type === "PAIEMENT_COURSE" ? "Paiement course" : "Rendu monnaie"
+    const signed = tx.type === "PAIEMENT_COURSE" ? tx.amount : -tx.amount
+    return { type: label, amount: formatAmount(signed) }
+  })
 
   return apiSuccess({
     id: user.id,
@@ -40,5 +79,7 @@ export const GET = withMiddleware(authMiddleware, requireRole("ADMIN"), async (r
       ? formatDateTime(user.cashierHistory[0].assignedAt)
       : formatDateTime(user.createdAt),
     status: user.isBlocked ? "Bloqué" : "Actif",
+    storeHistory,
+    recentTransactions,
   })
 })

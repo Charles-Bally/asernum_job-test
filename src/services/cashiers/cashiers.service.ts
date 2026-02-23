@@ -8,7 +8,8 @@ export const cashiersService = {
     return fetchApi<CashiersData>(`${ENDPOINTS.CASHIERS}${query ? `?${query}` : ""}`)
   },
 
-  async getCashierById(id: string) {
-    return fetchApi<CashierRow>(`${ENDPOINTS.CASHIERS}/${id}`)
+  async getCashierById(id: string, storeCode?: string) {
+    const query = storeCode ? `?storeCode=${storeCode}` : ""
+    return fetchApi<CashierRow>(`${ENDPOINTS.CASHIERS}/${id}${query}`)
   },
 }

@@ -50,9 +50,9 @@ export function StoreDetailContent({ id }: StoreDetailContentProps) {
 
   const handleCashierClick = useCallback(
     (cashier: CashierRow) => {
-      sidebar.open({ entity: "cashier-detail", entityId: cashier.id })
+      sidebar.open({ entity: "cashier-detail", entityId: cashier.id, params: { storeCode: id } })
     },
-    [sidebar]
+    [sidebar, id]
   )
 
   const handleTransactionClick = useCallback(

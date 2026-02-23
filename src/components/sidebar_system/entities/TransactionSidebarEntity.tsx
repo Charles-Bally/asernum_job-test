@@ -53,11 +53,11 @@ function TransactionTitle({ type, amount }: { type: string; amount: number }) {
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between py-2 lg:py-[10px]">
-      <span className="text-[13px] lg:text-[14px] tracking-[-0.39px] lg:tracking-[-0.42px] text-text-secondary">
+    <div className="flex items-center justify-between gap-4 py-2 lg:py-[10px]">
+      <span className="shrink-0 whitespace-nowrap text-[13px] lg:text-[14px] tracking-[-0.39px] lg:tracking-[-0.42px] text-text-secondary">
         {label}
       </span>
-      <span className="text-[14px] lg:text-[16px] font-bold tracking-[-0.42px] lg:tracking-[-0.48px] text-foreground">
+      <span className="text-[14px] lg:text-[16px] font-bold tracking-[-0.42px] lg:tracking-[-0.48px] text-foreground text-right break-all line-clamp-1">
         {value}
       </span>
     </div>
@@ -111,12 +111,12 @@ export function TransactionSidebarEntity({ config }: SidebarComponentProps) {
       </h3>
 
       <div className="flex flex-col divide-y divide-border-light rounded-[12px] lg:rounded-[14px] bg-surface-muted px-3.5 lg:px-[16px]">
-        <div className="flex items-center justify-between py-2 lg:py-[10px]">
-          <span className="text-[13px] lg:text-[14px] tracking-[-0.39px] lg:tracking-[-0.42px] text-text-secondary">
+        <div className="flex items-center justify-between gap-4 py-2 lg:py-[10px]">
+          <span className="shrink-0 whitespace-nowrap text-[13px] lg:text-[14px] tracking-[-0.39px] lg:tracking-[-0.42px] text-text-secondary">
             ID Transaction
           </span>
-          <div className="flex items-center gap-2 lg:gap-[8px]">
-            <span className="font-mono text-[12px] lg:text-[14px] font-bold tracking-[-0.36px] lg:tracking-[-0.42px] text-foreground">
+          <div className="flex items-center gap-2 lg:gap-[8px] min-w-0">
+            <span className="font-mono text-[12px] lg:text-[14px] font-bold tracking-[-0.36px] lg:tracking-[-0.42px] text-foreground truncate">
               {transaction.id}
             </span>
             <button

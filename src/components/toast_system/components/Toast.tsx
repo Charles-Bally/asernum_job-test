@@ -28,9 +28,9 @@ export function Toast() {
   return createPortal(
     <div
       className={cn(
-        "pointer-events-none fixed z-[4000] flex flex-col-reverse lg:flex-col gap-2.5",
-        "bottom-5 inset-x-4 items-center",
-        "lg:bottom-auto lg:inset-x-auto lg:top-6 lg:right-6 lg:items-end"
+        "pointer-events-none fixed z-[4000] flex gap-2.5",
+        "flex-col-reverse bottom-5 inset-x-4 items-center",
+        "lg:flex-col lg:top-6 lg:right-6 lg:bottom-auto lg:left-auto lg:items-end"
       )}
     >
       {toasts.map((toast) => (

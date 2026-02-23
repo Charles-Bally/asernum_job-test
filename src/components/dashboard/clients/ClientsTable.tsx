@@ -19,21 +19,7 @@ import { Users } from "lucide-react"
 import { useCallback, useMemo } from "react"
 import { ClientStatusBadge } from "./cells/ClientStatusBadge"
 
-const STORE_CODES = new Set(["M0001", "M0002", "M0003", "M0004", "M0005"])
-
 const QUICK_FILTERS: QuickFilterConfig[] = [
-  {
-    key: "store",
-    label: "Magasin",
-    options: [
-      { label: "Tous", value: "" },
-      { label: "Angré Djibi 1", value: "M0001" },
-      { label: "Marcory Zone 4", value: "M0002" },
-      { label: "Plateau Centre", value: "M0003" },
-      { label: "Yopougon Selmer", value: "M0004" },
-      { label: "Treichville Gare", value: "M0005" },
-    ],
-  },
   {
     key: "status",
     label: "Statut",
@@ -122,13 +108,11 @@ export function ClientsTable() {
   const fetcher = useMemo(
     () =>
       async (params: TableFetchParams): Promise<TableFetcherResult<Client>> => {
-        const isStore = params.quickFilter && STORE_CODES.has(params.quickFilter)
         return clientsService.getClients({
           page: params.page,
           limit: params.limit,
           ...(params.search && { search: params.search }),
-          ...(isStore && { quickFilter: params.quickFilter }),
-          ...(!isStore && params.quickFilter && { status: params.quickFilter }),
+          ...(params.quickFilter && { status: params.quickFilter }),
         })
       },
     []
@@ -151,11 +135,9 @@ export function ClientsTable() {
         showExport: true,
         exportLabel: "Exporter",
         onExport: (params) => {
-          const isStore = params.quickFilter && STORE_CODES.has(params.quickFilter)
           downloadCsv(ENDPOINTS.CLIENTS_EXPORT, {
             search: params.search,
-            ...(isStore && { quickFilter: params.quickFilter }),
-            ...(!isStore && params.quickFilter && { status: params.quickFilter }),
+            ...(params.quickFilter && { status: params.quickFilter }),
           }, "clients.csv")
         },
         showRefresh: true,

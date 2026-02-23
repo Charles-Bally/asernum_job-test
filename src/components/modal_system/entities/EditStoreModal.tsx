@@ -1,5 +1,6 @@
 "use client"
 
+import InputCheckbox from "@/components/ui/forms/InputCheckbox"
 import InputMultiSelect from "@/components/ui/forms/InputMultiSelect"
 import InputSearchDropdown from "@/components/ui/forms/InputSearchDropdown"
 import InputText from "@/components/ui/forms/InputText"
@@ -20,6 +21,8 @@ type EditStoreData = {
   managerId: string
   responsableCaissesId: string
   cashierIds: string[]
+  generateClients: boolean
+  generateTransactions: boolean
 }
 
 const INITIAL_DATA: EditStoreData = {
@@ -30,6 +33,8 @@ const INITIAL_DATA: EditStoreData = {
   managerId: "",
   responsableCaissesId: "",
   cashierIds: [],
+  generateClients: false,
+  generateTransactions: false,
 }
 
 function StepInfoEdit() {
@@ -104,6 +109,27 @@ function StepTeamEdit() {
   )
 }
 
+function StepSeedEdit() {
+  const { data, updateField } = useModalData<EditStoreData>(INITIAL_DATA)
+
+  return (
+    <div className="flex flex-col gap-4 lg:gap-[20px] px-1">
+      <InputCheckbox
+        label="Générer des clients"
+        description="Crée ~15 clients fictifs rattachés au magasin"
+        checked={data.generateClients}
+        onChange={(v) => updateField("generateClients", v)}
+      />
+      <InputCheckbox
+        label="Générer des transactions"
+        description="Crée ~50 transactions réalistes avec les caissiers"
+        checked={data.generateTransactions}
+        onChange={(v) => updateField("generateTransactions", v)}
+      />
+    </div>
+  )
+}
+
 export function EditStoreModal({ config: baseConfig }: { config: ModalConfig }) {
   const modal = useModal()
   const { getData, updateFields } = useModalData<EditStoreData>(INITIAL_DATA)
@@ -140,7 +166,7 @@ export function EditStoreModal({ config: baseConfig }: { config: ModalConfig }) 
     return true
   }
 
-  const handleComplete = async (): Promise<boolean> => {
+  const validateStep2 = async (): Promise<boolean> => {
     const data = getData()
     if (!data.managerId || !data.responsableCaissesId) {
       const { dialog, DIALOG } = await import("@/components/dialog_system/services/dialog.service")
@@ -151,11 +177,17 @@ export function EditStoreModal({ config: baseConfig }: { config: ModalConfig }) 
       })
       return false
     }
+    return true
+  }
+
+  const handleComplete = async (): Promise<boolean> => {
+    const data = getData()
     if (!storeCode) return false
     try {
       const { apiRequest } = await import("@/services/api/api.request.service")
       const { http } = await import("@/services/http")
       const { ENDPOINTS } = await import("@/constants/endpoints.constant")
+
       await apiRequest({
         request: () => http.patch(`${ENDPOINTS.STORES}/${storeCode}`, {
           name: data.name,
@@ -168,10 +200,27 @@ export function EditStoreModal({ config: baseConfig }: { config: ModalConfig }) 
         }),
         config: {
           waitingMessage: "Mise à jour du magasin...",
-          successMessage: "Magasin mis à jour avec succès",
+          successMessage: (data.generateClients || data.generateTransactions)
+            ? undefined
+            : "Magasin mis à jour avec succès",
           cacheKeys: [QUERY_KEYS.STORES, QUERY_KEYS.STORE_DETAIL],
         },
       })
+
+      if (data.generateClients || data.generateTransactions) {
+        await apiRequest({
+          request: () => http.post(`${ENDPOINTS.STORES}/${storeCode}/seed`, {
+            generateClients: data.generateClients,
+            generateTransactions: data.generateTransactions,
+          }),
+          config: {
+            waitingMessage: "Génération des données de test...",
+            successMessage: "Magasin mis à jour avec données de test",
+            cacheKeys: [QUERY_KEYS.STORES, QUERY_KEYS.STORE_DETAIL, QUERY_KEYS.CLIENTS, QUERY_KEYS.TRANSACTIONS],
+          },
+        })
+      }
+
       modal.close()
       return true
     } catch {
@@ -189,8 +238,14 @@ export function EditStoreModal({ config: baseConfig }: { config: ModalConfig }) 
     {
       id: "team",
       label: "Équipe",
-      validate: handleComplete,
+      validate: validateStep2,
       component: <StepTeamEdit />,
+    },
+    {
+      id: "seed",
+      label: "Données de test",
+      validate: handleComplete,
+      component: <StepSeedEdit />,
     },
   ]
 
@@ -202,11 +257,13 @@ export function EditStoreModal({ config: baseConfig }: { config: ModalConfig }) 
 
   const currentStepValue = modal.config?.currentStep ?? 0
 
+  const STEP_TITLES = ["Modifier le magasin", "Équipe du magasin", "Données de test"]
+
   useEffect(() => {
     modal.updateConfig({
       ...baseConfig,
       steps,
-      title: currentStepValue === 0 ? "Modifier le magasin" : "Équipe du magasin",
+      title: STEP_TITLES[currentStepValue] ?? STEP_TITLES[0],
       submitLabel: "Enregistrer",
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps

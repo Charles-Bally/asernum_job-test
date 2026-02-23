@@ -11,6 +11,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@faker-js/faker": "^10.3.0",
     "@floating-ui/react": "^0.27.18",
     "@getbrevo/brevo": "^4.0.1",
     "@prisma/client": "^6.19.2",
