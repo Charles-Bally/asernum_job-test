@@ -74,10 +74,12 @@ export function StoreCashiersTable({ storeId, onRowClick }: StoreCashiersTablePr
         title: "Actions",
         width: 1.1,
         overflow: true,
-        render: (_: unknown, row: CashierRow) => <CashierActions row={row} />,
+        render: (_: unknown, row: CashierRow) => (
+          <CashierActions row={row} storeId={storeId} onHistory={onRowClick} />
+        ),
       },
     ],
-    []
+    [storeId, onRowClick]
   )
 
   const fetcher = useMemo(

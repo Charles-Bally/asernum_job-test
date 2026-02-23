@@ -7,7 +7,7 @@ import InputText from "@/components/ui/forms/InputText"
 import { QUERY_KEYS } from "@/constants/querykeys.constant"
 import { useInfiniteUserOptions } from "@/hooks/useInfiniteUserOptions"
 import { storesService } from "@/services/stores/stores.service"
-import { useEffect, useState } from "react"
+import { useEffect, useRef } from "react"
 import { ModalContent } from "../components/ModalContent"
 import { useModal } from "../hooks/useModal"
 import { useModalData } from "../hooks/useModalData"
@@ -133,11 +133,12 @@ function StepSeedEdit() {
 export function EditStoreModal({ config: baseConfig }: { config: ModalConfig }) {
   const modal = useModal()
   const { getData, updateFields } = useModalData<EditStoreData>(INITIAL_DATA)
-  const [loaded, setLoaded] = useState(false)
+  const fetchedRef = useRef(false)
   const storeCode = baseConfig.entityId
 
   useEffect(() => {
-    if (!storeCode || loaded) return
+    if (!storeCode || fetchedRef.current) return
+    fetchedRef.current = true
     storesService.getStoreById(storeCode).then((store) => {
       updateFields({
         name: store.name,
@@ -148,9 +149,9 @@ export function EditStoreModal({ config: baseConfig }: { config: ModalConfig }) 
         responsableCaissesId: store.responsableCaissesId,
         cashierIds: store.cashierIds,
       })
-      setLoaded(true)
     })
-  }, [storeCode, loaded, updateFields])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storeCode])
 
   const validateStep1 = async (): Promise<boolean> => {
     const data = getData()

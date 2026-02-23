@@ -134,12 +134,11 @@ export function ClientsTable() {
       ui: {
         showExport: true,
         exportLabel: "Exporter",
-        onExport: (params) => {
+        onExport: (params) =>
           downloadCsv(ENDPOINTS.CLIENTS_EXPORT, {
             search: params.search,
             ...(params.quickFilter && { status: params.quickFilter }),
-          }, "clients.csv")
-        },
+          }, "clients.csv"),
         showRefresh: true,
         showRowBorder: false,
         headerLayout: "single-row",

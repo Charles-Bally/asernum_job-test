@@ -145,7 +145,7 @@ export function UsersTab() {
         exportLabel: "Exporter",
         onExport: (params) => {
           const isRole = params.quickFilter && ROLE_VALUES.has(params.quickFilter)
-          downloadCsv(ENDPOINTS.USERS_EXPORT, {
+          return downloadCsv(ENDPOINTS.USERS_EXPORT, {
             search: params.search,
             ...(isRole && { role: params.quickFilter }),
             ...(!isRole && params.quickFilter && { status: params.quickFilter }),

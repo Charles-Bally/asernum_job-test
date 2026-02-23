@@ -204,9 +204,9 @@ export function CashierSidebarEntity({ config }: SidebarComponentProps) {
       <TransactionList transactions={cashier.recentTransactions ?? []} />
 
       {(cashier.recentTransactions?.length ?? 0) > 0 && (
-        <div className="mt-6 flex justify-center">
-          <CustomButton variant="ghost" onClick={() => setShowAll(true)}
-            className="h-[44px] rounded-full bg-surface-muted px-6 text-[14px] font-bold text-foreground"
+        <div className="mt-5 lg:mt-[24px] flex justify-center">
+          <CustomButton variant="none" size="none" onClick={() => setShowAll(true)}
+            className="flex h-[28px] lg:h-[30px] items-center rounded-[22px] bg-surface-muted px-5 lg:px-[24px] text-[13px] lg:text-[14px] font-bold tracking-[-0.39px] lg:tracking-[-0.42px] text-text-caption"
           >
             Toutes les transactions
           </CustomButton>

@@ -5,7 +5,7 @@ import CustomButton from "@/components/ui/render/CustomButton"
 import { FilterDropdown } from "@/components/ui/render/FilterDropdown"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
-import { RefreshCw, Search } from "lucide-react"
+import { Loader2, RefreshCw, Search } from "lucide-react"
 import { type ReactNode, useCallback, useState } from "react"
 import type { QuickFilterConfig } from "../types/table.types"
 import { DateRangePicker } from "./DateRangePicker"
@@ -20,7 +20,7 @@ type TableHeaderProps = {
   onQuickFilterChange?: (key: string) => void
   showExport?: boolean
   exportLabel?: string
-  onExport?: () => void
+  onExport?: () => void | Promise<void>
   showRefresh?: boolean
   onRefresh?: () => void
   headerActions?: ReactNode
@@ -121,15 +121,26 @@ function ActionButtons({
   onRefresh?: () => void
   showExport?: boolean
   exportLabel?: string
-  onExport?: () => void
+  onExport?: () => void | Promise<void>
   headerActions?: ReactNode
 }) {
   const [rotation, setRotation] = useState(0)
+  const [exporting, setExporting] = useState(false)
 
   const handleRefresh = useCallback(() => {
     setRotation((prev) => prev + 360)
     onRefresh?.()
   }, [onRefresh])
+
+  const handleExport = useCallback(async () => {
+    if (exporting || !onExport) return
+    setExporting(true)
+    try {
+      await onExport()
+    } finally {
+      setExporting(false)
+    }
+  }, [exporting, onExport])
 
   return (
     <>
@@ -148,10 +159,19 @@ function ActionButtons({
       )}
       {showExport && (
         <CustomButton
-          onClick={() => onExport?.()}
-          className="h-[36px] lg:h-[46px] shrink-0 rounded-[8px] lg:rounded-[10px] bg-auchan-red px-4 lg:px-[24px] text-[13px] lg:text-[18px] font-bold text-white hover:bg-auchan-red-hover"
+          onClick={handleExport}
+          disabled={exporting}
+          className={cn(
+            "h-[36px] lg:h-[46px] shrink-0 rounded-[8px] lg:rounded-[10px] bg-auchan-red px-4 lg:px-[24px] text-[13px] lg:text-[18px] font-bold text-white hover:bg-auchan-red-hover",
+            exporting && "opacity-80 cursor-not-allowed"
+          )}
         >
-          {exportLabel}
+          {exporting ? (
+            <span className="flex items-center gap-2">
+              <Loader2 size={16} className="animate-spin" />
+              {exportLabel}
+            </span>
+          ) : exportLabel}
         </CustomButton>
       )}
       {headerActions}

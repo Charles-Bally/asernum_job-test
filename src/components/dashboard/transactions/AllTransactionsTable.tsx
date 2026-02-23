@@ -162,7 +162,7 @@ export function AllTransactionsTable() {
         exportLabel: "Exporter",
         onExport: (params) => {
           const isStore = params.quickFilter && STORE_CODES.has(params.quickFilter)
-          downloadCsv(ENDPOINTS.TRANSACTIONS_EXPORT, {
+          return downloadCsv(ENDPOINTS.TRANSACTIONS_EXPORT, {
             search: params.search,
             ...(isStore && { storeId: params.quickFilter }),
             ...(!isStore && params.quickFilter && { quickFilter: params.quickFilter }),

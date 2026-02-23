@@ -1,9 +1,10 @@
 "use client"
 
+import { useSidebar } from "@/components/sidebar_system"
 import { cn } from "@/lib/utils"
 import type { CashierRow } from "@/services/cashiers/cashiers.types"
 import { Eye, EyeOff } from "lucide-react"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import {
   EditSolidIcon,
   ExchangeFilledIcon,
@@ -68,7 +69,7 @@ function ActionButton({ icon, label, onClick }: ActionButtonProps) {
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={(e) => { e.stopPropagation(); onClick?.() }}
       className={cn(
         "group/action relative flex size-[36px] lg:size-[45px] cursor-pointer items-center justify-center",
         "rounded-full text-text-secondary transition-colors",
@@ -89,15 +90,32 @@ function ActionButton({ icon, label, onClick }: ActionButtonProps) {
   )
 }
 
-export function CashierActions({ row }: { row: CashierRow }) {
+type CashierActionsProps = {
+  row: CashierRow
+  storeId: string
+  onHistory?: (cashier: CashierRow) => void
+}
+
+export function CashierActions({ row, storeId, onHistory }: CashierActionsProps) {
+  const sidebar = useSidebar()
+
+  const openUserDetail = useCallback(() => {
+    sidebar.open({ entity: "user-detail", entityId: row.id, params: { storeCode: storeId } })
+  }, [sidebar, row.id, storeId])
+
+  const handleHistory = useCallback(() => {
+    onHistory?.(row)
+  }, [onHistory, row])
+
   return (
     <div className="flex items-center gap-[1px]">
-      <ActionButton icon={<EditSolidIcon />} label="Modifier" />
-      <ActionButton icon={<ExchangeFilledIcon />} label="Transférer" />
-      <ActionButton icon={<ListUlIcon />} label="Historique" />
+      <ActionButton icon={<EditSolidIcon />} label="Modifier" onClick={openUserDetail} />
+      <ActionButton icon={<ExchangeFilledIcon />} label="Transférer" onClick={openUserDetail} />
+      <ActionButton icon={<ListUlIcon />} label="Historique" onClick={handleHistory} />
       <ActionButton
         icon={<UserBlockedIcon />}
         label={row.status === "Actif" ? "Bloquer" : "Débloquer"}
+        onClick={openUserDetail}
       />
     </div>
   )

@@ -21,6 +21,7 @@ export type CustomLinkProps = {
   animation?: boolean;
   target?: "_blank" | "_self" | "_parent" | "_top";
   rel?: string;
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 };
 
 const variantStyles = {
@@ -54,6 +55,7 @@ function CustomLink({
   animation = true,
   target = "_self",
   rel,
+  onClick,
 }: CustomLinkProps) {
   return (
     <motion.div
@@ -66,6 +68,7 @@ function CustomLink({
         href={href}
         target={target}
         rel={rel}
+        onClick={onClick}
         aria-label={ariaLabel}
         className={cn(
           "inline-flex cursor-pointer items-center justify-center rounded-[10px] font-medium transition-all duration-200 ease-in-out focus:ring-2 focus:ring-offset-2 focus:outline-none",
