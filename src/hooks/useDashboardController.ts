@@ -38,6 +38,7 @@ export function useStatsQuery(period: string) {
   return {
     renduMonnaie: data?.renduMonnaie ?? 0,
     paiementCourse: data?.paiementCourse ?? 0,
+    activeStores: data?.activeStores ?? 0,
     isLoading,
   }
 }

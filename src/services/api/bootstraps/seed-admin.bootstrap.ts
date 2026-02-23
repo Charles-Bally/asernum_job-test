@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs"
 
 const ADMIN_EMAILS = [
   { email: "admin@asernum-job.com", firstName: "Charles", lastName: "Bally" },
-  { email: "mygamer.99id@gmail.com", firstName: "Charles Personal", lastName: "Contact" },
 ]
 
 export async function seedAdmin(): Promise<void> {

@@ -239,16 +239,16 @@ export function CreateStoreModal({ config: baseConfig }: { config: ModalConfig }
   const currentStepValue = modal.config?.currentStep ?? 0
 
   const STEP_TITLES = ["Nouveau magasin", "Équipe du magasin", "Données de test"]
+  const currentTitle = STEP_TITLES[currentStepValue] ?? STEP_TITLES[0]
 
   useEffect(() => {
     modal.updateConfig({
-      ...baseConfig,
-      steps,
-      title: STEP_TITLES[currentStepValue] ?? STEP_TITLES[0],
+      title: currentTitle,
       submitLabel: "Créer le magasin",
+      steps,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentStepValue])
+  }, [currentTitle])
 
   return <ModalContent config={config} />
 }

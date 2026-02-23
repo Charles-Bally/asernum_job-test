@@ -34,9 +34,9 @@ export const GET = withMiddleware(authMiddleware, requireRole("ADMIN"), async (r
   const totalTx = renduMonnaie + paiementCourse
   const stats = totalTx > 0
     ? {
-        renduMonnaie: Math.round((renduMonnaie / totalTx) * 100),
-        paiementCourse: Math.round((paiementCourse / totalTx) * 100),
-      }
+      renduMonnaie: Math.round((renduMonnaie / totalTx) * 100),
+      paiementCourse: Math.round((paiementCourse / totalTx) * 100),
+    }
     : { renduMonnaie: 0, paiementCourse: 0 }
 
   return apiSuccess({

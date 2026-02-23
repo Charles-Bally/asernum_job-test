@@ -31,14 +31,15 @@ export const GET = withMiddleware(authMiddleware, requireRole("ADMIN"), async (r
   const period = req.nextUrl.searchParams.get("period") || "30days"
   const periodStart = getPeriodStart(period)
 
-  const [renduMonnaie, paiementCourse] = await Promise.all([
+  const [renduMonnaie, paiementCourse, activeStores] = await Promise.all([
     prisma.transaction.count({
       where: { type: "RENDU_MONNAIE", createdAt: { gte: periodStart } },
     }),
     prisma.transaction.count({
       where: { type: "PAIEMENT_COURSE", createdAt: { gte: periodStart } },
     }),
+    prisma.store.count({ where: { isActive: true } }),
   ])
 
-  return apiSuccess({ renduMonnaie, paiementCourse })
+  return apiSuccess({ renduMonnaie, paiementCourse, activeStores })
 })

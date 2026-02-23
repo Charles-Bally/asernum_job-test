@@ -26,3 +26,19 @@ export type CashiersData = {
   page: number
   totalPages: number
 }
+
+export type CashierTransaction = {
+  id: string
+  type: string
+  amount: string
+  store: string
+  client: string | null
+  date: string
+}
+
+export type CashierTransactionsData = {
+  rows: CashierTransaction[]
+  total: number
+  page: number
+  totalPages: number
+}

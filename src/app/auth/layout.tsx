@@ -1,5 +1,6 @@
 "use client";
 
+import DemoTools from "@/components/demo/DemoTools";
 import AuchanBird from "@/components/ui/render/AuchanBird";
 import { useBirdStore } from "@/store/bird.store";
 
@@ -27,6 +28,8 @@ export default function AuthLayout({
           {children}
         </div>
       </div>
+
+      <DemoTools />
     </div>
   );
 }

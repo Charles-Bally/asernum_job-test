@@ -33,7 +33,6 @@ function InputMultiSelect({
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
-  const sentinelRef = useRef<HTMLDivElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null)
   const isAsync = !!onSearch
@@ -60,17 +59,12 @@ function InputMultiSelect({
     if (open) setTimeout(() => inputRef.current?.focus(), 0)
   }, [open])
 
-  useEffect(() => {
-    if (!open || !hasMore || !onLoadMore) return
-    const sentinel = sentinelRef.current
-    if (!sentinel) return
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) onLoadMore() },
-      { root: listRef.current, threshold: 0.1 },
-    )
-    observer.observe(sentinel)
-    return () => observer.disconnect()
-  }, [open, hasMore, onLoadMore, options.length])
+  const handleScroll = useCallback(() => {
+    const el = listRef.current
+    if (!el || !hasMore || !onLoadMore || isLoading) return
+    const { scrollTop, scrollHeight, clientHeight } = el
+    if (scrollHeight - scrollTop - clientHeight < 40) onLoadMore()
+  }, [hasMore, onLoadMore, isLoading])
 
   const handleSearchChange = useCallback((val: string) => {
     setSearch(val)
@@ -144,7 +138,7 @@ function InputMultiSelect({
                 className="w-full bg-transparent text-[14px] text-foreground outline-none placeholder:text-text-muted"
               />
             </div>
-            <div ref={listRef} className="max-h-[180px] overflow-y-auto">
+            <div ref={listRef} onScroll={handleScroll} className="max-h-[180px] overflow-y-auto">
               {isLoading && filtered.length === 0 ? (
                 <div className="flex items-center justify-center gap-2 py-6">
                   <Loader2 size={18} className="animate-spin text-text-caption" />
@@ -179,7 +173,7 @@ function InputMultiSelect({
                       </button>
                     )
                   })}
-                  {hasMore && <div ref={sentinelRef} className="flex justify-center py-2">
+                  {hasMore && <div className="flex justify-center py-2">
                     <Loader2 size={16} className="animate-spin text-text-caption" />
                   </div>}
                 </>

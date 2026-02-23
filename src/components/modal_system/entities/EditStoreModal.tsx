@@ -258,16 +258,16 @@ export function EditStoreModal({ config: baseConfig }: { config: ModalConfig }) 
   const currentStepValue = modal.config?.currentStep ?? 0
 
   const STEP_TITLES = ["Modifier le magasin", "Équipe du magasin", "Données de test"]
+  const currentTitle = STEP_TITLES[currentStepValue] ?? STEP_TITLES[0]
 
   useEffect(() => {
     modal.updateConfig({
-      ...baseConfig,
-      steps,
-      title: STEP_TITLES[currentStepValue] ?? STEP_TITLES[0],
+      title: currentTitle,
       submitLabel: "Enregistrer",
+      steps,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentStepValue])
+  }, [currentTitle])
 
   return <ModalContent config={config} />
 }

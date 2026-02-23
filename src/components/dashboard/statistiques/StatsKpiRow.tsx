@@ -1,6 +1,6 @@
 "use client"
 
-import { useStatsQuery, useTopStoresQuery } from "@/hooks/useDashboardController"
+import { useStatsQuery } from "@/hooks/useDashboardController"
 
 function KpiSkeleton() {
   return (
@@ -25,11 +25,9 @@ function KpiCard({ label, value }: { label: string; value: string }) {
 }
 
 export function StatsKpiRow() {
-  const { renduMonnaie, paiementCourse, isLoading: statsLoading } = useStatsQuery("30days")
-  const { stores, isLoading: storesLoading } = useTopStoresQuery()
+  const { renduMonnaie, paiementCourse, activeStores, isLoading } = useStatsQuery("30days")
 
   const total = renduMonnaie + paiementCourse
-  const isLoading = statsLoading || storesLoading
 
   if (isLoading) {
     return (
@@ -44,7 +42,7 @@ export function StatsKpiRow() {
       <KpiCard label="Total transactions" value={total.toLocaleString("fr-FR")} />
       <KpiCard label="Rendu monnaie" value={renduMonnaie.toLocaleString("fr-FR")} />
       <KpiCard label="Paiement course" value={paiementCourse.toLocaleString("fr-FR")} />
-      <KpiCard label="Magasins actifs" value={String(stores.length)} />
+      <KpiCard label="Magasins actifs" value={String(activeStores)} />
     </div>
   )
 }
