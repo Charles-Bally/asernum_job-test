@@ -52,17 +52,17 @@ Chaque système (`dialog_system`, `modal_system`, `table_system`, `sidebar_syste
 
 ## Stack Technique
 
-| Catégorie | Technologie |
-|-----------|-------------|
-| Framework | Next.js 16 + React 19 + TypeScript 5.9 (Strict) |
-| Styling | Tailwind CSS v4 + Framer Motion |
-| State | Zustand 5 + TanStack Query 5 |
-| HTTP | Axios (client custom avec middlewares) |
-| Formulaires | React Hook Form |
-| BDD | PostgreSQL 17 + Prisma ORM |
-| Auth | JWT (access/refresh) + bcrypt + OTP |
-| Tests | Vitest + Testing Library |
-| Paquets | pnpm |
+| Catégorie   | Technologie                                     |
+| ----------- | ----------------------------------------------- |
+| Framework   | Next.js 16 + React 19 + TypeScript 5.9 (Strict) |
+| Styling     | Tailwind CSS v4 + Framer Motion                 |
+| State       | Zustand 5 + TanStack Query 5                    |
+| HTTP        | Axios (client custom avec middlewares)          |
+| Formulaires | React Hook Form                                 |
+| BDD         | PostgreSQL 17 + Prisma ORM                      |
+| Auth        | JWT (access/refresh) + bcrypt + OTP             |
+| Tests       | Vitest + Testing Library                        |
+| Paquets     | pnpm                                            |
 
 ## Architecture Frontend -- Les Choix Structurants
 
@@ -133,7 +133,7 @@ L'API est construite en Route Handlers Next.js avec Prisma ORM et PostgreSQL. El
 ## DevTools et Expérience de Revue
 
 - Bouton `DevTools` sur la page de login (en bas à droite, semi-transparent)
-- En production ce bouton ne serait pas présent, mais il est volontairement laissé pour faciliter la revue technique
+- En production ce bouton ne serait pas présent, mais il est volontairement laissé pour faciliter la revue technique lorsque qu'il y a zero data ou pas.
 - **Reset & Seed** : réinitialise la base avec un jeu de données réaliste (magasins, managers, caissiers, clients, transactions). Overlay animé avec progress bar et étapes numérotées
 - **Clear Database** : vide toutes les données (conserve l'admin par défaut `admin@asernum-job.com` / `Password1234@`) pour tester les empty states
 - Permet au recruteur de visualiser l'interface dans tous ses états (vide, peuplée, chargement)
@@ -177,34 +177,34 @@ cp .env.example .env
 
 Variables à configurer dans `.env` :
 
-| Variable | Description |
-|----------|-------------|
-| `NEXT_PUBLIC_ENCRYPTION_KEY` | Clé de chiffrement AES (client) |
-| `NEXT_PUBLIC_ENCRYPTION_API_KEY` | Clé de chiffrement AES (API) |
-| `NEXT_PUBLIC_AES_IV` | Vecteur d'initialisation AES |
-| `NEXT_PUBLIC_AES_SECRET_KEY` | Clé secrète AES |
-| `JWT_ACCESS_SECRET` | Secret pour les tokens JWT d'accès |
-| `JWT_REFRESH_SECRET` | Secret pour les tokens JWT de refresh |
-| `BREVO_API_KEY` | Clé API Brevo (envoi d'emails OTP) |
-| `DATABASE_URL` | URL de connexion PostgreSQL |
+| Variable                         | Description                           |
+| -------------------------------- | ------------------------------------- |
+| `NEXT_PUBLIC_ENCRYPTION_KEY`     | Clé de chiffrement AES (client)       |
+| `NEXT_PUBLIC_ENCRYPTION_API_KEY` | Clé de chiffrement AES (API)          |
+| `NEXT_PUBLIC_AES_IV`             | Vecteur d'initialisation AES          |
+| `NEXT_PUBLIC_AES_SECRET_KEY`     | Clé secrète AES                       |
+| `JWT_ACCESS_SECRET`              | Secret pour les tokens JWT d'accès    |
+| `JWT_REFRESH_SECRET`             | Secret pour les tokens JWT de refresh |
+| `BREVO_API_KEY`                  | Clé API Brevo (envoi d'emails OTP)    |
+| `DATABASE_URL`                   | URL de connexion PostgreSQL           |
 
 Les valeurs par défaut de `NEXT_PUBLIC_BASE_URL`, `NEXT_PUBLIC_API_URL`, `BREVO_SENDER_EMAIL` et `BREVO_SENDER_NAME` sont déjà configurées.
 
 ### 3. Démarrer la base de données avec Docker
 
 ```bash
-docker compose up -d
+docker compose up -d ou docker-compose up -d
 ```
 
 Cela lance un conteneur PostgreSQL 17 (Alpine) accessible sur le port **5433** :
 
-| Paramètre | Valeur |
-|-----------|--------|
-| Host | `localhost` |
-| Port | `5433` |
-| User | `postgres` |
-| Password | `postgres` |
-| Database | `asernum_job_test` |
+| Paramètre | Valeur             |
+| --------- | ------------------ |
+| Host      | `localhost`        |
+| Port      | `5433`             |
+| User      | `postgres`         |
+| Password  | `postgres`         |
+| Database  | `asernum_job_test` |
 
 Mettre à jour `DATABASE_URL` dans `.env` en conséquence :
 

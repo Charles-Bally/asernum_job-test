@@ -38,8 +38,13 @@ export function StoreCard({ store, className }: StoreCardProps) {
       {/* Fond blanc (default) */}
       <div className={cn(
         "absolute inset-0 rounded-[20px] lg:rounded-[40px] bg-white transition-opacity duration-300",
-        navigating ? "animate-pulse opacity-70" : "group-hover:opacity-0"
+        navigating ? "opacity-0" : "group-hover:opacity-0"
       )} />
+
+      {/* Fond pulse (navigating) */}
+      {navigating && (
+        <div className="absolute inset-0 rounded-[20px] lg:rounded-[40px] bg-surface-muted animate-pulse" />
+      )}
 
       {/* Fond gradient (hover) */}
       <div className={cn(
