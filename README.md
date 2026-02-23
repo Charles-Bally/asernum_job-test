@@ -146,6 +146,7 @@ L'API est construite en Route Handlers Next.js avec Prisma ORM et PostgreSQL. El
 - Mascotte Auchan animée sur les pages auth (suivi du regard sur toggle mot de passe)
 - Tests unitaires Vitest sur la logique métier
 - Chiffrement AES sur le stockage client (cookies, sessionStorage, Zustand persist)
+- Sécurité API : réponses uniformes sur les endpoints sensibles (forgot-password retourne toujours succès, que l'email existe ou non) pour éviter l'énumération de comptes
 
 ## Installation et Lancement
 
