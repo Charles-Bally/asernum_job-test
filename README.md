@@ -239,3 +239,25 @@ L'application est accessible sur [http://localhost:3000](http://localhost:3000).
 ## Note d'arbitrage
 
 Architecture pensée pour la maintenabilité : chaque système est un mini-framework réutilisable, isolé et testable. Responsive Mobile-First : chaque écran s'adapte (layouts, navigation, scroll, pickers). Le code est structuré pour qu'un nouveau développeur puisse comprendre et contribuer immédiatement.
+
+---
+
+## Connexion en local
+
+### Pré-requis rappel
+
+- **pnpm** est déjà installé (utilisé pour toutes les commandes du projet)
+- **Docker** doit être lancé avant de démarrer le projet (nécessaire pour la base PostgreSQL locale)
+
+### Identifiants de test
+
+Les identifiants suivants fonctionnent dès le lancement, **même sans avoir généré de données** :
+
+| Champ      | Valeur                    |
+| ---------- | ------------------------- |
+| Email      | `admin@asernum-job.com`   |
+| Mot de passe | `Password1234@`         |
+
+### Générer des données de démo
+
+Sur la page de login, le bouton **DevTools** (en bas à droite, semi-transparent) permet de peupler la base avec un jeu de données réaliste (magasins, managers, caissiers, clients, transactions) en un clic.
