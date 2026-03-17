@@ -8,11 +8,26 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import SeedProgressOverlay from "./SeedProgressOverlay"
 import { useSeedRunner } from "./useSeedRunner"
 
+const CORNER_RADIUS = 150
+
 export default function DemoTools() {
   const [open, setOpen] = useState(false)
   const [clearing, setClearing] = useState(false)
+  const [nearCorner, setNearCorner] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
   const { progress, run, reset } = useSeedRunner()
+
+  useEffect(() => {
+    const onMouseMove = (e: MouseEvent) => {
+      const dx = window.innerWidth - e.clientX
+      const dy = window.innerHeight - e.clientY
+      setNearCorner(dx < CORNER_RADIUS && dy < CORNER_RADIUS)
+    }
+    window.addEventListener("mousemove", onMouseMove)
+    return () => window.removeEventListener("mousemove", onMouseMove)
+  }, [])
+
+  const buttonVisible = open || nearCorner
 
   const handleClickOutside = useCallback((e: MouseEvent) => {
     if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
@@ -102,9 +117,9 @@ export default function DemoTools() {
         <button
           onClick={() => setOpen((o) => !o)}
           className={cn(
-            "flex size-11 cursor-pointer items-center justify-center rounded-full shadow-lg transition-all duration-200",
+            "flex size-11 cursor-pointer items-center justify-center rounded-full shadow-lg transition-all duration-300",
             "bg-foreground text-white",
-            open ? "opacity-100 scale-105" : "opacity-40 hover:opacity-100 hover:scale-105"
+            open ? "opacity-100 scale-105" : buttonVisible ? "opacity-40 hover:opacity-100 hover:scale-105" : "opacity-0 pointer-events-none"
           )}
         >
           {open ? <X size={18} /> : <Wrench size={18} />}
